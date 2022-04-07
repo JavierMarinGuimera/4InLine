@@ -2,4 +2,4 @@
 Proyecto final. 
 
 ## TODO
-[] Prueba
+[x] Prueba
