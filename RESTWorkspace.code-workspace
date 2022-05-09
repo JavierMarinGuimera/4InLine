@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "RESTServer"
+		},
+		{
+			"path": "..\\..\\eclipse-workspaces\\M09\\UF1P2_Marin_Javier"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

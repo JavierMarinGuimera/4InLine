@@ -25,6 +25,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -40,18 +41,8 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat</groupId>
-			<artifactId>tomcat-jasper</artifactId>
-			<version>9.0.19</version>
-		</dependency>
-		<!-- <dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<version>7.0</version>
-			<scope>provided</scope>
-		</dependency> -->
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -60,4 +51,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
