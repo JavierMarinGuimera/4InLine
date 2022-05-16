@@ -8,5 +8,6 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ViewController {
 
-    // We dont have methods yet.
+    // We dont have methods yet. This can be created on the future.
+
 }

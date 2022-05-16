@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tocados.marin.RESTServer.managers.CypherManager;
+import tocados.marin.RESTServer.managers.EncrypterDecrypterManager;
 import tocados.marin.RESTServer.models.User;
 import tocados.marin.RESTServer.repositories.UsersRepository;
 
@@ -41,7 +41,7 @@ public class UsersService {
             return null;
         }
 
-        user.setPassword(CypherManager.encryptUserPassword(user.getPassword()));
+        user.setPassword(EncrypterDecrypterManager.encryptUserPassword(user.getPassword()));
         return usersRepository.save(user);
     }
 
@@ -54,7 +54,8 @@ public class UsersService {
         }
 
         if (user.getUsername().equals(userFromDDBB.getUsername())
-                && CypherManager.encryptUserPassword(user.getPassword()).equals(userFromDDBB.getPassword())) {
+                && EncrypterDecrypterManager.encryptUserPassword(user.getPassword())
+                        .equals(userFromDDBB.getPassword())) {
             return userFromDDBB;
         } else {
             return null;
