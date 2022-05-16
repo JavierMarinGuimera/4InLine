@@ -5,13 +5,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class EncrypterDecrypterManager {
+public class EncrypterManager {
     private static final String SHA_256_ALGORITHM = "SHA-256";
 
     /**
      * Private constructor to make this clases NOT instantiable.
      */
-    private EncrypterDecrypterManager() {
+    private EncrypterManager() {
     }
 
     /**
@@ -30,23 +30,7 @@ public class EncrypterDecrypterManager {
         return "";
     }
 
-    /**
-     * Method used to decrypt the user password from the DDBB.
-     * 
-     * @param password User's DDBB password.
-     * @return Password decrypted.
-     */
-    public static String decryptUserPassword(String password) {
-        try {
-            return toHexString(getSHA(password));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return "";
-    }
-
-    public static byte[] getSHA(String input) throws NoSuchAlgorithmException {
+    public static byte[] getSHA(String password) throws NoSuchAlgorithmException {
         /* MessageDigest instance for hashing using SHA256 */
         MessageDigest md = MessageDigest.getInstance(SHA_256_ALGORITHM);
 
@@ -54,7 +38,7 @@ public class EncrypterDecrypterManager {
          * digest() method called to calculate message digest of an input and return
          * array of byte
          */
-        return md.digest(input.getBytes(StandardCharsets.UTF_8));
+        return md.digest(password.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String toHexString(byte[] hash) {

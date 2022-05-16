@@ -3,7 +3,7 @@ package tocados.marin.RESTServer.models;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "users")
 public class User {
 
     @Id
