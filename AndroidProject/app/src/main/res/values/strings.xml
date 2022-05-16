@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">4InLine</string>
+    <string name="button_play">Find Game</string>
+    <string name="button_exit">Exit</string>
+    <string name="title1">Music</string>
+    <string name="description1">Enables background music</string>
+    <string name="title2">Icon</string>
+    <string name="description2">Changes the icon</string>
+    <string name="dialog_title1">Select icon</string>
+    <string name="title3">Color</string>
+    <string name="description3">Color selector</string>
+    <string name="dialog_title2">Select color</string>
+    <string name="black_color">Black</string>
+    <string name="white_color">White</string>
+    <string name="red_color">Red</string>
+    <string name="orange_color">Orange</string>
+    <string name="green_color">Green</string>
+    <string name="blue_color">Blue</string>
+    <string name="yellow_color">Yellow</string>
+    <string name="fuchsia_color">Fuchsia</string>
+    <string name="pink_color">Pink</string>
+    <string name="preferences_button">Preferences</string>
+    <string name="carrot_icon">Carrot</string>
+    <string name="circle_icon">Circle</string>
+    <string name="crown_icon">Crown</string>
+    <string name="dragon_icon">Dragon</string>
+    <string name="face_icon">Face</string>
+    <string name="frog_icon">Frog</string>
+    <string name="ghost_icon">Ghost</string>
+    <string name="hippo_icon">Hippo</string>
+    <string name="jedi_icon">Jedi Order</string>
+    <string name="user_null">User can\'t be null</string>
+    <string name="password_null">Enter password</string>
+    <string name="encrypted_shared_preferences">com.tocadosmarin.fourinline.USER_LOGIN</string>
+</resources>

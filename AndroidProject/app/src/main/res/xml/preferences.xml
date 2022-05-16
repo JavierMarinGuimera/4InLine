@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:title="Preferences"
+    android:key="game_preferences" >
+    <CheckBoxPreference
+        android:key="music"
+        android:title="@string/title1"
+        android:summary="@string/description1"/>
+    <PreferenceScreen android:title="Player1"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <com.austingreco.imagelistpreference.ImageListPreference
+            android:key="icon_player_1"
+            android:title="@string/title2"
+            android:summary="@string/description2"
+            android:dialogTitle="@string/dialog_title1"
+            android:entries="@array/icon"
+            android:entryValues="@array/iconSelected"
+            android:defaultValue="1"
+            app:ilp_entryImages="@array/iconImages"
+            />
+        <ListPreference
+            android:key="color_player_1"
+            android:title="@string/title3"
+            android:summary="@string/description3"
+            android:dialogTitle="@string/dialog_title2"
+            android:entries="@array/color"
+            android:entryValues="@array/colorSelected"
+            android:defaultValue="1"/>
+    </PreferenceScreen>
+    <PreferenceScreen android:title="Player2"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <com.austingreco.imagelistpreference.ImageListPreference
+            android:key="icon_player_2"
+            android:title="@string/title2"
+            android:summary="@string/description2"
+            android:dialogTitle="@string/dialog_title1"
+            android:entries="@array/icon"
+            android:entryValues="@array/iconSelected"
+            android:defaultValue="1"
+            app:ilp_entryImages="@array/iconImages"
+            />
+        <ListPreference
+            android:key="color_player_2"
+            android:title="@string/title3"
+            android:summary="@string/description3"
+            android:dialogTitle="@string/dialog_title2"
+            android:entries="@array/color"
+            android:entryValues="@array/colorSelected"
+            android:defaultValue="1"/>
+    </PreferenceScreen>
+</PreferenceScreen>

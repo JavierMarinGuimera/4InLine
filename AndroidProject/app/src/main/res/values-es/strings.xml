@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">4EnRaya</string>
+    <string name="button_play">Buscar partida</string>
+    <string name="button_exit">Salir</string>
+    <string name="title1">Música</string>
+    <string name="description1">Activa la música de fondo</string>
+    <string name="title2">Icono</string>
+    <string name="description2">Cambia el icono</string>
+    <string name="dialog_title1">Selecciona una icono</string>
+    <string name="title3">Color</string>
+    <string name="description3">Selector de color</string>
+    <string name="dialog_title2">Selecciona un color</string>
+    <string name="black_color">Negro</string>
+    <string name="white_color">Blanco</string>
+    <string name="red_color">Rojo</string>
+    <string name="orange_color">Naranja</string>
+    <string name="green_color">Verde</string>
+    <string name="blue_color">Azul</string>
+    <string name="yellow_color">Amarillo</string>
+    <string name="pink_color">Rosa</string>
+    <string name="fuchsia_color">Fucsia</string>
+    <string name="preferences_button">Preferencias</string>
+    <string name="carrot_icon">Zanahoria</string>
+    <string name="circle_icon">Circulo</string>
+    <string name="crown_icon">Corona</string>
+    <string name="dragon_icon">Dragon</string>
+    <string name="face_icon">Cara</string>
+    <string name="frog_icon">Rana</string>
+    <string name="ghost_icon">Fantasma</string>
+    <string name="hippo_icon">Hipopótamo</string>
+    <string name="jedi_icon">Orden Jedi</string>
+    <string name="user_null">El usuario no puede ser nulo</string>
+    <string name="password_null">Introduzca la contraseña</string>
+    <string name="encrypted_shared_preferences">com.tocadosmarin.fourinline.USER_LOGIN</string>
+</resources>

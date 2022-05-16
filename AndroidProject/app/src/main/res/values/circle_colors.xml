@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="color">
+        <item>@string/black_color</item>
+        <item>@string/white_color</item>
+        <item>@string/red_color</item>
+        <item>@string/orange_color</item>
+        <item>@string/green_color</item>
+        <item>@string/blue_color</item>
+        <item>@string/yellow_color</item>
+        <item>@string/fuchsia_color</item>
+        <item>@string/pink_color</item>
+    </string-array>
+    <string-array name="colorSelected">
+        <item>#FF000000</item>
+        <item>#FFFFFFFF</item>
+        <item>#dc2626</item>
+        <item>#f97316</item>
+        <item>#22c55e</item>
+        <item>#3b82f6</item>
+        <item>#facc15</item>
+        <item>#d946ef</item>
+        <item>#ec4899</item>
+    </string-array>
+</resources>

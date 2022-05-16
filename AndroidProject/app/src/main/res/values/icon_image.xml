@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="iconImages">
+        <item>@drawable/ic_carrot_solid</item>
+        <item>@drawable/ic_circle_solid</item>
+        <item>@drawable/ic_crown_solid</item>
+        <item>@drawable/ic_dragon_solid</item>
+        <item>@drawable/ic_face_surprise_solid</item>
+        <item>@drawable/ic_frog_solid</item>
+        <item>@drawable/ic_ghost_solid</item>
+        <item>@drawable/ic_hippo_solid</item>
+        <item>@drawable/ic_jedi_order_brands</item>
+    </array>
+</resources>

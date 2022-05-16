@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="icon">
+        <item>@string/carrot_icon</item>
+        <item>@string/circle_icon</item>
+        <item>@string/crown_icon</item>
+        <item>@string/dragon_icon</item>
+        <item>@string/face_icon</item>
+        <item>@string/frog_icon</item>
+        <item>@string/ghost_icon</item>
+        <item>@string/hippo_icon</item>
+        <item>@string/jedi_icon</item>
+    </string-array>
+    <string-array name="iconSelected">
+        <item>ic_carrot_solid</item>
+        <item>ic_circle_solid</item>
+        <item>ic_crown_solid</item>
+        <item>ic_dragon_solid</item>
+        <item>ic_face_surprise_solid</item>
+        <item>ic_frog_solid</item>
+        <item>ic_ghost_solid</item>
+        <item>ic_hippo_solid</item>
+        <item>ic_jedi_order_brands</item>
+    </string-array>
+</resources>
