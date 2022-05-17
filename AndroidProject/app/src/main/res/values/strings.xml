@@ -29,7 +29,16 @@
     <string name="ghost_icon">Ghost</string>
     <string name="hippo_icon">Hippo</string>
     <string name="jedi_icon">Jedi Order</string>
-    <string name="user_null">User can\'t be null</string>
+    <string name="user_null">Enter user</string>
     <string name="password_null">Enter password</string>
     <string name="encrypted_shared_preferences">com.tocadosmarin.fourinline.USER_LOGIN</string>
+    <string name="user_password_error">User/Password Incorrect!</string>
+    <string name="button_login">Log In</string>
+    <string name="button_signup">Sign Up</string>
+    <string name="button_goback">Go Back</string>
+    <string name="hint_user">User</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="different_password_error">Password not match</string>
+    <string name="cb_session">Keep signed in</string>
 </resources>
