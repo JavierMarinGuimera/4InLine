@@ -17,3 +17,4 @@ Proyecto final.
 
 -   [Creación API REST](https://www.youtube.com/watch?v=vTu2HQrXtyw)
 -   [Encriptar contraseñas](https://www.javatpoint.com/how-to-encrypt-password-in-java)
+-   [Generar token](https://stackoverflow.com/questions/13992972/how-to-create-a-authentication-token-using-java)

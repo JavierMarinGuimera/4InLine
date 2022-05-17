@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +17,7 @@ import tocados.marin.RESTServer.services.TokensService;
 import tocados.marin.RESTServer.services.UsersService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UsersController {
     @Autowired
     UsersService userService;
@@ -26,16 +25,12 @@ public class UsersController {
     @Autowired
     TokensService tokensService;
 
+    // ------------------------------------------------------------------------------------
+
     // Get all users to show the scores.
-    @GetMapping
+    @GetMapping()
     public List<User> getUsers() {
         return userService.getUsers();
-    }
-
-    // Get user from id.
-    @GetMapping(path = "/{id}")
-    public User getUser(@PathVariable("id") Integer id) {
-        return userService.getUserFromId(id);
     }
 
     // Post user to create it on the DDBB.
@@ -48,19 +43,11 @@ public class UsersController {
     // TODO - Post login..
     @PostMapping
     @RequestMapping("/login")
-    public User logIn(@RequestBody User user) {
-        /**
-         * POSIBLE TOKEN:
-         * 
-         * SecureRandom random = new SecureRandom();
-         * byte bytes[] = new byte[20];
-         * random.nextBytes(bytes);
-         * String token = bytes.toString();
-         */
+    public String logIn(@RequestBody User user) {
         return userService.logIn(user);
     }
 
-    // TODO - Post login..
+    // TODO - Post logout..
     @PostMapping
     @RequestMapping("/logout")
     public void test(@RequestBody Map<String, Object> json) {
@@ -73,12 +60,6 @@ public class UsersController {
     @PutMapping
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
-    }
-
-    // TODO - Delete user from DDBB.
-    @DeleteMapping(path = "/{id}")
-    public User deleteUserFromId(@RequestBody Integer id) {
-        return this.userService.deleteUserFromId(id);
     }
 
     // TODO - Delete user from DDBB.

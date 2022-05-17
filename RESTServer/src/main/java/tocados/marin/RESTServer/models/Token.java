@@ -1,12 +1,13 @@
 package tocados.marin.RESTServer.models;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -18,15 +19,29 @@ public class Token {
     @Column(unique = true, nullable = false)
     private Integer id;
 
-    @Column(nullable = false)
     @OneToOne()
-    private Integer user_id;
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     @Column(nullable = false)
     private String current_token;
 
     @Column(nullable = false)
-    private Date expire_date;
+    private Timestamp creation_date;
+
+    public Token() {
+    }
+
+    /**
+     * @param user
+     * @param current_token
+     * @param creation_date
+     */
+    public Token(User user, String current_token, Timestamp creation_date) {
+        this.user = user;
+        this.current_token = current_token;
+        this.creation_date = creation_date;
+    }
 
     /**
      * @return the id
@@ -43,17 +58,17 @@ public class Token {
     }
 
     /**
-     * @return the user_id
+     * @return the user
      */
-    public Integer getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
     /**
-     * @param user_id the user_id to set
+     * @param user the user to set
      */
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**
@@ -71,16 +86,16 @@ public class Token {
     }
 
     /**
-     * @return the expire_date
+     * @return the Creation_date
      */
-    public Date getExpire_date() {
-        return expire_date;
+    public Timestamp getCreation_date() {
+        return creation_date;
     }
 
     /**
-     * @param expire_date the expire_date to set
+     * @param Creation_date the Creation_date to set
      */
-    public void setExpire_date(Date expire_date) {
-        this.expire_date = expire_date;
+    public void setCreation_date(Timestamp creation_date) {
+        this.creation_date = creation_date;
     }
 }

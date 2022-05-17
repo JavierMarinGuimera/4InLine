@@ -2,92 +2,43 @@ package tocados.marin.RESTServer.services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tocados.marin.RESTServer.managers.EncrypterManager;
 import tocados.marin.RESTServer.models.User;
-import tocados.marin.RESTServer.repositories.UsersRepository;
 
 @Service
-public class UsersService {
-    @Autowired
-    UsersRepository usersRepository;
-
-    // ------------------------------------------------------------------------------------
-
+public interface UsersService {
     /**
+     * ------------------------------------------------------------------------------------
      * GET Methods:
      */
 
-    public List<User> getUsers() {
-        return (List<User>) usersRepository.findAll();
-    }
+    public List<User> getUsers();
 
-    public User getUserFromId(Integer id) {
-        return usersRepository.findById(id).get();
-    }
-
-    private User getUserFromUsername(String username) {
-        return usersRepository.findByUsername(username);
-    }
-
-    // ------------------------------------------------------------------------------------
+    public User getUserFromUsername(String username);
 
     /**
+     * ------------------------------------------------------------------------------------
      * POST Methods:
      */
 
-    public User insertUser(User user) {
-        if (getUserFromUsername(user.getUsername()) != null) {
-            return null;
-        }
+    public User insertUser(User user);
 
-        user.setPassword(EncrypterManager.encryptUserPassword(user.getPassword()));
-        return usersRepository.save(user);
-    }
-
-    public User logIn(User user) {
-        User userFromDDBB = getUserFromUsername(user.getUsername());
-
-        if (userFromDDBB == null) {
-            System.out.println("Null");
-            return null;
-        }
-
-        if (user.getUsername().equals(userFromDDBB.getUsername())
-                && EncrypterManager.encryptUserPassword(user.getPassword())
-                        .equals(userFromDDBB.getPassword())) {
-            return userFromDDBB;
-        } else {
-            return null;
-        }
-    }
-
-    // ------------------------------------------------------------------------------------
+    public String logIn(User user);
 
     /**
+     * ------------------------------------------------------------------------------------
      * PUT Methods:
      */
 
-    public User updateUser(User user) {
-        return null;
-    }
-
-    // ------------------------------------------------------------------------------------
+    public User updateUser(User user);
 
     /**
+     * ------------------------------------------------------------------------------------
      * DELETE Methods:
      */
 
-    public User deleteUserFromUsername(String username) {
-        return null;
-    }
+    public User deleteUserFromUsername(String username);
 
-    public User deleteUserFromId(Integer id) {
-        return null;
-    }
-
-    // ------------------------------------------------------------------------------------
-
+    public User deleteUserFromId(Integer id);
 }
