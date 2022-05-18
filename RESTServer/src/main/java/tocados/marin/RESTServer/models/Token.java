@@ -4,12 +4,17 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import tocados.marin.RESTServer.models.user.User;
 
 @Entity
 @Table(name = "tokens")
@@ -19,7 +24,7 @@ public class Token {
     @Column(unique = true, nullable = false)
     private Integer id;
 
-    @OneToOne()
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
@@ -60,6 +65,7 @@ public class Token {
     /**
      * @return the user
      */
+    @JsonIgnore
     public User getUser() {
         return user;
     }
@@ -67,6 +73,7 @@ public class Token {
     /**
      * @param user the user to set
      */
+    @JsonIgnore
     public void setUser(User user) {
         this.user = user;
     }

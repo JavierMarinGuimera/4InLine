@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tocados.marin.RESTServer.models.User;
+import tocados.marin.RESTServer.models.user.User;
+import tocados.marin.RESTServer.models.user.UserDTO;
 import tocados.marin.RESTServer.services.TokensService;
 import tocados.marin.RESTServer.services.UsersService;
 
@@ -29,42 +30,55 @@ public class UsersController {
 
     // Get all users to show the scores.
     @GetMapping()
-    public List<User> getUsers() {
+    public List<UserDTO> getUsers() {
         return userService.getUsers();
     }
 
     // Post user to create it on the DDBB.
     @PostMapping
     @RequestMapping("/register")
-    public User insertUser(@RequestBody User user) {
+    public Boolean insertUser(@RequestBody User user) {
         return this.userService.insertUser(user);
     }
 
-    // TODO - Post login..
+    // Post login.
     @PostMapping
     @RequestMapping("/login")
     public String logIn(@RequestBody User user) {
         return userService.logIn(user);
     }
 
-    // TODO - Post logout..
+    // Post logout.
     @PostMapping
     @RequestMapping("/logout")
-    public void test(@RequestBody Map<String, Object> json) {
-        for (Map.Entry<String, Object> entry : json.entrySet()) {
-            System.out.println(entry.getKey() + ", " + entry.getValue());
-        }
+    public Boolean logout(@RequestBody Map<String, String> json) {
+        return userService.logOut(json);
     }
 
     // TODO - Put user to update user
     @PutMapping
-    public User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+    @RequestMapping("/update")
+    public Boolean updateUser(@RequestBody Map<String, Object> json) {
+        try {
+            User user = (User) json.get("user");
+            User userUpdated = (User) json.get("userUpdated");
+            String token = (String) json.get("token");
+
+            if (user == null || userUpdated == null || token == null) {
+                return false;
+            }
+
+            return userService.updateUser(user, userUpdated, token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    // TODO - Delete user from DDBB.
-    @DeleteMapping(path = "/{username}")
-    public User deleteUserFromUsername(@RequestBody String username) {
-        return this.userService.deleteUserFromUsername(username);
+    // Delete user from DDBB.
+    @DeleteMapping
+    @RequestMapping("/delete")
+    public Boolean deleteUserFromUsername(@RequestBody Map<String, String> json) {
+        return this.userService.deleteUserFromUsername(json);
     }
 }

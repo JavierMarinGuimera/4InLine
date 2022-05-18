@@ -1,10 +1,12 @@
 package tocados.marin.RESTServer.services;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import tocados.marin.RESTServer.models.User;
+import tocados.marin.RESTServer.models.user.User;
+import tocados.marin.RESTServer.models.user.UserDTO;
 
 @Service
 public interface UsersService {
@@ -13,7 +15,7 @@ public interface UsersService {
      * GET Methods:
      */
 
-    public List<User> getUsers();
+    public List<UserDTO> getUsers();
 
     public User getUserFromUsername(String username);
 
@@ -22,23 +24,23 @@ public interface UsersService {
      * POST Methods:
      */
 
-    public User insertUser(User user);
+    public Boolean insertUser(User user);
 
     public String logIn(User user);
+
+    public Boolean logOut(Map<String, String> json);
 
     /**
      * ------------------------------------------------------------------------------------
      * PUT Methods:
      */
 
-    public User updateUser(User user);
+    public Boolean updateUser(User user, User userUpdated, String token);
 
     /**
      * ------------------------------------------------------------------------------------
      * DELETE Methods:
      */
 
-    public User deleteUserFromUsername(String username);
-
-    public User deleteUserFromId(Integer id);
+    public Boolean deleteUserFromUsername(Map<String, String> json);
 }

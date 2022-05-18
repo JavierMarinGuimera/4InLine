@@ -1,8 +1,13 @@
-package tocados.marin.RESTServer.models;
+package tocados.marin.RESTServer.models.user;
 
 import java.util.List;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import tocados.marin.RESTServer.models.Score;
+import tocados.marin.RESTServer.models.Token;
 
 @Entity
 @Table(name = "users")
@@ -19,10 +24,10 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Token token;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Score> scores;
 
     /**
@@ -74,6 +79,7 @@ public class User {
     /**
      * @return the token
      */
+    @JsonIgnore
     public Token getToken() {
         return token;
     }
@@ -81,7 +87,24 @@ public class User {
     /**
      * @param token the token to set
      */
+    @JsonIgnore
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    /**
+     * @return the scores
+     */
+    @JsonIgnore
+    public List<Score> getScores() {
+        return scores;
+    }
+
+    /**
+     * @param scores the scores to set
+     */
+    @JsonIgnore
+    public void setScores(List<Score> scores) {
+        this.scores = scores;
     }
 }

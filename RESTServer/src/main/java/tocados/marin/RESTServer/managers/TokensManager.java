@@ -3,6 +3,8 @@ package tocados.marin.RESTServer.managers;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+import tocados.marin.RESTServer.models.Token;
+
 public class TokensManager {
     /**
      * Calc of 1 week to miliseconds:
@@ -23,5 +25,10 @@ public class TokensManager {
         secureRandom.nextBytes(randomBytes);
 
         return base64Encoder.encodeToString(randomBytes);
+    }
+
+    public static Boolean isValidToken(Token token) {
+        return (System.currentTimeMillis()
+                - token.getCreation_date().getTime()) < TokensManager.TOKEN_EXPIRATION_TIME;
     }
 }

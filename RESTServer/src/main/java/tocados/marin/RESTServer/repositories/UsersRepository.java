@@ -3,7 +3,7 @@ package tocados.marin.RESTServer.repositories;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import tocados.marin.RESTServer.models.User;
+import tocados.marin.RESTServer.models.user.User;
 
 @Repository
 public interface UsersRepository extends CrudRepository<User, Integer> {

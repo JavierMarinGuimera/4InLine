@@ -9,6 +9,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import tocados.marin.RESTServer.models.user.User;
+
 @Entity
 @Table(name = "Scores")
 public class Score {
