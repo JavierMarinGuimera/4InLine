@@ -37,8 +37,7 @@ public class MainActivity extends AppCompatActivity {
         btExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), Game.class);
-                startActivity(i);
+                finish();
             }
         });
 

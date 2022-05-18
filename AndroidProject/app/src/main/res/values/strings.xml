@@ -41,4 +41,9 @@
     <string name="hint_confirm_password">Confirm Password</string>
     <string name="different_password_error">Password not match</string>
     <string name="cb_session">Keep signed in</string>
+    <string name="login_text">Log In</string>
+    <string name="signup_text">You do not have an account? Sign up</string>
+    <string name="radio_button_size_9">9x9</string>
+    <string name="radio_button_size_7">7x7</string>
+    <string name="radio_button_size_5">5x5</string>
 </resources>

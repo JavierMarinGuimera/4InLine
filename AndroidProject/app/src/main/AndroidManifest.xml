@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FourInLine">
         <activity
+            android:name=".BoardSelection"
+            android:exported="false" />
+        <activity
             android:name=".UserLogin"
             android:exported="false"
             android:screenOrientation="userLandscape" />

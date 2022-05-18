@@ -4,6 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +16,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -18,10 +25,12 @@ import java.security.GeneralSecurityException;
 
 public class UserLogin extends AppCompatActivity {
     public static SharedPreferences encryptedPref;
-    private Button btLogIn1, btLogIn2, btSignUp1, btSignUp2, btBack;
-    private LinearLayout logIn, buttons, signUp;
+    private Button btLogIn, btSignUp;
+    private LinearLayout logIn, signUp;
     private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
     private CheckBox cbSession;
+    private TextView tvSignUp, tvLogIn;
+    private ScrollView scLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +43,15 @@ public class UserLogin extends AppCompatActivity {
         etSignUpPwd = findViewById(R.id.etSignUpPwd);
         etConfirmPwd = findViewById(R.id.etConfirmPwd);
 
-        btLogIn1 = findViewById(R.id.btLogIn1);
-        btLogIn2 = findViewById(R.id.btLogIn2);
-        btSignUp1 = findViewById(R.id.btSignUp1);
-        btSignUp2 = findViewById(R.id.btSignUp2);
-        btBack = findViewById(R.id.btBack);
+        btLogIn = findViewById(R.id.btLogIn);
+        btSignUp = findViewById(R.id.btSignUp);
         cbSession = findViewById(R.id.cbSession);
+        tvSignUp = findViewById(R.id.tvSignUp);
+        tvLogIn = findViewById(R.id.tvLogIn);
+        scLogin = findViewById(R.id.scLogin);
 
         logIn = findViewById(R.id.logIn);
         signUp = findViewById(R.id.signUp);
-        buttons = findViewById(R.id.buttons);
 
         try {
             getEncryptedSharedPreferences();
@@ -53,27 +61,9 @@ public class UserLogin extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        setLogin(false);
         setSignup(false);
 
-        btBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setLogin(false);
-                setSignup(false);
-                setButtons(true);
-            }
-        });
-
-        btLogIn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setButtons(false);
-                setLogin(true);
-            }
-        });
-
-        btLogIn2.setOnClickListener(new View.OnClickListener() {
+        btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean error = false;
@@ -88,28 +78,28 @@ public class UserLogin extends AppCompatActivity {
                 if (!error) {
                     boolean session = cbSession.isChecked();
                     //TODO recoger usuario y contraseña server y compararlo con el introducido
-                    /*String user = encryptedPref.getString("user", "?");
-                    String password = encryptedPref.getString("password", "?")
-                    if (!user.equals(etUser.getText().toString()) || !password.equals(etPassword.getText().toString())) {
-
+                    String user = encryptedPref.getString("user", "?");
+                    String password = encryptedPref.getString("password", "?");
+                    if (!user.equals(etLoginUser.getText().toString()) || !password.equals(etLoginPwd.getText().toString())) {
+                        Toast.makeText(getApplicationContext(), "User/Password Incorrect!", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent i = new Intent(getApplicationContext(), Game.class);
+                        Intent i = new Intent(getApplicationContext(), BoardSelection.class);
                         startActivity(i);
-                    }*/
+                    }
                 }
 
             }
         });
 
-        btSignUp1.setOnClickListener(new View.OnClickListener() {
+        tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setButtons(false);
+                setLogin(false);
                 setSignup(true);
             }
         });
 
-        btSignUp2.setOnClickListener(new View.OnClickListener() {
+        btSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean error = false;
@@ -130,49 +120,54 @@ public class UserLogin extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
+                    //TODO introducir datos usuario en el servidor
                     Toast.makeText(getApplicationContext(), "todo correcto", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
-    }
 
-    private void setButtons(boolean state) {
-        if (state) {
-            buttons.setClickable(true);
-            buttons.setVisibility(View.VISIBLE);
-        } else {
-            buttons.setClickable(false);
-            buttons.setVisibility(View.INVISIBLE);
-        }
+        tvLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setSignup(false);
+                setLogin(true);
+            }
+        });
     }
 
     private void setLogin(boolean state) {
         if (state) {
-            btBack.setClickable(state);
-            btBack.setVisibility(View.VISIBLE);
-            logIn.setClickable(state);
-            logIn.setVisibility(View.VISIBLE);
+            logIn.setClickable(true);
+            fadeAnimation(logIn, 0f, 1f, View.VISIBLE);
         } else {
-            btBack.setClickable(state);
-            btBack.setVisibility(View.INVISIBLE);
-            logIn.setClickable(state);
-            logIn.setVisibility(View.INVISIBLE);
+            logIn.setClickable(false);
+            fadeAnimation(logIn, 1f, 0f, View.INVISIBLE);
         }
     }
 
     private void setSignup(boolean state) {
         if (state) {
-            btBack.setClickable(state);
-            btBack.setVisibility(View.VISIBLE);
-            signUp.setClickable(state);
-            signUp.setVisibility(View.VISIBLE);
+            signUp.setClickable(true);
+            fadeAnimation(signUp, 0f, 1f, View.VISIBLE);
         } else {
-            btBack.setClickable(state);
-            btBack.setVisibility(View.INVISIBLE);
-            signUp.setClickable(state);
-            signUp.setVisibility(View.INVISIBLE);
+            signUp.setClickable(false);
+            fadeAnimation(signUp, 1f, 0f, View.INVISIBLE);
         }
+    }
+
+    private void fadeAnimation(LinearLayout layout, float v1, float v2, int visibility) {
+        ValueAnimator fadeAnim = ObjectAnimator.ofFloat(layout, "alpha", v1, v2);
+        fadeAnim.setDuration(1000);
+        fadeAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationEnd(animation);
+                scLogin.fullScroll(ScrollView.FOCUS_UP);
+                layout.setVisibility(visibility);
+            }
+        });
+        fadeAnim.start();
     }
 
     private void getEncryptedSharedPreferences() throws GeneralSecurityException, IOException {

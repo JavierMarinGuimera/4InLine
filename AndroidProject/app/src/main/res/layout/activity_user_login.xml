@@ -7,6 +7,7 @@
     tools:context=".UserLogin">
 
     <ScrollView
+        android:id="@+id/scLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -51,14 +52,26 @@
                     android:id="@+id/cbSession"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
                     android:text="@string/cb_session" />
 
                 <Button
-                    android:id="@+id/btLogIn2"
+                    android:id="@+id/btLogIn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:text="@string/button_login" />
+
+                <TextView
+                    android:id="@+id/tvSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/selector"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="@string/signup_text"
+                    android:textColor="#0065D1" />
             </LinearLayout>
 
             <LinearLayout
@@ -104,61 +117,25 @@
                     android:inputType="textPassword" />
 
                 <Button
-                    android:id="@+id/btSignUp2"
+                    android:id="@+id/btSignUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:text="@string/button_signup" />
+
+                <TextView
+                    android:id="@+id/tvLogIn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/selector"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="@string/login_text"
+                    android:textColor="#0065D1" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-    <Button
-        android:id="@+id/btBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/button_goback"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btLogIn1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_login" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <Button
-            android:id="@+id/btSignUp1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/button_signup" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
