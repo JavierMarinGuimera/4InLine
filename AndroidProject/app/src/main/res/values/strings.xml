@@ -46,4 +46,8 @@
     <string name="radio_button_size_9">9x9</string>
     <string name="radio_button_size_7">7x7</string>
     <string name="radio_button_size_5">5x5</string>
+    <string name="board_textview">Select the size of the board</string>
+    <string name="dialog_title">Warning!</string>
+    <string name="dialog_message">You must select an option!</string>
+    <string name="dialog_button">Close</string>
 </resources>

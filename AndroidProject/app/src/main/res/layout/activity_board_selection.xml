@@ -11,33 +11,47 @@
     tools:context=".BoardSelection">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tvBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/board_textview" />
 
     <RadioGroup
         android:id="@+id/rgBoardSize"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_weight="1">
 
         <RadioButton
             android:id="@+id/rbSize9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/radio_button_size_9" />
 
         <RadioButton
             android:id="@+id/rbSize7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/radio_button_size_7" />
 
         <RadioButton
             android:id="@+id/rbSize5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="RadioButton" />
+            android:text="@string/radio_button_size_5" />
     </RadioGroup>
+
+    <Button
+        android:id="@+id/btPlayGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play!" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
 </LinearLayout>
