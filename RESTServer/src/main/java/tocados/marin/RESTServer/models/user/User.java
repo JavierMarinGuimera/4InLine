@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import tocados.marin.RESTServer.models.Score;
 import tocados.marin.RESTServer.models.Token;
+import tocados.marin.RESTServer.models.score.Score;
 
 @Entity
 @Table(name = "users")

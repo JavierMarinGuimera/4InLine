@@ -1,6 +1,7 @@
 package tocados.marin.RESTServer.impls;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class UsersServiceImpl implements UsersService {
      * @param token       Token to check.
      * @return
      */
-    private Boolean checkIfUserIsValid(User userToCheck, String password, String token) {
+    public static Boolean checkIfUserIsValid(User userToCheck, String password, String token) {
         if (userToCheck != null
                 && userToCheck.getPassword().equals(EncrypterManager.encryptUserPassword(password))
                 && userToCheck.getToken().getCurrent_token().equals(token)) {
@@ -130,13 +131,29 @@ public class UsersServiceImpl implements UsersService {
      */
 
     @Override
-    public Boolean updateUser(User user, User userUpdated, String token) {
-        // Search user from username on DDBB to know if exist.
-        User userFromDDBB = getUserFromUsername(user.getUsername());
+    @SuppressWarnings("unchecked")
+    public Boolean updateUser(Map<String, Object> json) {
+        if (!json.containsKey("user")
+                || !json.containsKey("userUpdated")
+                || !json.containsKey("token"))
+            return false;
 
-        if (checkIfUserIsValid(userFromDDBB, user.getPassword(), token)) {
-            userFromDDBB.setUsername(userUpdated.getUsername());
-            userFromDDBB.setPassword(EncrypterManager.encryptUserPassword(userUpdated.getPassword()));
+        HashMap<String, String> user = (HashMap<String, String>) json.get("user");
+        HashMap<String, String> userUpdated = (HashMap<String, String>) json.get("userUpdated");
+        String token = (String) json.get("token");
+
+        if (!user.containsKey("username")
+                || !user.containsKey("password")
+                || !userUpdated.containsKey("username")
+                || !userUpdated.containsKey("password"))
+            return false;
+
+        // Search user from username on DDBB to know if exist.
+        User userFromDDBB = getUserFromUsername(user.get("username"));
+
+        if (checkIfUserIsValid(userFromDDBB, user.get("password"), token)) {
+            userFromDDBB.setUsername(userUpdated.get("username"));
+            userFromDDBB.setPassword(EncrypterManager.encryptUserPassword(userUpdated.get("password")));
             usersRepository.save(userFromDDBB);
 
             return true;

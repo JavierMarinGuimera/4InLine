@@ -1,9 +1,11 @@
 package tocados.marin.RESTServer.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tocados.marin.RESTServer.repositories.TokensRepository;
@@ -23,7 +25,14 @@ public class TestsController {
     TokensRepository tokensRepository;
 
     @GetMapping()
-    public void tests(@RequestParam String id) {
-        System.out.println(id);
+    public void tests(@RequestBody Map<String, Object> json) {
+        json.forEach((x, v) -> {
+            if (v instanceof Map) {
+                ((Map<String, Object>) v).forEach((k2, v2) -> {
+                    System.out.println(v2.getClass());
+                });
+            }
+            System.out.println(v.getClass());
+        });
     }
 }

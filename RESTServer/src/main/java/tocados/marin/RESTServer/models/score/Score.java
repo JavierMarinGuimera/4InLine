@@ -1,4 +1,4 @@
-package tocados.marin.RESTServer.models;
+package tocados.marin.RESTServer.models.score;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +13,7 @@ import tocados.marin.RESTServer.models.user.User;
 
 @Entity
 @Table(name = "Scores")
-public class Score {
+public class Score implements Comparable<Score> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -24,7 +24,7 @@ public class Score {
     private User user;
 
     @Column(nullable = false)
-    private String score;
+    private Integer score;
 
     /**
      * Getters and Setters:
@@ -61,14 +61,25 @@ public class Score {
     /**
      * @return the score
      */
-    public String getScore() {
+    public Integer getScore() {
         return score;
     }
 
     /**
      * @param score the score to set
      */
-    public void setScore(String score) {
+    public void setScore(Integer score) {
         this.score = score;
+    }
+
+    @Override
+    public int compareTo(Score score) {
+        if (this.getScore() > score.getScore()) {
+            return -1;
+        } else if (this.getScore() < score.getScore()) {
+            return 1;
+        }
+
+        return 0;
     }
 }

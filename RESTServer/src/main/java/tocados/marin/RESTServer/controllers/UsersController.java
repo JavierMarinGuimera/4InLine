@@ -28,54 +28,35 @@ public class UsersController {
 
     // ------------------------------------------------------------------------------------
 
-    // Get all users to show the scores.
     @GetMapping()
     public List<UserDTO> getUsers() {
         return userService.getUsers();
     }
 
-    // Post user to create it on the DDBB.
     @PostMapping
     @RequestMapping("/register")
     public Boolean insertUser(@RequestBody User user) {
         return this.userService.insertUser(user);
     }
 
-    // Post login.
     @PostMapping
     @RequestMapping("/login")
     public String logIn(@RequestBody User user) {
         return userService.logIn(user);
     }
 
-    // Post logout.
     @PostMapping
     @RequestMapping("/logout")
     public Boolean logout(@RequestBody Map<String, String> json) {
         return userService.logOut(json);
     }
 
-    // TODO - Put user to update user
     @PutMapping
     @RequestMapping("/update")
     public Boolean updateUser(@RequestBody Map<String, Object> json) {
-        try {
-            User user = (User) json.get("user");
-            User userUpdated = (User) json.get("userUpdated");
-            String token = (String) json.get("token");
-
-            if (user == null || userUpdated == null || token == null) {
-                return false;
-            }
-
-            return userService.updateUser(user, userUpdated, token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return userService.updateUser(json);
     }
 
-    // Delete user from DDBB.
     @DeleteMapping
     @RequestMapping("/delete")
     public Boolean deleteUserFromUsername(@RequestBody Map<String, String> json) {

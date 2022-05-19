@@ -35,7 +35,7 @@ public interface UsersService {
      * PUT Methods:
      */
 
-    public Boolean updateUser(User user, User userUpdated, String token);
+    public Boolean updateUser(Map<String, Object> json);
 
     /**
      * ------------------------------------------------------------------------------------

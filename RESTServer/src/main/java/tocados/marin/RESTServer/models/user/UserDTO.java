@@ -9,21 +9,21 @@ import java.util.List;
 public class UserDTO {
     private Integer id;
     private String username;
-    private List<String> scores;
+    private List<Integer> scores;
 
     /**
      * @param id
      * @param username
      * @param scores
      */
-    private UserDTO(Integer id, String username, List<String> scores) {
+    private UserDTO(Integer id, String username, List<Integer> scores) {
         this.id = id;
         this.username = username;
         this.scores = scores;
     }
 
     public static UserDTO transformUserToDTO(User user) {
-        List<String> scores = new ArrayList<>();
+        List<Integer> scores = new ArrayList<>();
 
         user.getScores().forEach((v) -> {
             scores.add(v.getScore());
@@ -73,14 +73,14 @@ public class UserDTO {
     /**
      * @return the scores
      */
-    public List<String> getScores() {
+    public List<Integer> getScores() {
         return scores;
     }
 
     /**
      * @param scores the scores to set
      */
-    public void setScores(List<String> scores) {
+    public void setScores(List<Integer> scores) {
         this.scores = scores;
     }
 }
