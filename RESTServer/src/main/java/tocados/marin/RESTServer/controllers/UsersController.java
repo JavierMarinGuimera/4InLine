@@ -33,30 +33,76 @@ public class UsersController {
         return userService.getUsers();
     }
 
+    /**
+     * Structure:
+     * {
+     * "username": "John",
+     * "password": "1234"
+     * }
+     */
+
     @PostMapping
     @RequestMapping("/register")
     public Boolean insertUser(@RequestBody User user) {
         return this.userService.insertUser(user);
     }
 
+    /**
+     * Structure:
+     * {
+     * "username": "John",
+     * "password": "1234"
+     * }
+     */
     @PostMapping
     @RequestMapping("/login")
     public String logIn(@RequestBody User user) {
         return userService.logIn(user);
     }
 
+    /**
+     * Structure:
+     * {
+     * "username": "John",
+     * "token": "kljgegr8o73464bdfjkgnsui4639hfnjkdc923234jnkf"
+     * }
+     */
     @PostMapping
     @RequestMapping("/logout")
     public Boolean logout(@RequestBody Map<String, String> json) {
         return userService.logOut(json);
     }
 
+    /**
+     * Structure:
+     * {
+     * "user": {
+     * "username": "Javier",
+     * "password": "1234"
+     * },
+     * "userUpdated": {
+     * "username": "Javier",
+     * "password": "12345"
+     * },
+     * "token":
+     * "iHyzdPvI3SuNfb-6ew9lD1oYFuwmLf7ixo3WJTHFKJ9NNz_hNV64qitRAwIC6f9GkQd-2AgrQR1jOxWPnELkBA=="
+     * }
+     */
     @PutMapping
     @RequestMapping("/update")
     public Boolean updateUser(@RequestBody Map<String, Object> json) {
         return userService.updateUser(json);
     }
 
+    /**
+     * Structure:
+     * {
+     * "username": "Javier",
+     * "password": "12345",
+     * "token":
+     * "iHyzdPvI3SuNfb-6ew9lD1oYFuwmLf7ixo3WJTHFKJ9NNz_hNV64qitRAwIC6f9GkQd-2AgrQR1jOxWPnELkBA=="
+     * }
+     */
     @DeleteMapping
     @RequestMapping("/delete")
     public Boolean deleteUserFromUsername(@RequestBody Map<String, String> json) {

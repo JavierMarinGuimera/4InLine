@@ -26,13 +26,6 @@ public class TestsController {
 
     @GetMapping()
     public void tests(@RequestBody Map<String, Object> json) {
-        json.forEach((x, v) -> {
-            if (v instanceof Map) {
-                ((Map<String, Object>) v).forEach((k2, v2) -> {
-                    System.out.println(v2.getClass());
-                });
-            }
-            System.out.println(v.getClass());
-        });
+
     }
 }

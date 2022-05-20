@@ -26,12 +26,30 @@ public class ScoresController {
         return scoresService.getTopScores();
     }
 
+    /**
+     * Structure:
+     * {
+     * "username": "Javier",
+     * "password": "1234"
+     * }
+     */
     @GetMapping
     @RequestMapping("/user_top")
     public List<ScoreDTO> getUserTopScores(@RequestBody User user) {
         return scoresService.getUserTopScores(user);
     }
 
+    /**
+     * {
+     * "user": {
+     * "username": "Javier",
+     * "password": "1234",
+     * "token":
+     * "tO7HoLtmbLbd8SUHNFso1Y822IeIKP5EnkEWB8EL1r5FEDn3rnkWliw8Wk7_0evbWqSSQZpqFttQagpTbQExUg=="
+     * },
+     * "score": -122
+     * }
+     */
     @PostMapping
     @RequestMapping("/insert_score")
     public Boolean insertScore(@RequestBody Map<String, Object> json) {
