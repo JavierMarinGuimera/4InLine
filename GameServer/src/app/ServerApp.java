@@ -12,7 +12,7 @@ import models.GameMatch;
 import models.Player;
 
 public class ServerApp {
-    private static final int PORT = 6969;
+    private static final int PORT = 7777;
 
     public static Boolean run = true;
     private static List<Player> pendingPlayers = new ArrayList<>();
@@ -31,7 +31,7 @@ public class ServerApp {
 
             // Asociar tablero a jugador.
 
-            // checkListForMatches();
+            checkListForMatches();
             break;
         }
 
@@ -46,21 +46,21 @@ public class ServerApp {
         for (Player player : pendingPlayers) {
             if (player.getColumns() == 5) {
                 if (playerMatch5 != null) {
-                    startMatch(playerMatch5, player);
+                    startMatch(playerMatch5, player, 5);
                 } else {
                     playerMatch5 = player;
                 }
             }
             if (player.getColumns() == 7) {
                 if (playerMatch7 != null) {
-                    startMatch(playerMatch7, player);
+                    startMatch(playerMatch7, player, 7);
                 } else {
                     playerMatch7 = player;
                 }
             }
             if (player.getColumns() == 9) {
                 if (playerMatch9 != null) {
-                    startMatch(playerMatch9, player);
+                    startMatch(playerMatch9, player, 9);
                 } else {
                     playerMatch9 = player;
                 }
@@ -68,8 +68,8 @@ public class ServerApp {
         }
     }
 
-    private static void startMatch(Player player1, Player player2) {
-        GameMatch gameMatch = new GameMatch(player1, player2);
+    private static void startMatch(Player player1, Player player2, Integer columns) {
+        GameMatch gameMatch = new GameMatch(player1, player2, columns);
         gameMatch.start();
         currentGameMatches.add(gameMatch);
     }

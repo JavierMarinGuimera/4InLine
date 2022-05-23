@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.SocketException;
+import java.util.Stack;
 
 import app.ServerApp;
 
@@ -12,6 +13,7 @@ public class GameMatch extends Thread {
 
     private Player player1;
     private Player player2;
+    private Stack<Stack<Integer>> board;
     private Integer rounds = 0;
     private Boolean matchEnded = false;
 
@@ -19,9 +21,14 @@ public class GameMatch extends Thread {
      * @param player1
      * @param player2
      */
-    public GameMatch(Player player1, Player player2) {
+    public GameMatch(Player player1, Player player2, Integer columns) {
         this.player1 = player1;
         this.player2 = player2;
+        this.board = new Stack<>();
+
+        for (int i = 0; i < columns; i++) {
+            this.board.add(new Stack<>());
+        }
     }
 
     /**
@@ -117,10 +124,15 @@ public class GameMatch extends Thread {
         while (ServerApp.run) {
             this.rounds++;
 
+            // TODO - rondas
+
+            /**
+             * Structure:
+             */
         }
 
         if (!this.matchEnded) {
-
+            // TODO - Guardar info.
         }
 
         try {

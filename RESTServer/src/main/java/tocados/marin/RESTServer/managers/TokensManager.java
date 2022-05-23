@@ -12,6 +12,9 @@ public class TokensManager {
      */
     public static final int TOKEN_EXPIRATION_TIME = 1 * 7 * 24 * 60 * 60 * 1000;
 
+    // Tiempo para pruebas
+    // public static final int TOKEN_EXPIRATION_TIME = 3 * 60 * 1000;
+
     private static final int BYTE_SIZE = 64;
 
     private TokensManager() {

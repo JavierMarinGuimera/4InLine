@@ -1,5 +1,7 @@
 package tocados.marin.RESTServer.impls;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import net.bytebuddy.build.HashCodeAndEqualsPlugin.Sorted;
 import tocados.marin.RESTServer.models.score.Score;
 import tocados.marin.RESTServer.models.score.ScoreDTO;
 import tocados.marin.RESTServer.models.user.User;
@@ -22,8 +25,6 @@ public class ScoresServiceImpl implements ScoresService {
     @Autowired
     UsersRepository usersRepository;
 
-    private static final Integer MAX_SIZE = 3;
-
     /**
      * ------------------------------------------------------------------------------------
      * GET Methods:
@@ -31,17 +32,16 @@ public class ScoresServiceImpl implements ScoresService {
 
     @Override
     public List<ScoreDTO> getTopScores() {
+        List<Score> orderedScoreList = Score.orderScoreList((List<Score>) scoresRepository.findAll());
         return ScoreDTO
-                .transformScoreListToDTO(((List<Score>) scoresRepository.findAll()).stream().sorted().limit(MAX_SIZE)
-                        .collect(Collectors.toList()));
+                .transformScoreListToDTO(orderedScoreList);
     }
 
     @Override
     public List<ScoreDTO> getUserTopScores(User user) {
-        return ScoreDTO.transformScoreListToDTO(
-                ((List<Score>) scoresRepository.findScoresByUser(usersRepository.findByUsername(user.getUsername())))
-                        .stream().sorted().limit(MAX_SIZE)
-                        .collect(Collectors.toList()));
+        List<Score> orderedScoreList = Score.orderScoreList(
+                (List<Score>) scoresRepository.findScoresByUser(usersRepository.findByUsername(user.getUsername())));
+        return ScoreDTO.transformScoreListToDTO(orderedScoreList);
     }
 
     /**
@@ -52,19 +52,27 @@ public class ScoresServiceImpl implements ScoresService {
     @Override
     @SuppressWarnings("unchecked")
     public Boolean insertScore(Map<String, Object> json) {
-        if (!json.containsKey("user") || !json.containsKey("user")) {
+        if (!json.containsKey("user") || !json.containsKey("score")) {
             return false;
         }
 
-        Map<String, String> user = (Map<String, String>) json.get("user");
+        Map<String, String> user;
+
+        try {
+            user = (Map<String, String>) json.get("user");
+        } catch (ClassCastException e) {
+            return false;
+        }
 
         if (!user.containsKey("username") || !user.containsKey("password") || !user.containsKey("token")) {
             return false;
         }
+
         Integer scoreInteger;
+
         try {
             scoreInteger = ((Integer) json.get("score"));
-        } catch (Exception e) {
+        } catch (ClassCastException e) {
             return false;
         }
 
@@ -74,9 +82,12 @@ public class ScoresServiceImpl implements ScoresService {
                 user.get("password"), user.get("token"))) {
             // If the user has the max saved scores and the last score is less than the new
             // score, we remove the last item.
+
             if (userFromDDBB.getScores().size() == MAX_SIZE && userFromDDBB.getScores()
                     .get(userFromDDBB.getScores().size() - 1).getScore() < scoreInteger) {
-                scoresRepository.delete(userFromDDBB.getScores().get(userFromDDBB.getScores().size() - 1));
+                Score scoreToDelete = userFromDDBB.getScores().get(userFromDDBB.getScores().size() - 1);
+                userFromDDBB.getScores().remove(scoreToDelete);
+                scoresRepository.delete(scoreToDelete);
             } else if (userFromDDBB.getScores().size() == MAX_SIZE) {
                 return false;
             }

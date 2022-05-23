@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tocados.marin.RESTServer.models.user.User;
 import tocados.marin.RESTServer.models.user.UserDTO;
-import tocados.marin.RESTServer.services.TokensService;
 import tocados.marin.RESTServer.services.UsersService;
 
 @RestController
@@ -22,9 +21,6 @@ import tocados.marin.RESTServer.services.UsersService;
 public class UsersController {
     @Autowired
     UsersService userService;
-
-    @Autowired
-    TokensService tokensService;
 
     // ------------------------------------------------------------------------------------
 

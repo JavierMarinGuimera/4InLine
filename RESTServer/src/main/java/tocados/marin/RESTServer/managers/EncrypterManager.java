@@ -30,7 +30,7 @@ public class EncrypterManager {
         return "";
     }
 
-    public static byte[] getSHA(String password) throws NoSuchAlgorithmException {
+    private static byte[] getSHA(String password) throws NoSuchAlgorithmException {
         /* MessageDigest instance for hashing using SHA256 */
         MessageDigest md = MessageDigest.getInstance(SHA_256_ALGORITHM);
 
@@ -41,7 +41,7 @@ public class EncrypterManager {
         return md.digest(password.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String toHexString(byte[] hash) {
+    private static String toHexString(byte[] hash) {
         /* Convert byte array of hash into digest */
         BigInteger number = new BigInteger(1, hash);
 
