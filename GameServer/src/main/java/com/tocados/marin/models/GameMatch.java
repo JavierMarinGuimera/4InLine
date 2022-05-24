@@ -1,12 +1,16 @@
-package models;
+package com.tocados.marin.models;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
-import app.ServerApp;
+import com.tocados.marin.apps.ServerApp;
+import com.tocados.marin.managers.JSONManager;
+import com.tocados.marin.managers.MessageManager.Messages;
 
 public class GameMatch extends Thread {
     private static int TIMEOUT = 5000;
@@ -27,7 +31,7 @@ public class GameMatch extends Thread {
         this.board = new Stack<>();
 
         for (int i = 0; i < columns; i++) {
-            this.board.add(new Stack<>());
+            this.board.add(new Stack<Integer>());
         }
     }
 
@@ -95,8 +99,6 @@ public class GameMatch extends Thread {
     public String toString() {
         String res = "";
         res += "{\n";
-        res += "\t[Player 1: " + this.player1.getUsername() + " ]";
-        res += "\t[Player 2: " + this.player2.getUsername() + " ]";
         res += "\tMatch rounds: " + this.rounds;
         res += "}";
         return res;
@@ -109,26 +111,35 @@ public class GameMatch extends Thread {
             this.player1.getPlayerSocket().setSoTimeout(TIMEOUT);
             this.player2.getPlayerSocket().setSoTimeout(TIMEOUT);
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         // Player 1 streams;
         BufferedReader player1Reader = this.player1.getReader();
-        BufferedWriter player1Writer = this.player1.getWriter();
+        PrintStream player1Writer = this.player1.getWriter();
 
         // Player 2 streams;
         BufferedReader player2Reader = this.player2.getReader();
-        BufferedWriter player2Writer = this.player1.getWriter();
+        PrintStream player2Writer = this.player1.getWriter();
 
+        player1Writer.println(JSONManager.mountHasOponentJson(true));
+        player2Writer.println(JSONManager.mountHasOponentJson(true));
+
+        Integer column;
         while (ServerApp.run) {
             this.rounds++;
 
             // TODO - rondas
+            try {
+                column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine()).get(JSONManager.COLUMN);
 
-            /**
-             * Structure:
-             */
+                if (isWinner(column)) {
+                    player2Writer.println(JSONManager.mountColumnAndResultJson(column, Messages.LOSER));
+                    ServerApp.run = false;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         if (!this.matchEnded) {
@@ -142,8 +153,32 @@ public class GameMatch extends Thread {
             player2Reader.close();
             player2Writer.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private Boolean isWinner(Integer column) {
+        Map<String, Integer> chipsCoordenates = getArroundChipsMap(column);
+        Boolean isWinner = false;
+        if (chipsCoordenates != null) {
+            for (int x = chipsCoordenates.get("x"); x < chipsCoordenates.get("maxX"); x++) {
+                for (int y = chipsCoordenates.get("y"); y < chipsCoordenates.get("maxY"); y++) {
+
+                }
+            }
+        }
+
+        return isWinner;
+    }
+
+    private Map<String, Integer> getArroundChipsMap(Integer column) {
+        Map<String, Integer> chipsCoordenates = new HashMap<>();
+
+        // If the column is the first one, the start value will be 0.
+        // Integer i = Math.max(column - 1, 0);
+
+        this.board.get(column).size();
+
+        return chipsCoordenates;
     }
 }

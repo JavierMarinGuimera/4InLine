@@ -1,11 +1,15 @@
-package managers;
+package com.tocados.marin.managers;
 
 public class MessageManager {
 
     public enum Messages {
         WELCOME_MESSAGE("Game server started!"),
         FAREWELL_MESSAGE("Game server finished!"),
-        WAITING_USER_RESPONSE("Waiting user response...");
+        WAITING_FOR_USER("Waiting for user..."),
+        WAITING_USER_RESPONSE("Waiting user response..."),
+        WINNER("winner"),
+        LOSER("loser"),
+        NOTHING("");
 
         private String msg;
 

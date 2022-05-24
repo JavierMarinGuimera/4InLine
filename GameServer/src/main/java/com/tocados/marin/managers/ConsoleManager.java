@@ -1,23 +1,31 @@
-package managers;
+package com.tocados.marin.managers;
 
 import java.util.Scanner;
 
-import app.ServerApp;
-import managers.MessageManager.Messages;
+import com.tocados.marin.apps.ServerApp;
+import com.tocados.marin.managers.MessageManager.Messages;
 
 public class ConsoleManager extends Thread {
 
     private static Scanner sc;
 
-    static {
+    public ConsoleManager() {
         sc = new Scanner(System.in);
+    }
+
+    private String showMenuAndScan() {
+        System.out.println("0: End server and matches.");
+        System.out.println("1: Show current matches.");
+        System.out.println("2: Show players count.");
+        return sc.nextLine();
     }
 
     @Override
     public void run() {
         String option;
+        MessageManager.showXMessage(Messages.WELCOME_MESSAGE);
+
         while (ServerApp.run) {
-            MessageManager.showXMessage(Messages.WELCOME_MESSAGE);
             option = showMenuAndScan();
 
             switch (option) {
@@ -29,20 +37,20 @@ public class ConsoleManager extends Thread {
                     ServerApp.showMatches();
                     break;
 
+                case "2":
+                    ServerApp.showPlayersCount();
+                    break;
+
                 default:
                     System.out.println("Wrong option");
                     break;
             }
+
+            System.out.println();
         }
 
         MessageManager.showXMessage(Messages.FAREWELL_MESSAGE);
 
         sc.close();
-    }
-
-    private String showMenuAndScan() {
-        System.out.println("0: End server and matches.");
-        System.out.println("1: Show current matches.");
-        return sc.nextLine();
     }
 }
