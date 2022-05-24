@@ -1,15 +1,11 @@
 package tocados.marin.RESTServer.impls;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import net.bytebuddy.build.HashCodeAndEqualsPlugin.Sorted;
 import tocados.marin.RESTServer.models.score.Score;
 import tocados.marin.RESTServer.models.score.ScoreDTO;
 import tocados.marin.RESTServer.models.user.User;
@@ -83,12 +79,13 @@ public class ScoresServiceImpl implements ScoresService {
             // If the user has the max saved scores and the last score is less than the new
             // score, we remove the last item.
 
-            if (userFromDDBB.getScores().size() == MAX_SIZE && userFromDDBB.getScores()
-                    .get(userFromDDBB.getScores().size() - 1).getScore() < scoreInteger) {
-                Score scoreToDelete = userFromDDBB.getScores().get(userFromDDBB.getScores().size() - 1);
+            List<Score> orderedScores = Score.orderScoreList(userFromDDBB.getScores());
+            if (orderedScores.size() == Score.MAX_SIZE
+                    && orderedScores.get(orderedScores.size() - 1).getScore() < scoreInteger) {
+                Score scoreToDelete = orderedScores.get(orderedScores.size() - 1);
                 userFromDDBB.getScores().remove(scoreToDelete);
                 scoresRepository.delete(scoreToDelete);
-            } else if (userFromDDBB.getScores().size() == MAX_SIZE) {
+            } else if (orderedScores.size() == Score.MAX_SIZE) {
                 return false;
             }
 

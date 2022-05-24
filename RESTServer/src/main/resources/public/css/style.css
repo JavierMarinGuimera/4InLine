@@ -1,0 +1,11 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Ubuntu", sans-serif;
+    box-sizing: border-box;
+    color: #d6d3d1;
+}
+
+body {
+    background-color: #1e293b;
+}

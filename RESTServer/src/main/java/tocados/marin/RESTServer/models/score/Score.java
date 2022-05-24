@@ -1,6 +1,5 @@
 package tocados.marin.RESTServer.models.score;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,7 @@ import tocados.marin.RESTServer.models.user.User;
 @Entity
 @Table(name = "scores")
 public class Score implements Comparable<Score> {
-    private static final Integer MAX_SIZE = 3;
+    public static final Integer MAX_SIZE = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,7 +78,7 @@ public class Score implements Comparable<Score> {
     }
 
     public static List<Score> orderScoreList(List<Score> scores) {
-        return scores.stream().sorted(Collections.reverseOrder()).limit(MAX_SIZE)
+        return scores.stream().sorted().limit(MAX_SIZE)
                 .collect(Collectors.toList());
     }
 
