@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import com.tocados.marin.apps.ServerApp;
 import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager.Messages;
 
 public class GameMatch extends Thread {
-    private static int TIMEOUT = 5000;
+    private static int TIMEOUT = 10000;
 
     private Player player1;
     private Player player2;
@@ -106,7 +106,6 @@ public class GameMatch extends Thread {
 
     @Override
     public void run() {
-        // TODO Run - game match.
         try {
             this.player1.getPlayerSocket().setSoTimeout(TIMEOUT);
             this.player2.getPlayerSocket().setSoTimeout(TIMEOUT);
@@ -126,25 +125,34 @@ public class GameMatch extends Thread {
         player2Writer.println(JSONManager.mountHasOponentJson(true));
 
         Integer column;
-        while (ServerApp.run) {
+        while (true) {
             this.rounds++;
 
             // TODO - rondas
             try {
-                column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine()).get(JSONManager.COLUMN);
+                if (this.player1.getIsWinner() == null) {
+                    // User 1 column
+                    column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine())
+                            .get(JSONManager.COLUMN);
+                    checkMatchStatus(column, this.player1, this.player2);
+                } else {
+                    break;
+                }
 
-                if (isWinner(column)) {
-                    player2Writer.println(JSONManager.mountColumnAndResultJson(column, Messages.LOSER));
-                    ServerApp.run = false;
+                if (this.player2.getIsWinner() == null) {
+                    // User 2 column
+                    column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine())
+                            .get(JSONManager.COLUMN);
+                    checkMatchStatus(column, this.player1, this.player2);
+                } else {
+                    break;
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        if (!this.matchEnded) {
-            // TODO - Guardar info.
-        }
+        sendPlayerMessages(player1Writer, player2Writer);
 
         try {
             player1Reader.close();
@@ -157,28 +165,53 @@ public class GameMatch extends Thread {
         }
     }
 
-    private Boolean isWinner(Integer column) {
-        Map<String, Integer> chipsCoordenates = getArroundChipsMap(column);
+    private void checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {
+        List<Map<Integer, Integer>> chipsCoordenates = getArroundChipsMap(column);
         Boolean isWinner = false;
         if (chipsCoordenates != null) {
-            for (int x = chipsCoordenates.get("x"); x < chipsCoordenates.get("maxX"); x++) {
-                for (int y = chipsCoordenates.get("y"); y < chipsCoordenates.get("maxY"); y++) {
-
+            for (Map<Integer, Integer> map : chipsCoordenates) {
+                if (checkFor4InLine(map)) {
+                    playerPlaying.setIsWinner(true);
+                    playerToNotify.setIsWinner(false);
                 }
             }
         }
 
-        return isWinner;
+        if (isWinner) {
+            this.matchEnded = true;
+        }
     }
 
-    private Map<String, Integer> getArroundChipsMap(Integer column) {
-        Map<String, Integer> chipsCoordenates = new HashMap<>();
+    /**
+     * Mounts map with the chips arround the last one entered by the user
+     */
+    private List<Map<Integer, Integer>> getArroundChipsMap(Integer column) {
+        List<Map<Integer, Integer>> chipsCoordenates = new ArrayList<>();
 
         // If the column is the first one, the start value will be 0.
-        // Integer i = Math.max(column - 1, 0);
+        Integer x = Math.max(column - 1, 0);
+        Integer y = Math.max(column - 1, 0);
+
+        for (int i = x; i < Math.min(x + 2, this.player1.getColumns()); i++) {
+
+        }
 
         this.board.get(column).size();
 
         return chipsCoordenates;
+    }
+
+    private Boolean checkFor4InLine(Map<Integer, Integer> map) {
+        return false;
+    }
+
+    private void sendPlayerMessages(PrintStream player1Writer, PrintStream player2Writer) {
+        if (this.player1.getIsWinner()) {
+            player1Writer.println(Messages.WINNER);
+            player2Writer.println(Messages.LOSER);
+        } else {
+            player1Writer.println(Messages.LOSER);
+            player2Writer.println(Messages.WINNER);
+        }
     }
 }

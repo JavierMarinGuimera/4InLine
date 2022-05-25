@@ -12,6 +12,7 @@ import com.tocados.marin.managers.JSONManager;
 public class Player {
     private Socket playerSocket;
     private Integer columns;
+    private Boolean isWinner;
 
     private BufferedReader reader;
     private PrintStream writer;
@@ -83,6 +84,20 @@ public class Player {
      */
     public void setColumns(Integer columns) {
         this.columns = columns;
+    }
+
+    /**
+     * @return the isWinner
+     */
+    public Boolean getIsWinner() {
+        return isWinner;
+    }
+
+    /**
+     * @param isWinner the isWinner to set
+     */
+    public void setIsWinner(Boolean isWinner) {
+        this.isWinner = isWinner;
     }
 
     /**
