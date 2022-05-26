@@ -34,9 +34,10 @@ public class ScoresServiceImpl implements ScoresService {
     }
 
     @Override
-    public List<ScoreDTO> getUserTopScores(User user) {
+    public List<ScoreDTO> getUserTopScores(Map<String, Object> json) {
         List<Score> orderedScoreList = Score.orderScoreList(
-                (List<Score>) scoresRepository.findScoresByUser(usersRepository.findByUsername(user.getUsername())));
+                (List<Score>) scoresRepository
+                        .findScoresByUser(usersRepository.findByUsername((String) json.get("username"))));
         return ScoreDTO.transformScoreListToDTO(orderedScoreList);
     }
 
@@ -48,37 +49,36 @@ public class ScoresServiceImpl implements ScoresService {
     @Override
     @SuppressWarnings("unchecked")
     public Boolean insertScore(Map<String, Object> json) {
-        if (!json.containsKey("user") || !json.containsKey("score")) {
+        if (!json.containsKey("server") || !json.containsKey("user") || !json.containsKey("score")) {
             return false;
         }
 
-        Map<String, String> user;
+        Map<String, Object> server;
+        Map<String, Object> user;
 
         try {
-            user = (Map<String, String>) json.get("user");
+            server = (Map<String, Object>) json.get("server");
+            user = (Map<String, Object>) json.get("user");
         } catch (ClassCastException e) {
             return false;
         }
 
-        if (!user.containsKey("username") || !user.containsKey("password") || !user.containsKey("token")) {
+        if (!server.containsKey("username") || !user.containsKey("password") || !user.containsKey("token")) {
+            return false;
+        }
+        if (!user.containsKey("username") || !user.containsKey("score")) {
             return false;
         }
 
-        Integer scoreInteger;
+        User serverUser = usersRepository.findByUsername((String) server.get("username"));
+        User userFromDDBB = usersRepository.findByUsername((String) user.get("username"));
+        Integer scoreInteger = (Integer) user.get("score");
 
-        try {
-            scoreInteger = ((Integer) json.get("score"));
-        } catch (ClassCastException e) {
-            return false;
-        }
+        if (UsersServiceImpl.checkIfUserIsValid(serverUser,
+                (String) server.get("password"), (String) server.get("token"))) {
 
-        User userFromDDBB = usersRepository.findByUsername(user.get("username"));
-
-        if (UsersServiceImpl.checkIfUserIsValid(userFromDDBB,
-                user.get("password"), user.get("token"))) {
             // If the user has the max saved scores and the last score is less than the new
             // score, we remove the last item.
-
             List<Score> orderedScores = Score.orderScoreList(userFromDDBB.getScores());
             if (orderedScores.size() == Score.MAX_SIZE
                     && orderedScores.get(orderedScores.size() - 1).getScore() < scoreInteger) {
@@ -93,6 +93,7 @@ public class ScoresServiceImpl implements ScoresService {
             score.setUser(userFromDDBB);
             score.setScore(scoreInteger);
             scoresRepository.save(score);
+
             return true;
         }
 

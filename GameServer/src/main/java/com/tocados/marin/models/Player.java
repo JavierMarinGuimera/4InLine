@@ -13,6 +13,7 @@ public class Player {
     private Socket playerSocket;
     private Integer columns;
     private Boolean isWinner;
+    private Integer score = 0;
 
     private BufferedReader reader;
     private PrintStream writer;
@@ -98,6 +99,20 @@ public class Player {
      */
     public void setIsWinner(Boolean isWinner) {
         this.isWinner = isWinner;
+    }
+
+    /**
+     * @return the score
+     */
+    public Integer getScore() {
+        return score;
+    }
+
+    /**
+     * @param score the score to set
+     */
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     /**

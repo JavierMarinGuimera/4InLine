@@ -7,6 +7,8 @@ public class MessageManager {
         FAREWELL_MESSAGE("Game server finished!"),
         WAITING_FOR_USER("Waiting for user..."),
         WAITING_USER_RESPONSE("Waiting user response..."),
+        USER_FOUND("User found!"),
+        MATCH_FOUND("Match found!"),
         WINNER("winner"),
         LOSER("loser"),
         NOTHING("");

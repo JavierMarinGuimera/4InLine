@@ -4,12 +4,12 @@ Proyecto final.
 
 ## TODO
 
-    - Interfaz Android.
-    - Funcionamiento 1v1.
-    - Funcionamiento REST.
     - Base de datos.
+    - Funcionamiento REST.
+    - Interfaz Android.
     - Funcionamiento login.
     - Funcionamiento token.
+    - Funcionamiento 1v1.
     - Multithreading varias partidas.
     - Posible añadido: chat.
 

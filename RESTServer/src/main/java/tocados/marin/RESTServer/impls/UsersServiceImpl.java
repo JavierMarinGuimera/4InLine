@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tocados.marin.RESTServer.managers.EncrypterManager;
 import tocados.marin.RESTServer.managers.TokensManager;
 import tocados.marin.RESTServer.models.Token;
 import tocados.marin.RESTServer.models.user.User;
@@ -36,7 +35,7 @@ public class UsersServiceImpl implements UsersService {
      */
     public static Boolean checkIfUserIsValid(User userToCheck, String password, String token) {
         if (userToCheck != null
-                && userToCheck.getPassword().equals(EncrypterManager.encryptUserPassword(password))
+                && userToCheck.getPassword().equals(password)
                 && userToCheck.getToken().getCurrent_token().equals(token)) {
             return true;
         }
@@ -69,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
             return false;
         }
 
-        user.setPassword(EncrypterManager.encryptUserPassword(user.getPassword()));
+        user.setPassword(user.getPassword());
 
         User createdUser = usersRepository.save(user);
 
@@ -86,9 +85,9 @@ public class UsersServiceImpl implements UsersService {
 
         // Check if the user exists and the user password is equals to the userFromDDBB
         // password.
-        if (userFromDDBB == null || !EncrypterManager.encryptUserPassword(user.getPassword())
+        if (userFromDDBB == null || !user.getPassword()
                 .equals(userFromDDBB.getPassword())) {
-            return "Incorrect credentials!";
+            return "false";
         }
 
         Token token = userFromDDBB.getToken();
@@ -153,7 +152,7 @@ public class UsersServiceImpl implements UsersService {
 
         if (checkIfUserIsValid(userFromDDBB, user.get("password"), token)) {
             userFromDDBB.setUsername(userUpdated.get("username"));
-            userFromDDBB.setPassword(EncrypterManager.encryptUserPassword(userUpdated.get("password")));
+            userFromDDBB.setPassword(userUpdated.get("password"));
             usersRepository.save(userFromDDBB);
 
             return true;

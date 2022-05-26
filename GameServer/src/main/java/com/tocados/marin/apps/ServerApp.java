@@ -1,6 +1,7 @@
 package com.tocados.marin.apps;
 
 import java.net.ServerSocket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.tocados.marin.models.Player;
 
 public class ServerApp {
     private static final int PORT = 7777;
+    private static final int TIMEOUT = 5000;
 
     public static Boolean run = true;
 
@@ -24,15 +26,21 @@ public class ServerApp {
         consoleManager.start();
 
         ServerSocket serverSocket = new ServerSocket(PORT);
+        serverSocket.setSoTimeout(TIMEOUT);
 
         while (run) {
             MessageManager.showXMessage(Messages.WAITING_FOR_USER);
 
-            pendingPlayers.add(new Player(serverSocket.accept()));
-            pendingPlayers.add(new Player(serverSocket.accept()));
+            // Wait the user connection with the server.
+            try {
+                pendingPlayers.add(new Player(serverSocket.accept()));
+            } catch (SocketTimeoutException e) {
+                continue;
+            }
+
+            MessageManager.showXMessage(Messages.USER_FOUND);
 
             checkListForMatches();
-            break;
         }
 
         if (serverSocket != null) {
@@ -42,34 +50,25 @@ public class ServerApp {
 
     public static void checkListForMatches() {
         for (Player player : pendingPlayers) {
-            if (player.getColumns() == 5) {
-                if (playerMatch5 != null) {
-                    startMatch(playerMatch5, player, 5);
-                    playerMatch5 = null;
-                } else {
-                    playerMatch5 = player;
-                }
-            }
-            if (player.getColumns() == 7) {
-                if (playerMatch7 != null) {
-                    startMatch(playerMatch7, player, 7);
-                    playerMatch7 = null;
-                } else {
-                    playerMatch7 = player;
-                }
-            }
-            if (player.getColumns() == 9) {
-                if (playerMatch9 != null) {
-                    startMatch(playerMatch9, player, 9);
-                    playerMatch9 = null;
-                } else {
-                    playerMatch9 = player;
-                }
+            checkCurrentPlayers(playerMatch5, player, 5);
+            checkCurrentPlayers(playerMatch7, player, 7);
+            checkCurrentPlayers(playerMatch9, player, 9);
+        }
+    }
+
+    private static void checkCurrentPlayers(Player playerWaiting, Player player, Integer columns) {
+        if (player.getColumns() == columns) {
+            if (playerWaiting != null) {
+                startMatch(playerWaiting, player, columns);
+                playerWaiting = null;
+            } else {
+                playerWaiting = player;
             }
         }
     }
 
     private static void startMatch(Player player1, Player player2, Integer columns) {
+        MessageManager.showXMessage(Messages.MATCH_FOUND);
         GameMatch gameMatch = new GameMatch(player1, player2, columns);
         gameMatch.start();
         currentGameMatches.add(gameMatch);
