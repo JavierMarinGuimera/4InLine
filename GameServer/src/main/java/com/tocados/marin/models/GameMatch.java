@@ -99,7 +99,7 @@ public class GameMatch extends Thread {
         String res = "";
         res += "{\n";
         res += "\tMatch rounds: " + this.rounds;
-        res += "}";
+        res += "\n}";
         return res;
     }
 
@@ -123,32 +123,22 @@ public class GameMatch extends Thread {
         player1Writer.println(JSONManager.mountHasOponentJson(true));
         player2Writer.println(JSONManager.mountHasOponentJson(true));
 
-        Integer column;
+        Integer column = null;
         while (!this.matchEnded) {
             this.rounds++;
 
             // TODO - rondas
-            try {
-                if (this.player1.getIsWinner() == null) {
-                    // User 1 column
-                    column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine())
-                            .get(JSONManager.COLUMN);
-                    checkMatchStatus(column, this.player1, this.player2);
-                } else {
-                    break;
-                }
+            column = getUserColumn(player1Reader, column);
+            if (this.matchEnded)
+                break;
+            checkMatchStatus(column, this.player1, this.player2);
 
-                if (this.player2.getIsWinner() == null) {
-                    // User 2 column
-                    column = (Integer) JSONManager.getMapFromJsonString(player1Reader.readLine())
-                            .get(JSONManager.COLUMN);
-                    checkMatchStatus(column, this.player1, this.player2);
-                } else {
-                    break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            column = null;
+
+            column = getUserColumn(player2Reader, column);
+            if (this.matchEnded)
+                break;
+            checkMatchStatus(column, this.player2, this.player1);
         }
 
         if (this.player1.getIsWinner() != null) {
@@ -166,6 +156,26 @@ public class GameMatch extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private Integer getUserColumn(BufferedReader playerReader, Integer column) {
+        while (column == null) {
+            try {
+                if (this.player1.getIsWinner() == null && this.player2.getIsWinner() == null && !this.matchEnded) {
+                    String playerRequest = playerReader.readLine();
+                    System.out.println(playerRequest);
+
+                    // User column
+                    column = (Integer) JSONManager.getMapFromJsonString(playerRequest)
+                            .get(JSONManager.COLUMN);
+                } else {
+                    return column;
+                }
+            } catch (IOException e) {
+                continue;
+            }
+        }
+        return column;
     }
 
     private void checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {

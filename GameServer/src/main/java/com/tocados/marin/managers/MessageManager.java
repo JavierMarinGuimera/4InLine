@@ -5,7 +5,7 @@ public class MessageManager {
     public enum Messages {
         WELCOME_MESSAGE("Game server started!"),
         FAREWELL_MESSAGE("Game server finished!"),
-        WAITING_FOR_USER("Waiting for user..."),
+        WAITING_FOR_USERS("Waiting for users..."),
         WAITING_USER_RESPONSE("Waiting user response..."),
         USER_FOUND("User found!"),
         MATCH_FOUND("Match found!"),

@@ -38,7 +38,6 @@ public class Player {
     private void readInfo() {
         while (true) {
             try {
-                System.out.println(this.reader.readLine());
                 String jsonString = this.reader.readLine();
 
                 // Parsing jsonString to jsonObject.
@@ -51,8 +50,10 @@ public class Player {
                     this.writer.println("ERROR");
                 }
 
+                System.out.println("Columnas leídas");
                 break;
             } catch (Exception e) {
+                e.printStackTrace();
                 this.writer.println("SOMETHING WENT WRONG");
                 continue;
             }

@@ -3,9 +3,10 @@ package com.tocados.marin.managers;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tocados.marin.managers.MessageManager.Messages;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class JSONManager {
@@ -27,10 +28,17 @@ public class JSONManager {
     private JSONManager() {
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<String, Object> getMapFromJsonString(String jsonString) {
-        JSONArray jsonArray = new JSONArray(jsonString);
-        JSONObject jsonObject = jsonArray.toJSONObject(jsonArray);
-        return jsonObject.toMap();
+        try {
+            return (Map<String, Object>) new ObjectMapper().readValue(jsonString, Map.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
+    }
+
+    public static JSONObject getJSONFromMap(Map<String, Object> jsonMap) {
+        return new JSONObject(jsonMap);
     }
 
     /**

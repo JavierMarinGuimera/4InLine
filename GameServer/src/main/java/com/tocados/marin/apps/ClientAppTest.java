@@ -40,10 +40,8 @@ public class ClientAppTest {
 
             String serverResponse = "";
             while (!serverResponse.equals("exit")) {
-                writer1.println(sc.nextLine());
-                reader2.readLine();
-                writer2.println(sc.nextLine());
-                reader1.readLine();
+                sendToPlayer(writer1, reader2, sc);
+                sendToPlayer(writer2, reader1, sc);
             }
 
             sc.close();
@@ -65,5 +63,10 @@ public class ClientAppTest {
     private static void mountUsers(PrintStream writer1, PrintStream writer2) {
         writer1.println(JSONManager.mountColumnJson(7));
         writer2.println(JSONManager.mountColumnJson(7));
+    }
+
+    private static void sendToPlayer(PrintStream writer, BufferedReader reader, Scanner sc) throws IOException {
+        writer.println(JSONManager.mountColumnJson(sc.nextInt()));
+        reader.readLine();
     }
 }
