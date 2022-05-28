@@ -68,8 +68,6 @@ public class ClientAppTest {
                          * {
                          * // TODO - Mostrar 4 en raya y mensaje "Juego finalizado en el cliente"
                          * }
-                         * 
-                         * serverResponse = null;
                          */
 
                         // User 1 sends; user 2 gets:
@@ -94,8 +92,6 @@ public class ClientAppTest {
                          * {
                          * // TODO - Mostrar 4 en raya y mensaje "Juego finalizado en el cliente"
                          * }
-                         * serverResponse = null;
-                         * 
                          * writer.println(JSONManager.mountColumnJson(sc.nextInt()));
                          */
 

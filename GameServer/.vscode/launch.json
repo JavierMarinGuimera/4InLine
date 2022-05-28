@@ -13,13 +13,6 @@
         },
         {
             "type": "java",
-            "name": "Launch Test",
-            "request": "launch",
-            "mainClass": "com.tocados.marin.apps.Test",
-            "projectName": "gameserver"
-        },
-        {
-            "type": "java",
             "name": "Launch ServerApp",
             "request": "launch",
             "mainClass": "com.tocados.marin.apps.ServerApp",

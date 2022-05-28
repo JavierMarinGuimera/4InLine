@@ -79,7 +79,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public String logIn(User user) {
+    public Map<String, String> logIn(User user) {
         // Search user from username on DDBB to know if exist.
         User userFromDDBB = getUserFromUsername(user.getUsername());
 
@@ -87,22 +87,24 @@ public class UsersServiceImpl implements UsersService {
         // password.
         if (userFromDDBB == null || !user.getPassword()
                 .equals(userFromDDBB.getPassword())) {
-            return "false";
+            return null;
         }
 
+        Map<String, String> tokenMap = new HashMap<>();
         Token token = userFromDDBB.getToken();
 
         // Check if this user has token that is not expired.
         if (token != null && TokensManager.isValidToken(token)) {
             // Return the current token because is still valid.
-            return token.getCurrent_token();
+            tokenMap.put("token", token.getCurrent_token());
         } else {
             // Update the current user token and the creation date and returning it.
             token.setCurrent_token(TokensManager.generateRandomToken());
             token.setCreation_date(new Timestamp(System.currentTimeMillis()));
-            return usersRepository.save(userFromDDBB).getToken().getCurrent_token();
+            tokenMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
         }
 
+        return tokenMap;
     }
 
     @Override

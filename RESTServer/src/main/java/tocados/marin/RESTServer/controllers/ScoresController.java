@@ -39,14 +39,19 @@ public class ScoresController {
     }
 
     /**
+     * Structure:
      * {
-     * "user": {
+     * "server": {
      * "username": "Javier",
      * "password": "1234",
      * "token":
      * "tO7HoLtmbLbd8SUHNFso1Y822IeIKP5EnkEWB8EL1r5FEDn3rnkWliw8Wk7_0evbWqSSQZpqFttQagpTbQExUg=="
      * },
-     * "score": -122
+     * "user": {
+     * "username": "Javier",
+     * "score": 1
+     * }
+     * }
      * }
      */
     @PostMapping

@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.tocados.marin.managers.ConsoleManager;
 import com.tocados.marin.managers.MessageManager;
@@ -33,10 +32,6 @@ public class ServerApp {
     public static void main(String[] args) throws Exception {
         ConsoleManager consoleManager = new ConsoleManager();
         consoleManager.start();
-
-        // TODO - Hacer cliente HTTP y hacer login.
-        // HTTPManager.mountGETRequest(Paths.USERS_LOGIN_PATH.getPath(),
-        // PropertiesManager.getLoginMap());
 
         ServerSocket serverSocket = new ServerSocket(PORT);
         serverSocket.setSoTimeout(TIMEOUT);
@@ -100,13 +95,7 @@ public class ServerApp {
     }
 
     public static void showPlayersCount() {
-        int count = 0;
-
-        for (Entry<Integer, Player> player : playersWaiting.entrySet()) {
-            if (player.getValue() != null)
-                count++;
-        }
-        System.out.println("Current players waiting: " + count);
+        System.out.println("Current players waiting: " + pendingPlayers.size());
     }
 
     /**

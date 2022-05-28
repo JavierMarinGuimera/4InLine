@@ -120,10 +120,12 @@ public class GameMatch extends Thread {
         BufferedReader player2Reader = this.player2.getReader();
         PrintStream player2Writer = this.player1.getWriter();
 
-        player1Writer.println(JSONManager.mountHasOponentJson(true));
-        player2Writer.println(JSONManager.mountHasOponentJson(true));
+        // Send to the users that they have a match and what is their position.
+        player1Writer.println(JSONManager.mountHasOponentJson(true, 1));
+        player2Writer.println(JSONManager.mountHasOponentJson(true, 2));
 
         Integer column = null;
+
         while (!this.matchEnded) {
             this.rounds++;
 

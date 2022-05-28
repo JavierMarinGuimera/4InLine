@@ -49,7 +49,7 @@ public class ScoresServiceImpl implements ScoresService {
     @Override
     @SuppressWarnings("unchecked")
     public Boolean insertScore(Map<String, Object> json) {
-        if (!json.containsKey("server") || !json.containsKey("user") || !json.containsKey("score")) {
+        if (!json.containsKey("server") || !json.containsKey("user")) {
             return false;
         }
 
@@ -63,7 +63,7 @@ public class ScoresServiceImpl implements ScoresService {
             return false;
         }
 
-        if (!server.containsKey("username") || !user.containsKey("password") || !user.containsKey("token")) {
+        if (!server.containsKey("username") || !server.containsKey("password") || !server.containsKey("token")) {
             return false;
         }
         if (!user.containsKey("username") || !user.containsKey("score")) {
@@ -75,7 +75,7 @@ public class ScoresServiceImpl implements ScoresService {
         Integer scoreInteger = (Integer) user.get("score");
 
         if (UsersServiceImpl.checkIfUserIsValid(serverUser,
-                (String) server.get("password"), (String) server.get("token"))) {
+                (String) server.get("password"), (String) server.get("token")) && userFromDDBB != null) {
 
             // If the user has the max saved scores and the last score is less than the new
             // score, we remove the last item.

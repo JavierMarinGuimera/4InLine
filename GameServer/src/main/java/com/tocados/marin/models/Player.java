@@ -14,6 +14,7 @@ public class Player {
     private Integer columns;
     private Boolean isWinner;
     private Integer score = 0;
+    private String username;
 
     private BufferedReader reader;
     private PrintStream writer;
@@ -43,8 +44,9 @@ public class Player {
                 // Parsing jsonString to jsonObject.
                 Map<String, Object> jsonMap = JSONManager.getMapFromJsonString(jsonString);
 
-                if (jsonMap.containsKey(JSONManager.COLUMN)) {
+                if (jsonMap.containsKey(JSONManager.COLUMN) && jsonMap.containsKey(JSONManager.USERNAME)) {
                     this.columns = (Integer) jsonMap.get(JSONManager.COLUMN);
+                    this.username = (String) jsonMap.get(JSONManager.USERNAME);
                     this.writer.println("OK");
                 } else {
                     this.writer.println("ERROR");
@@ -142,5 +144,19 @@ public class Player {
      */
     public void setWriter(PrintStream writer) {
         this.writer = writer;
+    }
+
+    /**
+     * @return the username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
