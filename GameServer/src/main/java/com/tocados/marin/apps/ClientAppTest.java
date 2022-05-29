@@ -55,7 +55,7 @@ public class ClientAppTest {
                 Map<String, Object> serverResponse = null;
 
                 do {
-                    // TODO - Enviar y recibir según si eres jugador 1 o 2:
+                    // Enviar y recibir según si eres jugador 1 o 2:
                     if ((Integer) jsonMap1.get("position") == 1) {
                         /**
                          * SOLUCIÓN CLIENTE ANDROID:

@@ -9,8 +9,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.tocados.marin.managers.ConsoleManager;
+import com.tocados.marin.managers.HTTPManager;
+import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager;
+import com.tocados.marin.managers.PropertiesManager;
+import com.tocados.marin.managers.HTTPManager.Paths;
 import com.tocados.marin.managers.MessageManager.Messages;
+import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 import com.tocados.marin.models.GameMatch;
 import com.tocados.marin.models.Player;
 
@@ -34,10 +39,14 @@ public class ServerApp {
         ConsoleManager consoleManager = new ConsoleManager();
         consoleManager.start();
 
-        // TODO - Hacer cliente HTTP y hacer login.
-        // HTTPManager.mountGETRequest(Paths.USERS_LOGIN_PATH.getPath(),
-        // PropertiesManager.getLoginMap());
+        if (!loginServer()) {
+            MessageManager.showXMessage(Messages.LOGIN_FAILED);
+            return;
+        }
 
+        /**
+         * Here starts the game server:
+         */
         ServerSocket serverSocket = new ServerSocket(PORT);
         serverSocket.setSoTimeout(TIMEOUT);
 
@@ -47,7 +56,6 @@ public class ServerApp {
             // Wait the user connection with the server.
             try {
                 pendingPlayers.add(new Player(serverSocket.accept()));
-                System.out.println("Siguiente jugador");
                 MessageManager.showXMessage(Messages.USER_FOUND);
             } catch (SocketTimeoutException e) {
                 continue;
@@ -59,6 +67,24 @@ public class ServerApp {
         if (serverSocket != null) {
             serverSocket.close();
         }
+    }
+
+    /**
+     * Tries to make a login with the current server credentials.
+     * 
+     * @return True if worked; false if not.
+     */
+    private static Boolean loginServer() {
+        Map<String, Object> jsonMap = JSONManager
+                .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap()));
+
+        if (jsonMap == null || !jsonMap.containsKey("token")) {
+            return false;
+        }
+
+        PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String) jsonMap.get("token"));
+
+        return true;
     }
 
     public static void checkListForMatches() {

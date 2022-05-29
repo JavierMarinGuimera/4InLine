@@ -129,7 +129,7 @@ public class GameMatch extends Thread {
         while (!this.matchEnded) {
             this.rounds++;
 
-            // TODO - rondas
+            // TODO - Rondas. Ahora mismo si pasas columna no devuelve bien.
             column = getUserColumn(player1Reader, column);
             if (this.matchEnded)
                 break;

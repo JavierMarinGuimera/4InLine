@@ -20,7 +20,7 @@ public class EncrypterManager {
      * @param password User's password.
      * @return Password encrypted.
      */
-    public static String encryptUserPassword(String password) {
+    public static String encryptPassword(String password) {
         try {
             return toHexString(getSHA(password));
         } catch (NoSuchAlgorithmException e) {

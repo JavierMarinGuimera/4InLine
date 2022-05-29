@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch HTTPManager",
+            "request": "launch",
+            "mainClass": "com.tocados.marin.managers.HTTPManager",
+            "projectName": "gameserver"
+        },
+        {
+            "type": "java",
             "name": "Launch PropertiesManager",
             "request": "launch",
             "mainClass": "com.tocados.marin.managers.PropertiesManager",

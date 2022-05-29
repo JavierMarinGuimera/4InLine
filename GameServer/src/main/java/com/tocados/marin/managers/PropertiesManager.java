@@ -8,26 +8,30 @@ import java.util.Map;
 import java.util.Properties;
 
 public class PropertiesManager {
-    private static final String PROPERTIES_FILE = "./src/main/resources/db.properties";
-    private static final String SERVER_NAME = "server.user";
-    private static final String SERVER_PASSWORD = "server.password";
-    private static final String SERVER_TOKEN = "server.token";
+
+    public enum PropertiesStrings {
+        PROPERTIES_FILE("./src/main/resources/db.properties"),
+        SERVER_NAME("server.user"),
+        SERVER_PASSWORD("server.password"),
+        SERVER_TOKEN("server.token");
+
+        private String propertyString;
+
+        PropertiesStrings(String propertyString) {
+            this.propertyString = propertyString;
+        }
+
+        public String getPropertyString() {
+            return propertyString;
+        }
+    }
 
     private static FileReader fileReader;
     private static Properties properties;
 
-    public static void main(String[] args) {
-        String serverName = getPropertyByName(SERVER_NAME);
-        String serverPassword = getPropertyByName(SERVER_PASSWORD);
-        String serverToken = getPropertyByName(SERVER_TOKEN);
-
-        System.out.println("Name: " + serverName + ", Password: " + serverPassword + ", Encrypted password: "
-                + EncrypterManager.encryptUserPassword(serverPassword) + ", token: " + serverToken);
-    }
-
     static {
         try {
-            fileReader = new FileReader(PROPERTIES_FILE);
+            fileReader = new FileReader(PropertiesStrings.PROPERTIES_FILE.getPropertyString());
 
             properties = new Properties();
             properties.load(fileReader);
@@ -41,19 +45,20 @@ public class PropertiesManager {
     private PropertiesManager() {
     }
 
-    public static String getPropertyByName(String propertyName) {
-        return properties.getProperty(propertyName);
+    public static String getPropertyByName(PropertiesStrings property) {
+        return properties.getProperty(property.getPropertyString());
     }
 
-    public static Object setPropertyByName(String propertyName, String propertyValue) {
-        return properties.setProperty(propertyName, propertyValue);
+    public static Object setPropertyByName(PropertiesStrings property, String propertyValue) {
+        return properties.setProperty(property.getPropertyString(), propertyValue);
     }
 
     public static Map<String, Object> getLoginMap() {
         return new HashMap<String, Object>() {
             {
-                put("username", getPropertyByName(SERVER_NAME));
-                put("password", getPropertyByName(SERVER_PASSWORD));
+                put("username", getPropertyByName(PropertiesStrings.SERVER_NAME));
+                put("password", EncrypterManager
+                        .encryptPassword(getPropertyByName(PropertiesStrings.SERVER_PASSWORD)));
             }
         };
     }

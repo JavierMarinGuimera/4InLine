@@ -52,7 +52,6 @@ public class Player {
                     this.writer.println("ERROR");
                 }
 
-                System.out.println("Columnas leídas");
                 break;
             } catch (Exception e) {
                 e.printStackTrace();
