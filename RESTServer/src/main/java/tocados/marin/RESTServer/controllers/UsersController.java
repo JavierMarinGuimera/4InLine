@@ -52,7 +52,7 @@ public class UsersController {
      */
     @PostMapping
     @RequestMapping("/login")
-    public Map<String, String> logIn(@RequestBody User user) {
+    public Map<String, Object> logIn(@RequestBody User user) {
         return userService.logIn(user);
     }
 

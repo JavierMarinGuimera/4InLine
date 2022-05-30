@@ -8,7 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 public class HTTPManager {
@@ -16,8 +15,9 @@ public class HTTPManager {
     public enum Paths {
         USERS_GET_ALL_PATH("/users", "GET"),
         USERS_REGISTER_PATH("/users/register", "POST"),
-        USERS_LOGIN_PATH("/users/login", "PUT"),
-        SCORES_INSERT_ONE("/scores/insert_score", "DELETE");
+        USERS_LOGIN_PATH("/users/login", "POST"),
+        USERS_UPDATE_PATH("/users/update", "PUT"),
+        SCORES_INSERT_ONE("/scores/insert_score", "POST");
 
         private String path;
         private String requestMethod;
@@ -42,8 +42,8 @@ public class HTTPManager {
     public static void main(String[] args) {
         makeRequest(Paths.USERS_GET_ALL_PATH, null);
         makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap());
-        makeRequest(Paths.USERS_REGISTER_PATH, new HashMap<>());
-        makeRequest(Paths.SCORES_INSERT_ONE, new HashMap<>());
+        // makeRequest(Paths.USERS_REGISTER_PATH, new HashMap<>());
+        // makeRequest(Paths.SCORES_INSERT_ONE, new HashMap<>());
     }
 
     private HTTPManager() {
@@ -51,7 +51,7 @@ public class HTTPManager {
 
     /**
      * Creates a custom request using the Paths enum for creating them and passing
-     * the adecuate map for each operation.
+     * the adequate map for each operation.
      * 
      * @param path The request that you need (declared on the Paths enum).
      * @param map  The data to send to the server. Null if we dont need to send

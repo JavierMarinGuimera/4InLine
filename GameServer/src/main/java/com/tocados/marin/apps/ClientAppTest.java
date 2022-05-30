@@ -21,6 +21,9 @@ public class ClientAppTest {
         BufferedReader reader = null;
         PrintStream writer = null;
 
+        /**
+         * Eliminar en cliente Android:
+         */
         Socket socket2 = null;
         BufferedReader reader2 = null;
         PrintStream writer2 = null;

@@ -79,7 +79,7 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Map<String, String> logIn(User user) {
+    public Map<String, Object> logIn(User user) {
         // Search user from username on DDBB to know if exist.
         User userFromDDBB = getUserFromUsername(user.getUsername());
 
@@ -90,7 +90,7 @@ public class UsersServiceImpl implements UsersService {
             return null;
         }
 
-        Map<String, String> tokenMap = new HashMap<>();
+        Map<String, Object> tokenMap = new HashMap<>();
         Token token = userFromDDBB.getToken();
 
         // Check if this user has token that is not expired.
