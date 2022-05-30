@@ -21,10 +21,9 @@ Proyecto final.
 -   [Solucionar error json infinito al hacer un "getAllUsers"](https://stackoverflow.com/questions/47693110/could-not-write-json-infinite-recursion-stackoverflowerror-nested-exception)
 -   [Información sobre sockets SSL/TLS](https://docs.oracle.com/en/java/javase/11/security/java-secure-socket-extension-jsse-reference-guide.html#GUID-F069F4ED-DF2C-4B3B-90FB-F89E700CF21A)
 -   [Información sobre SSL](https://www.cloudflare.com/es-es/learning/ssl/what-is-ssl/)
-<<<<<<< Updated upstream
 -   [Java map a JSON](https://devqa.io/how-to-convert-java-map-to-json/)
-=======
 -   [Encrypted Shared Preferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences)
 -   [Android Master Key](https://developer.android.com/reference/androidx/security/crypto/MasterKey)
 -   [Android Keystore](https://developer.android.com/training/articles/keystore?hl=es-419#GeneratingANewPrivateKey)
->>>>>>> Stashed changes
+-   [JSON a java map](https://stackoverflow.com/questions/21544973/convert-jsonobject-to-map)
+-   [Importar dependencias Android app](https://www.tutorialspoint.com/how-do-add-dependency-in-android-studio)

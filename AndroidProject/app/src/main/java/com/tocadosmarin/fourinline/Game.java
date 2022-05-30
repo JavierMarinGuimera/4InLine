@@ -7,31 +7,27 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Layout;
-import android.text.PrecomputedText;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Game extends AppCompatActivity {
+    private static final int NUMBER_IMAGES = 6;
     private static final String ICONS[] = {"icon_player_1", "icon_player_2"};
     private static final String COLORS[] = {"color_player_1", "color_player_2"};
     private static GameRunner gameRunner;
-    private HashMap<String, LinearLayout> layouts = new HashMap<>();
+    private HashMap<Integer, LinearLayout> layouts = new HashMap<>();
     private List<String> colorsList;
     private LinearLayout mainLayout;
     private Drawable icon_player_1, icon_player_2;
+    private int id_player_icon;
 
 
     @Override
@@ -53,8 +49,8 @@ public class Game extends AppCompatActivity {
         List<Drawable> drawableList = new ArrayList<>();
         for (String icon : ICONS) {
             String player_icon = MainActivity.pref.getString(icon, "?");
-            int ID_player_icon = this.getResources().getIdentifier(player_icon, "drawable", this.getPackageName());
-            Drawable drawable_player = this.getDrawable(ID_player_icon);
+            id_player_icon = this.getResources().getIdentifier(player_icon, "drawable", this.getPackageName());
+            Drawable drawable_player = this.getDrawable(id_player_icon);
             drawableList.add(drawable_player);
         }
         icon_player_1 = drawableList.get(0);
@@ -79,7 +75,7 @@ public class Game extends AppCompatActivity {
             linearLayout.setGravity(Gravity.BOTTOM);
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             mainLayout.addView(linearLayout);
-            layouts.put("linearLayout" + i, linearLayout);
+            layouts.put(i, linearLayout);
 
             View v = new View(this);
             v.setLayoutParams(new ViewGroup.LayoutParams(5, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -97,19 +93,22 @@ public class Game extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     //TODO mandar datos al servidor
-                    /*ImageView iv = new ImageView(getApplicationContext());
-                    iv.setImageDrawable(icon_player_2);
-                    iv.setMaxWidth(15);
-                    iv.setMaxHeight(15);
-                    iv.setColorFilter(Color.parseColor(colorsList.get(0)), PorterDuff.Mode.SRC_IN);*/
-                    TextView tv = new TextView((getApplicationContext()));
-                    tv.setText("prueba");
-                    tv.setGravity(Gravity.CENTER);
-                    layout.addView(tv);
-                    double altura = mainLayout.getHeight();
-                    Toast.makeText(getApplicationContext(), String.valueOf(altura), Toast.LENGTH_SHORT).show();
+                    if (layout.getChildCount() < NUMBER_IMAGES){
+                        printImage(layout);
+                    }
                 }
             });
         }
+    }
+
+    private void printImage(LinearLayout layout) {
+        int img_height = mainLayout.getHeight() / NUMBER_IMAGES;
+        ImageView iv = new ImageView(getApplicationContext());
+        iv.setImageDrawable(icon_player_2);
+        iv.setColorFilter(Color.parseColor(colorsList.get(1)), PorterDuff.Mode.SRC_IN);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(img_height, img_height);
+        layoutParams.gravity = Gravity.CENTER;
+        iv.setLayoutParams(layoutParams);
+        layout.addView(iv);
     }
 }

@@ -13,7 +13,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences pref;
     private Button btFindGame, btExit, btPreferences;
-    private TextView tv2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         btPreferences = findViewById(R.id.btPreferences);
 
         btFindGame.setOnClickListener(new View.OnClickListener() {
-            //TODO leer EncryptedSharedPreferences, si el usuario esta login mostrar pantalla tablero, sino mostrar actividad login
+            //TODO leer EncryptedSharedPreferences, si el usuario esta login mostrar pantalla tablero, sino mostrar actividad logine
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), UserLogin.class);

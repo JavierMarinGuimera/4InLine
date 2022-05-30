@@ -1,54 +1,58 @@
-package models;
+package com.tocados.marin.models;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.net.Socket;
+import java.util.Map;
 
-import javax.net.ssl.SSLSocket;
+import com.tocados.marin.managers.JSONManager;
 
 public class Player {
     private Socket playerSocket;
     private Integer columns;
-    private String username;
-    private String token;
+    private Boolean isWinner;
 
     private BufferedReader reader;
-    private BufferedWriter writer;
+    private PrintStream writer;
 
     /**
      * @param playerSocket
      * @param columns
      */
-    public Player(SSLSocket playerSocket) {
+    public Player(Socket playerSocket) {
         this.playerSocket = playerSocket;
 
         try {
-
             this.reader = new BufferedReader(new InputStreamReader(this.playerSocket.getInputStream()));
-            this.writer = new BufferedWriter(new OutputStreamWriter(this.playerSocket.getOutputStream()));
+            this.writer = new PrintStream(this.playerSocket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        readColumns();
+        readInfo();
     }
 
-    private void readColumns() {
+    private void readInfo() {
         while (true) {
             try {
-                Integer columns = this.reader.read();
-                this.columns = columns;
-                this.writer.write("OK");
+                System.out.println(this.reader.readLine());
+                String jsonString = this.reader.readLine();
+
+                // Parsing jsonString to jsonObject.
+                Map<String, Object> jsonMap = JSONManager.getMapFromJsonString(jsonString);
+
+                if (jsonMap.containsKey(JSONManager.COLUMN)) {
+                    this.columns = (Integer) jsonMap.get(JSONManager.COLUMN);
+                    this.writer.println("OK");
+                } else {
+                    this.writer.println("ERROR");
+                }
+
                 break;
             } catch (Exception e) {
-                try {
-                    this.writer.write("SOMETHING WENT WRONG");
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                this.writer.println("SOMETHING WENT WRONG");
                 continue;
             }
         }
@@ -83,31 +87,17 @@ public class Player {
     }
 
     /**
-     * @return the username
+     * @return the isWinner
      */
-    public String getUsername() {
-        return username;
+    public Boolean getIsWinner() {
+        return isWinner;
     }
 
     /**
-     * @param username the username to set
+     * @param isWinner the isWinner to set
      */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * @param token the token to set
-     */
-    public void setToken(String token) {
-        this.token = token;
+    public void setIsWinner(Boolean isWinner) {
+        this.isWinner = isWinner;
     }
 
     /**
@@ -127,14 +117,14 @@ public class Player {
     /**
      * @return the writer
      */
-    public BufferedWriter getWriter() {
+    public PrintStream getWriter() {
         return writer;
     }
 
     /**
      * @param writer the writer to set
      */
-    public void setWriter(BufferedWriter writer) {
+    public void setWriter(PrintStream writer) {
         this.writer = writer;
     }
 }

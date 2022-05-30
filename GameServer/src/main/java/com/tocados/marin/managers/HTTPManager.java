@@ -1,4 +1,4 @@
-package managers;
+package com.tocados.marin.managers;
 
 public class HTTPManager {
 

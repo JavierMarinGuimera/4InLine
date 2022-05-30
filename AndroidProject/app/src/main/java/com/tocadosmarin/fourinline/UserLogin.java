@@ -20,17 +20,31 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserLogin extends AppCompatActivity {
     public static SharedPreferences encryptedPref;
-    private Button btLogIn, btSignUp;
+    private static final String URL = "http://10.0.2.2:8080/users/login";
     private LinearLayout logIn, signUp;
-    private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
-    private CheckBox cbSession;
-    private TextView tvSignUp, tvLogIn;
     private ScrollView scLogin;
+    private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
+    private TextView tvSignUp, tvLogIn;
+    private Button btLogIn, btSignUp;
+    private CheckBox cbSession;
+    private RequestQueue mRequestQueue;
+    private JsonObjectRequest jsonObjectRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,16 +92,9 @@ public class UserLogin extends AppCompatActivity {
                 if (!error) {
                     boolean session = cbSession.isChecked();
                     //TODO recoger usuario y contraseña server y compararlo con el introducido
-                    String user = encryptedPref.getString("user", "?");
-                    String password = encryptedPref.getString("password", "?");
-                    if (!user.equals(etLoginUser.getText().toString()) || !password.equals(etLoginPwd.getText().toString())) {
-                        Toast.makeText(getApplicationContext(), "User/Password Incorrect!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent i = new Intent(getApplicationContext(), BoardSelection.class);
-                        startActivity(i);
-                    }
+                    getUserFromDB(etLoginUser.getText().toString(), etLoginPwd.getText().toString());
+                    //Toast.makeText(getApplicationContext(), "No error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -134,6 +141,43 @@ public class UserLogin extends AppCompatActivity {
                 setLogin(true);
             }
         });
+    }
+
+    private void getUserFromDB(String user, String pwd) {
+        mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        Map<String, String> loginMap = new HashMap<>();
+        loginMap.put("username", user);
+        String encryptedPwd = EncrypterManager.encryptUserPassword(pwd);
+        loginMap.put("password", encryptedPwd);
+
+        jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST, URL, new JSONObject(loginMap), new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(getApplicationContext(), "Response: " + response.toString(), Toast.LENGTH_LONG).show();
+                        checkResponse(response.toString(), loginMap, encryptedPwd);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        Toast.makeText(getApplicationContext(), "Error " + error.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
+        mRequestQueue.add(jsonObjectRequest);
+    }
+
+    private void checkResponse(String res, Map<String, String> loginMap, String encryptedPwd) {
+        if (res.equals("false")) {
+            Toast.makeText(getApplicationContext(), "User/Password Incorrect!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
+            SharedPreferences.Editor editor = MainActivity.pref.edit();
+            editor.putString("username", (String) loginMap.get("username"));
+            editor.putString("password", encryptedPwd);
+            Intent i = new Intent(getApplicationContext(), BoardSelection.class);
+            startActivity(i);
+        }
     }
 
     private void setLogin(boolean state) {
