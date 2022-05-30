@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import tocados.marin.RESTServer.managers.EncrypterManager;
 import tocados.marin.RESTServer.managers.TokensManager;
 import tocados.marin.RESTServer.models.Token;
 import tocados.marin.RESTServer.models.user.User;
@@ -36,7 +35,7 @@ public class UsersServiceImpl implements UsersService {
      */
     public static Boolean checkIfUserIsValid(User userToCheck, String password, String token) {
         if (userToCheck != null
-                && userToCheck.getPassword().equals(EncrypterManager.encryptUserPassword(password))
+                && userToCheck.getPassword().equals(password)
                 && userToCheck.getToken().getCurrent_token().equals(token)) {
             return true;
         }
@@ -69,7 +68,7 @@ public class UsersServiceImpl implements UsersService {
             return false;
         }
 
-        user.setPassword(EncrypterManager.encryptUserPassword(user.getPassword()));
+        user.setPassword(user.getPassword());
 
         User createdUser = usersRepository.save(user);
 
@@ -80,30 +79,32 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public String logIn(User user) {
+    public Map<String, String> logIn(User user) {
         // Search user from username on DDBB to know if exist.
         User userFromDDBB = getUserFromUsername(user.getUsername());
 
         // Check if the user exists and the user password is equals to the userFromDDBB
         // password.
-        if (userFromDDBB == null || !EncrypterManager.encryptUserPassword(user.getPassword())
+        if (userFromDDBB == null || !user.getPassword()
                 .equals(userFromDDBB.getPassword())) {
-            return "Incorrect credentials!";
+            return null;
         }
 
+        Map<String, String> tokenMap = new HashMap<>();
         Token token = userFromDDBB.getToken();
 
         // Check if this user has token that is not expired.
         if (token != null && TokensManager.isValidToken(token)) {
             // Return the current token because is still valid.
-            return token.getCurrent_token();
+            tokenMap.put("token", token.getCurrent_token());
         } else {
             // Update the current user token and the creation date and returning it.
             token.setCurrent_token(TokensManager.generateRandomToken());
             token.setCreation_date(new Timestamp(System.currentTimeMillis()));
-            return usersRepository.save(userFromDDBB).getToken().getCurrent_token();
+            tokenMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
         }
 
+        return tokenMap;
     }
 
     @Override
@@ -153,7 +154,7 @@ public class UsersServiceImpl implements UsersService {
 
         if (checkIfUserIsValid(userFromDDBB, user.get("password"), token)) {
             userFromDDBB.setUsername(userUpdated.get("username"));
-            userFromDDBB.setPassword(EncrypterManager.encryptUserPassword(userUpdated.get("password")));
+            userFromDDBB.setPassword(userUpdated.get("password"));
             usersRepository.save(userFromDDBB);
 
             return true;

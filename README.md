@@ -4,12 +4,12 @@ Proyecto final.
 
 ## TODO
 
-    - Interfaz Android.
-    - Funcionamiento 1v1.
-    - Funcionamiento REST.
     - Base de datos.
+    - Funcionamiento REST.
+    - Interfaz Android.
     - Funcionamiento login.
     - Funcionamiento token.
+    - Funcionamiento 1v1.
     - Multithreading varias partidas.
     - Posible añadido: chat.
 
@@ -27,3 +27,5 @@ Proyecto final.
 -   [Android Keystore](https://developer.android.com/training/articles/keystore?hl=es-419#GeneratingANewPrivateKey)
 -   [JSON a java map](https://stackoverflow.com/questions/21544973/convert-jsonobject-to-map)
 -   [Importar dependencias Android app](https://www.tutorialspoint.com/how-do-add-dependency-in-android-studio)
+-   [Generar usuario y contraseña aleatorios para el server](https://www.random.org/strings/?num=1&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new)
+-   [Crear archivo .properties, leerlo y manejarlo](https://www.javatpoint.com/properties-class-in-java)

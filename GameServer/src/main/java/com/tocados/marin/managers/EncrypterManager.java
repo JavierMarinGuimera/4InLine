@@ -1,4 +1,4 @@
-package tocados.marin.RESTServer.managers;
+package com.tocados.marin.managers;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -20,7 +20,7 @@ public class EncrypterManager {
      * @param password User's password.
      * @return Password encrypted.
      */
-    public static String encryptUserPassword(String password) {
+    public static String encryptPassword(String password) {
         try {
             return toHexString(getSHA(password));
         } catch (NoSuchAlgorithmException e) {

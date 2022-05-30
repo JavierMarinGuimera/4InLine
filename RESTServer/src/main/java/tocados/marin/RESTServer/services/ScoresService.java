@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import tocados.marin.RESTServer.models.score.ScoreDTO;
-import tocados.marin.RESTServer.models.user.User;
 
 @Service
 public interface ScoresService {
@@ -18,7 +17,7 @@ public interface ScoresService {
 
     public List<ScoreDTO> getTopScores();
 
-    public List<ScoreDTO> getUserTopScores(User user);
+    public List<ScoreDTO> getUserTopScores(Map<String, Object> json);
 
     /**
      * ------------------------------------------------------------------------------------

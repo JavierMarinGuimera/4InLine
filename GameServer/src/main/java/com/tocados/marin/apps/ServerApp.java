@@ -1,21 +1,37 @@
 package com.tocados.marin.apps;
 
 import java.net.ServerSocket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.tocados.marin.managers.ConsoleManager;
+import com.tocados.marin.managers.HTTPManager;
+import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager;
+import com.tocados.marin.managers.PropertiesManager;
+import com.tocados.marin.managers.HTTPManager.Paths;
 import com.tocados.marin.managers.MessageManager.Messages;
+import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 import com.tocados.marin.models.GameMatch;
 import com.tocados.marin.models.Player;
 
 public class ServerApp {
     private static final int PORT = 7777;
+    private static final int TIMEOUT = 5000;
 
     public static Boolean run = true;
 
-    private static Player playerMatch5 = null, playerMatch7 = null, playerMatch9 = null;
+    private static Map<Integer, Player> playersWaiting = new HashMap<>() {
+        {
+            put(5, null);
+            put(7, null);
+            put(9, null);
+        }
+    };
     private static List<Player> pendingPlayers = new ArrayList<>();
     private static List<GameMatch> currentGameMatches = new ArrayList<>();
 
@@ -23,16 +39,29 @@ public class ServerApp {
         ConsoleManager consoleManager = new ConsoleManager();
         consoleManager.start();
 
+        if (!loginServer()) {
+            MessageManager.showXMessage(Messages.LOGIN_FAILED);
+            return;
+        }
+
+        /**
+         * Here starts the game server:
+         */
         ServerSocket serverSocket = new ServerSocket(PORT);
+        serverSocket.setSoTimeout(TIMEOUT);
 
+        MessageManager.showXMessage(Messages.WAITING_FOR_USERS);
         while (run) {
-            MessageManager.showXMessage(Messages.WAITING_FOR_USER);
 
-            pendingPlayers.add(new Player(serverSocket.accept()));
-            pendingPlayers.add(new Player(serverSocket.accept()));
+            // Wait the user connection with the server.
+            try {
+                pendingPlayers.add(new Player(serverSocket.accept()));
+                MessageManager.showXMessage(Messages.USER_FOUND);
+            } catch (SocketTimeoutException e) {
+                continue;
+            }
 
             checkListForMatches();
-            break;
         }
 
         if (serverSocket != null) {
@@ -40,36 +69,47 @@ public class ServerApp {
         }
     }
 
+    /**
+     * Tries to make a login with the current server credentials.
+     * 
+     * @return True if worked; false if not.
+     */
+    private static Boolean loginServer() {
+        Map<String, Object> jsonMap = JSONManager
+                .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap()));
+
+        if (jsonMap == null || !jsonMap.containsKey("token")) {
+            return false;
+        }
+
+        PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String) jsonMap.get("token"));
+
+        return true;
+    }
+
     public static void checkListForMatches() {
         for (Player player : pendingPlayers) {
-            if (player.getColumns() == 5) {
-                if (playerMatch5 != null) {
-                    startMatch(playerMatch5, player, 5);
-                    playerMatch5 = null;
-                } else {
-                    playerMatch5 = player;
-                }
-            }
-            if (player.getColumns() == 7) {
-                if (playerMatch7 != null) {
-                    startMatch(playerMatch7, player, 7);
-                    playerMatch7 = null;
-                } else {
-                    playerMatch7 = player;
-                }
-            }
-            if (player.getColumns() == 9) {
-                if (playerMatch9 != null) {
-                    startMatch(playerMatch9, player, 9);
-                    playerMatch9 = null;
-                } else {
-                    playerMatch9 = player;
-                }
+            checkCurrentPlayers(player, 5);
+            checkCurrentPlayers(player, 7);
+            checkCurrentPlayers(player, 9);
+        }
+    }
+
+    private static void checkCurrentPlayers(Player player, Integer columns) {
+        if (player.getColumns() == columns) {
+            System.out.println(playersWaiting);
+
+            if (playersWaiting.get(columns) != null) {
+                startMatch(playersWaiting.get(columns), player, columns);
+                playersWaiting.put(columns, null);
+            } else {
+                playersWaiting.put(columns, player);
             }
         }
     }
 
     private static void startMatch(Player player1, Player player2, Integer columns) {
+        MessageManager.showXMessage(Messages.MATCH_FOUND);
         GameMatch gameMatch = new GameMatch(player1, player2, columns);
         gameMatch.start();
         currentGameMatches.add(gameMatch);
@@ -86,7 +126,13 @@ public class ServerApp {
     }
 
     public static void showPlayersCount() {
-        System.out.println("Current players waiting: " + pendingPlayers.size());
+        int count = 0;
+
+        for (Entry<Integer, Player> player : playersWaiting.entrySet()) {
+            if (player.getValue() != null)
+                count++;
+        }
+        System.out.println("Current players waiting: " + count);
     }
 
     /**

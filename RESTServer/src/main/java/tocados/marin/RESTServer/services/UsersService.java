@@ -26,7 +26,7 @@ public interface UsersService {
 
     public Boolean insertUser(User user);
 
-    public String logIn(User user);
+    public Map<String, String> logIn(User user);
 
     public Boolean logOut(Map<String, String> json);
 

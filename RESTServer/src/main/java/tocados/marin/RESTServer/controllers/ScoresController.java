@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tocados.marin.RESTServer.models.score.ScoreDTO;
-import tocados.marin.RESTServer.models.user.User;
 import tocados.marin.RESTServer.services.ScoresService;
 
 @RestController
@@ -35,19 +34,24 @@ public class ScoresController {
      */
     @GetMapping
     @RequestMapping("/user_top")
-    public List<ScoreDTO> getUserTopScores(@RequestBody User user) {
-        return scoresService.getUserTopScores(user);
+    public List<ScoreDTO> getUserTopScores(@RequestBody Map<String, Object> json) {
+        return scoresService.getUserTopScores(json);
     }
 
     /**
+     * Structure:
      * {
-     * "user": {
+     * "server": {
      * "username": "Javier",
      * "password": "1234",
      * "token":
      * "tO7HoLtmbLbd8SUHNFso1Y822IeIKP5EnkEWB8EL1r5FEDn3rnkWliw8Wk7_0evbWqSSQZpqFttQagpTbQExUg=="
      * },
-     * "score": -122
+     * "user": {
+     * "username": "Javier",
+     * "score": 1
+     * }
+     * }
      * }
      */
     @PostMapping
