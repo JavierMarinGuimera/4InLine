@@ -1,6 +1,5 @@
 package tocados.marin.RESTServer.controllers;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tocados.marin.RESTServer.models.user.User;
-import tocados.marin.RESTServer.models.user.UserDTO;
 import tocados.marin.RESTServer.services.UsersService;
 
 @RestController
@@ -25,7 +23,7 @@ public class UsersController {
     // ------------------------------------------------------------------------------------
 
     @GetMapping()
-    public List<UserDTO> getUsers() {
+    public Map<String, Object> getUsers() {
         return userService.getUsers();
     }
 
@@ -39,7 +37,7 @@ public class UsersController {
 
     @PostMapping
     @RequestMapping("/register")
-    public Boolean insertUser(@RequestBody User user) {
+    public Map<String, Object> insertUser(@RequestBody User user) {
         return this.userService.insertUser(user);
     }
 
@@ -59,19 +57,6 @@ public class UsersController {
     /**
      * Structure:
      * {
-     * "username": "John",
-     * "token": "kljgegr8o73464bdfjkgnsui4639hfnjkdc923234jnkf"
-     * }
-     */
-    @PostMapping
-    @RequestMapping("/logout")
-    public Boolean logout(@RequestBody Map<String, String> json) {
-        return userService.logOut(json);
-    }
-
-    /**
-     * Structure:
-     * {
      * "user": {
      * "username": "Javier",
      * "password": "1234"
@@ -86,7 +71,7 @@ public class UsersController {
      */
     @PutMapping
     @RequestMapping("/update")
-    public Boolean updateUser(@RequestBody Map<String, Object> json) {
+    public Map<String, Object> updateUser(@RequestBody Map<String, Object> json) {
         return userService.updateUser(json);
     }
 
@@ -101,7 +86,7 @@ public class UsersController {
      */
     @DeleteMapping
     @RequestMapping("/delete")
-    public Boolean deleteUserFromUsername(@RequestBody Map<String, String> json) {
+    public Map<String, Object> deleteUserFromUsername(@RequestBody Map<String, String> json) {
         return this.userService.deleteUserFromUsername(json);
     }
 }

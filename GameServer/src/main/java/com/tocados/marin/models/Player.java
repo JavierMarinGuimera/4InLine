@@ -15,6 +15,7 @@ public class Player {
     private Boolean isWinner;
     private Integer score = 0;
     private String username;
+    private Integer position;
 
     private BufferedReader reader;
     private PrintStream writer;
@@ -157,5 +158,19 @@ public class Player {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * @return the position
+     */
+    public Integer getPosition() {
+        return position;
+    }
+
+    /**
+     * @param position the position to set
+     */
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

@@ -1,5 +1,6 @@
 package tocados.marin.RESTServer.impls;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +28,23 @@ public class ScoresServiceImpl implements ScoresService {
      */
 
     @Override
-    public List<ScoreDTO> getTopScores() {
+    public Map<String, Object> getTopScores() {
+        Map<String, Object> responseMap = new HashMap<>();
         List<Score> orderedScoreList = Score.orderScoreList((List<Score>) scoresRepository.findAll());
-        return ScoreDTO
-                .transformScoreListToDTO(orderedScoreList);
+
+        responseMap.put("scores", ScoreDTO.transformScoreListToDTO(orderedScoreList));
+        return responseMap;
     }
 
     @Override
-    public List<ScoreDTO> getUserTopScores(Map<String, Object> json) {
+    public Map<String, Object> getUserTopScores(Map<String, Object> json) {
+        Map<String, Object> responseMap = new HashMap<>();
         List<Score> orderedScoreList = Score.orderScoreList(
                 (List<Score>) scoresRepository
                         .findScoresByUser(usersRepository.findByUsername((String) json.get("username"))));
-        return ScoreDTO.transformScoreListToDTO(orderedScoreList);
+
+        responseMap.put("scores", ScoreDTO.transformScoreListToDTO(orderedScoreList));
+        return responseMap;
     }
 
     /**
@@ -48,26 +54,33 @@ public class ScoresServiceImpl implements ScoresService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Boolean insertScore(Map<String, Object> json) {
+    public Map<String, Object> insertScore(Map<String, Object> json) {
+        Map<String, Object> responseMap = new HashMap<>();
+
         if (!json.containsKey("server") || !json.containsKey("user")) {
-            return false;
+            responseMap.put("created", false);
+            responseMap.put("error", "structure incorrect");
         }
 
-        Map<String, Object> server;
-        Map<String, Object> user;
+        Map<String, Object> server = null;
+        Map<String, Object> user = null;
 
         try {
             server = (Map<String, Object>) json.get("server");
             user = (Map<String, Object>) json.get("user");
         } catch (ClassCastException e) {
-            return false;
+            responseMap.put("created", false);
+            responseMap.put("error", "server or user structure incorrect");
+            return responseMap;
         }
 
         if (!server.containsKey("username") || !server.containsKey("password") || !server.containsKey("token")) {
-            return false;
+            responseMap.put("created", false);
+            responseMap.put("error", "server structure incorrect");
         }
         if (!user.containsKey("username") || !user.containsKey("score")) {
-            return false;
+            responseMap.put("created", false);
+            responseMap.put("error", "user structure incorrect");
         }
 
         User serverUser = usersRepository.findByUsername((String) server.get("username"));
@@ -86,7 +99,8 @@ public class ScoresServiceImpl implements ScoresService {
                 userFromDDBB.getScores().remove(scoreToDelete);
                 scoresRepository.delete(scoreToDelete);
             } else if (orderedScores.size() == Score.MAX_SIZE) {
-                return false;
+                responseMap.put("created", false);
+                responseMap.put("error", "next score less than last 3");
             }
 
             Score score = new Score();
@@ -94,10 +108,10 @@ public class ScoresServiceImpl implements ScoresService {
             score.setScore(scoreInteger);
             scoresRepository.save(score);
 
-            return true;
+            responseMap.put("created", true);
         }
 
-        return false;
+        return responseMap;
     }
 
 }

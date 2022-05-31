@@ -125,6 +125,10 @@ public class ServerApp {
         });
     }
 
+    public static void endMatch(GameMatch gameMatch) {
+        currentGameMatches.remove(gameMatch);
+    }
+
     public static void showPlayersCount() {
         int count = 0;
 

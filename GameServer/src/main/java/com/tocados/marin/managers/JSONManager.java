@@ -28,7 +28,7 @@ public class JSONManager {
     public static final String RESULT = "result";
     public static final String OPONENT = "hasOponent";
     public static final String POSITION = "position";
-    public static final String SERVER_CLOSED = "serverClosed";
+    public static final String SERVER_CLOSED = "server_closed";
 
     private JSONManager() {
     }
@@ -119,7 +119,7 @@ public class JSONManager {
             jsonMap.put(COLUMN, column);
 
         if (!result.equals(Messages.NOTHING))
-            jsonMap.put(RESULT, result);
+            jsonMap.put(RESULT, result.getMessage());
 
         if (hasOponent)
             jsonMap.put(OPONENT, true);

@@ -94,34 +94,59 @@ public class ClientAppTest {
                          * serverResponse = null;
                          */
 
-                        /**
-                         * User 1 sends:
-                         */
-                        System.out.print("Jugador 1 escribe:");
-                        writer.println(JSONManager.mountColumnJson(sc.nextInt()));
+                        System.out.println("\n-----------ROUND-----------");
+
+                        if (serverResponse == null || (!serverResponse.containsKey("result")
+                                && !serverResponse.containsKey("server_closed"))) {
+                            serverResponse = null;
+
+                            /**
+                             * User 1 sends:
+                             */
+                            System.out.print("Jugador 1 escribe:");
+                            writer.println(JSONManager.mountColumnJson(sc.nextInt()));
+                        }
 
                         /**
                          * User 2 reads:
                          */
                         System.out.print("Jugador 2 lee:");
-                        serverResponse = JSONManager.getMapFromJsonString(reader2.readLine());
+                        while (serverResponse == null) {
+                            try {
+                                serverResponse = JSONManager.getMapFromJsonString(reader2.readLine());
+                            } catch (Exception e) {
+                                continue;
+                            }
+
+                        }
                         // Print here on the client board the serverResponse by calling serverResponse
                         System.out.println(serverResponse);
 
-                        /**
-                         * User 2 sends:
-                         */
-                        System.out.print("Jugador 2 Escribe:");
-                        writer2.println(JSONManager.mountColumnJson(sc.nextInt()));
+                        if ((serverResponse == null || (!serverResponse.containsKey("result")
+                                && !serverResponse.containsKey("server_closed")))) {
+                            serverResponse = null;
+                            /**
+                             * User 2 sends:
+                             */
+                            System.out.print("Jugador 2 Escribe:");
+                            writer2.println(JSONManager.mountColumnJson(sc.nextInt()));
+
+                        }
 
                         /**
                          * User 1 reads:
                          */
                         System.out.print("Jugador 1 lee:");
-                        serverResponse = JSONManager.getMapFromJsonString(reader.readLine());
-                        // Print here on the client board the serverResponse by calling serverResponse
-                        System.out.println((Integer) serverResponse.get("column"));
+                        while (serverResponse == null) {
+                            try {
+                                serverResponse = JSONManager.getMapFromJsonString(reader.readLine());
+                            } catch (Exception e) {
+                                continue;
+                            }
 
+                        }
+                        // Print here on the client board the serverResponse by calling serverResponse
+                        System.out.println(serverResponse);
                     } else {
                         /**
                          * Copiar la solución de arriba e invertir el orden lectura-escritura.
@@ -138,7 +163,7 @@ public class ClientAppTest {
                         // Print here on the client board the serverResponse by calling serverResponse
                         System.out.println((Integer) serverResponse.get("column"));
                     }
-                } while (serverResponse != null && !serverResponse.containsKey("result"));
+                } while (!serverResponse.containsKey("result"));
 
                 sc.close();
             } else {
