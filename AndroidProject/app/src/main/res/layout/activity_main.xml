@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".main.MainActivity">
 
     <Button
         android:id="@+id/btFindGame"
@@ -55,5 +55,15 @@
         app:layout_constraintEnd_toEndOf="@+id/btFindGame"
         app:layout_constraintStart_toStartOf="@+id/btFindGame"
         app:layout_constraintTop_toBottomOf="@+id/btFindGame" />
+
+    <Button
+        android:id="@+id/btLogOut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/btLogOut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

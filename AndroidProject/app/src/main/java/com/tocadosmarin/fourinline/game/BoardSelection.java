@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.game;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.main.MainActivity;
 
 public class BoardSelection extends AppCompatActivity {
     private static boolean hasOpponent = false;
@@ -38,7 +41,7 @@ public class BoardSelection extends AppCompatActivity {
                     dialog.setCancelable(false);
                     dialog.setPositiveButton(R.string.dialog_button, new
                             DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialogo1, int id) {
+                                public void onClick(DialogInterface dialog, int id) {
                                 }
                             });
                     dialog.show();

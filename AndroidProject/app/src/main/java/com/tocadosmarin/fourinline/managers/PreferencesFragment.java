@@ -1,7 +1,9 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.managers;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.tocadosmarin.fourinline.R;
 
 public class PreferencesFragment extends PreferenceFragment {
     @Override

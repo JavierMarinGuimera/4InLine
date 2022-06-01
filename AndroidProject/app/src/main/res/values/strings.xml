@@ -51,4 +51,8 @@
     <string name="dialog_message">You must select an option!</string>
     <string name="dialog_button">Close</string>
     <string name="match_found">Match found!</string>
+    <string name="btLogOut">Log out</string>
+    <string name="dialog_login_message">The session has expired, please log in again.</string>
+    <string name="dialog_login_cancel_bt">Not now</string>
+    <string name="dialog_ok_button">Log in</string>
 </resources>

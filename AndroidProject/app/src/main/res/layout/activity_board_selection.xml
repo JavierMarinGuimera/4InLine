@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".BoardSelection">
+    tools:context=".game.BoardSelection">
 
     <TextView
         android:id="@+id/tvBoard"

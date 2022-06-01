@@ -1,15 +1,13 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.login;
+
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,31 +18,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
+import com.tocadosmarin.fourinline.main.MainActivity;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserLogin extends AppCompatActivity {
-    public static SharedPreferences encryptedPref;
-    private static final String URL = "http://10.0.2.2:8080/users/login";
+
     private LinearLayout logIn, signUp;
     private ScrollView scLogin;
     private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
     private TextView tvSignUp, tvLogIn;
     private Button btLogIn, btSignUp;
     private CheckBox cbSession;
-    private RequestQueue mRequestQueue;
-    private JsonObjectRequest jsonObjectRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +53,6 @@ public class UserLogin extends AppCompatActivity {
         logIn = findViewById(R.id.logIn);
         signUp = findViewById(R.id.signUp);
 
-        try {
-            getEncryptedSharedPreferences();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         setSignup(false);
 
         btLogIn.setOnClickListener(new View.OnClickListener() {
@@ -90,10 +68,13 @@ public class UserLogin extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    boolean session = cbSession.isChecked();
-                    //TODO recoger usuario y contraseña server y compararlo con el introducido
-                    getUserFromDB(etLoginUser.getText().toString(), etLoginPwd.getText().toString());
-                    //Toast.makeText(getApplicationContext(), "No error", Toast.LENGTH_SHORT).show();
+                    VolleyRequestManager.init(getApplicationContext());
+                    if(VolleyRequestManager.getUserFromDB(etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked())){
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(i);
+                    }else{
+                        Toast.makeText(getApplicationContext(), getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -143,43 +124,6 @@ public class UserLogin extends AppCompatActivity {
         });
     }
 
-    private void getUserFromDB(String user, String pwd) {
-        mRequestQueue = Volley.newRequestQueue(getApplicationContext());
-        Map<String, String> loginMap = new HashMap<>();
-        loginMap.put("username", user);
-        String encryptedPwd = EncrypterManager.encryptUserPassword(pwd);
-        loginMap.put("password", encryptedPwd);
-
-        jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, URL, new JSONObject(loginMap), new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(getApplicationContext(), "Response: " + response.toString(), Toast.LENGTH_LONG).show();
-                        checkResponse(response.toString(), loginMap, encryptedPwd);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-                        Toast.makeText(getApplicationContext(), "Error " + error.toString(), Toast.LENGTH_LONG).show();
-                    }
-                });
-        mRequestQueue.add(jsonObjectRequest);
-    }
-
-    private void checkResponse(String res, Map<String, String> loginMap, String encryptedPwd) {
-        if (res.equals("false")) {
-            Toast.makeText(getApplicationContext(), "User/Password Incorrect!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), res, Toast.LENGTH_SHORT).show();
-            SharedPreferences.Editor editor = MainActivity.pref.edit();
-            editor.putString("username", (String) loginMap.get("username"));
-            editor.putString("password", encryptedPwd);
-            Intent i = new Intent(getApplicationContext(), BoardSelection.class);
-            startActivity(i);
-        }
-    }
-
     private void setLogin(boolean state) {
         if (state) {
             logIn.setClickable(true);
@@ -212,18 +156,5 @@ public class UserLogin extends AppCompatActivity {
             }
         });
         fadeAnim.start();
-    }
-
-    private void getEncryptedSharedPreferences() throws GeneralSecurityException, IOException {
-        MasterKey key = new MasterKey.Builder(this, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build();
-        encryptedPref = EncryptedSharedPreferences.create(
-                getApplicationContext(),
-                getString(R.string.encrypted_shared_preferences),
-                key,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        );
     }
 }

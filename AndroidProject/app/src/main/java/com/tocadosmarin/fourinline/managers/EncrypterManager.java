@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.managers;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

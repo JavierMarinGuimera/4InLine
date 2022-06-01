@@ -51,4 +51,8 @@
     <string name="dialog_message">Debes seleccionar una opción!</string>
     <string name="dialog_button">Cerrar</string>
     <string name="match_found">Partida encontrada!</string>
+    <string name="btLogOut">Cerrar sesión</string>
+    <string name="dialog_login_message">La sesión ha caducado, vuelve a iniciar sesión.</string>
+    <string name="dialog_login_cancel_bt">Cancelar</string>
+    <string name="dialog_ok_button">Iniciar sesión</string>
 </resources>

@@ -12,23 +12,23 @@
         android:theme="@style/Theme.FourInLine"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".BoardSelection"
+            android:name=".game.BoardSelection"
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".UserLogin"
+            android:name=".login.UserLogin"
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".PreferencesActivity"
+            android:name=".managers.PreferencesActivity"
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".Game"
+            android:name=".game.Game"
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true"
             android:screenOrientation="userLandscape">
             <intent-filter>

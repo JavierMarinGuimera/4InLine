@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.game;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,16 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.main.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Game extends AppCompatActivity {
     private static final int NUMBER_IMAGES = 6;
-    private static final String ICONS[] = {"icon_player_1", "icon_player_2"};
-    private static final String COLORS[] = {"color_player_1", "color_player_2"};
+    private static final String SHARED_PREF_ICONS[] = {"icon_player_1", "icon_player_2"};
+    private static final String SHARED_PREF_COLORS[] = {"color_player_1", "color_player_2"};
     private static GameRunner gameRunner;
     private HashMap<Integer, LinearLayout> layouts = new HashMap<>();
     private List<String> colorsList;
@@ -46,20 +50,20 @@ public class Game extends AppCompatActivity {
     }
 
     private void getPlayerIcons() {
-        List<Drawable> drawableList = new ArrayList<>();
-        for (String icon : ICONS) {
+        Deque<Drawable> drawableList = new LinkedList<>();
+        for (String icon : SHARED_PREF_ICONS) {
             String player_icon = MainActivity.pref.getString(icon, "?");
             id_player_icon = this.getResources().getIdentifier(player_icon, "drawable", this.getPackageName());
             Drawable drawable_player = this.getDrawable(id_player_icon);
             drawableList.add(drawable_player);
         }
-        icon_player_1 = drawableList.get(0);
-        icon_player_2 = drawableList.get(1);
+        icon_player_1 = drawableList.pollFirst();
+        icon_player_2 = drawableList.pollFirst();
     }
 
     private void getPlayerColors() {
         colorsList = new ArrayList<>();
-        for (String color : COLORS) {
+        for (String color : SHARED_PREF_COLORS) {
             String player_color = MainActivity.pref.getString(color, "?");
             colorsList.add(player_color);
         }

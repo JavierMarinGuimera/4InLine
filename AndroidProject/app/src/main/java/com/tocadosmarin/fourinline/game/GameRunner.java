@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.game;
 
 public class GameRunner extends Thread {
     public static boolean isFinished, hasToWait;
