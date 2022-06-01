@@ -1,5 +1,6 @@
 package com.tocados.marin.apps;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -122,6 +123,8 @@ public class ServerApp {
     public static void showMatches() {
         currentGameMatches.forEach((gameMatch) -> {
             System.out.println(gameMatch);
+            System.out.println(gameMatch.getPlayer1().getPlayerSocket().isBound() + ", "
+                    + gameMatch.getPlayer2().getPlayerSocket().isBound());
         });
     }
 

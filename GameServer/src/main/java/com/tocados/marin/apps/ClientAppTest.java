@@ -105,6 +105,12 @@ public class ClientAppTest {
                              */
                             System.out.print("Jugador 1 escribe:");
                             writer.println(JSONManager.mountColumnJson(sc.nextInt()));
+                        } else {
+                            if (serverResponse.containsKey("server_closed")) {
+                                System.out.println("Server cerrado");
+                            } else {
+                                System.out.println("Jugador 2 ha ganado.");
+                            }
                         }
 
                         /**
@@ -131,6 +137,13 @@ public class ClientAppTest {
                             System.out.print("Jugador 2 Escribe:");
                             writer2.println(JSONManager.mountColumnJson(sc.nextInt()));
 
+                        } else {
+                            if (serverResponse.containsKey("server_closed")) {
+                                System.out.println("Server cerrado");
+                            } else {
+                                System.out.println("Jugador 2 ha ganado.");
+                                serverResponse = null;
+                            }
                         }
 
                         /**

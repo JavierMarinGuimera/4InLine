@@ -135,13 +135,14 @@ public class GameMatch extends Thread {
             this.rounds++;
 
             // TODO - Rondas. Ahora mismo si pasas columna no devuelve bien.
-            column = getUserColumn(player1Reader, column);
+            if ((column = getUserColumn(player1Reader, column)) == null)
+                break;
 
             if (checkMatchStatus(column, this.player1, this.player2)) {
-                player1Writer.println(JSONManager.mountColumnAndResultJson(column,
-                        Messages.WINNER));
-                player2Writer.println(JSONManager.mountColumnAndResultJson(column,
-                        Messages.LOSER));
+                player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.WINNER, this.player1.getScore()));
+                player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.LOSER, this.player2.getScore()));
             } else {
                 player2Writer.println(JSONManager.mountColumnJson(column));
                 column = null;
@@ -150,14 +151,15 @@ public class GameMatch extends Thread {
             if (this.matchEnded)
                 break;
 
-            column = getUserColumn(player2Reader, column);
+            if ((column = getUserColumn(player2Reader, column)) == null)
+                break;
 
             // TODO - Enviar al contrincante el resultado.
             if (checkMatchStatus(column, this.player2, this.player1)) {
-                player2Writer.println(JSONManager.mountColumnAndResultJson(column,
-                        Messages.WINNER));
-                player1Writer.println(JSONManager.mountColumnAndResultJson(column,
-                        Messages.LOSER));
+                player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.WINNER, this.player2.getScore()));
+                player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.LOSER, this.player1.getScore()));
             } else {
                 player1Writer.println(JSONManager.mountColumnJson(column));
                 column = null;
@@ -207,6 +209,9 @@ public class GameMatch extends Thread {
                     return column;
                 }
             } catch (IOException e) {
+                if (!ServerApp.run) {
+                    return null;
+                }
                 continue;
             }
         }
