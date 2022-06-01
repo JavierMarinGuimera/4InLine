@@ -1,6 +1,5 @@
 package com.tocados.marin.apps;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;

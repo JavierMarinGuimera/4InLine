@@ -134,7 +134,7 @@ public class GameMatch extends Thread {
         while (!this.matchEnded) {
             this.rounds++;
 
-            // TODO - Rondas. Ahora mismo si pasas columna no devuelve bien.
+            // Returns null if the server is closed.
             if ((column = getUserColumn(player1Reader, column)) == null)
                 break;
 
