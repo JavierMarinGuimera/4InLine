@@ -1,15 +1,13 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.login;
+
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,17 +18,19 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
+import com.tocadosmarin.fourinline.main.MainActivity;
+
 
 public class UserLogin extends AppCompatActivity {
-    public static SharedPreferences encryptedPref;
-    private Button btLogIn, btSignUp;
+
     private LinearLayout logIn, signUp;
-    private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
-    private CheckBox cbSession;
-    private TextView tvSignUp, tvLogIn;
     private ScrollView scLogin;
+    private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
+    private TextView tvSignUp, tvLogIn;
+    private Button btLogIn, btSignUp;
+    private CheckBox cbSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +53,6 @@ public class UserLogin extends AppCompatActivity {
         logIn = findViewById(R.id.logIn);
         signUp = findViewById(R.id.signUp);
 
-        try {
-            getEncryptedSharedPreferences();
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         setSignup(false);
 
         btLogIn.setOnClickListener(new View.OnClickListener() {
@@ -76,18 +68,14 @@ public class UserLogin extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    boolean session = cbSession.isChecked();
-                    //TODO recoger usuario y contraseña server y compararlo con el introducido
-                    String user = encryptedPref.getString("user", "?");
-                    String password = encryptedPref.getString("password", "?");
-                    if (!user.equals(etLoginUser.getText().toString()) || !password.equals(etLoginPwd.getText().toString())) {
-                        Toast.makeText(getApplicationContext(), "User/Password Incorrect!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Intent i = new Intent(getApplicationContext(), BoardSelection.class);
+                    VolleyRequestManager.init(getApplicationContext());
+                    if(VolleyRequestManager.getUserFromDB(etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked())){
+                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(i);
+                    }else{
+                        Toast.makeText(getApplicationContext(), getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
                     }
                 }
-
             }
         });
 
@@ -168,18 +156,5 @@ public class UserLogin extends AppCompatActivity {
             }
         });
         fadeAnim.start();
-    }
-
-    private void getEncryptedSharedPreferences() throws GeneralSecurityException, IOException {
-        MasterKey key = new MasterKey.Builder(this, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
-                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                .build();
-        encryptedPref = EncryptedSharedPreferences.create(
-                getApplicationContext(),
-                getString(R.string.encrypted_shared_preferences),
-                key,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        );
     }
 }

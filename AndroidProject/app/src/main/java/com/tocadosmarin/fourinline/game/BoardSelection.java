@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline;
+package com.tocadosmarin.fourinline.game;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +13,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.main.MainActivity;
+
 public class BoardSelection extends AppCompatActivity {
+    private static boolean hasOpponent = false;
     private Button btPlayGame;
     private RadioGroup rgBoardSize;
     private RadioButton radioButton;
@@ -29,26 +33,37 @@ public class BoardSelection extends AppCompatActivity {
         btPlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int id = rgBoardSize.getCheckedRadioButtonId();
-                if (id == -1) {
+                int selectedOption = rgBoardSize.getCheckedRadioButtonId();
+                if (selectedOption == -1) {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
                     dialog.setTitle(R.string.dialog_title);
                     dialog.setMessage(R.string.dialog_message);
                     dialog.setCancelable(false);
                     dialog.setPositiveButton(R.string.dialog_button, new
                             DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialogo1, int id) {
+                                public void onClick(DialogInterface dialog, int id) {
                                 }
                             });
                     dialog.show();
                 } else {
-                    int selectedId = rgBoardSize.getCheckedRadioButtonId();
-                    radioButton = (RadioButton) findViewById(selectedId);
+                    radioButton = (RadioButton) findViewById(selectedOption);
 
                     SharedPreferences.Editor editor = MainActivity.pref.edit();
-                    editor.putString("board_size",radioButton.getText().toString());
+                    editor.putInt("board_size", Integer.parseInt(radioButton.getText().toString()));
                     editor.commit();
 
+                    //GameRunner.
+                    //TODO crear animacion espera
+
+                    /*synchronized (BoardSelection.class) {
+                        while (!hasOpponent) {
+                            try {
+                                wait();
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    }*/
+                    Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(getApplicationContext(), Game.class);
                     startActivity(i);
                 }

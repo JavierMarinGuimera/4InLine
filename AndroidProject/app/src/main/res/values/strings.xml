@@ -43,11 +43,16 @@
     <string name="cb_session">Keep signed in</string>
     <string name="login_text">Log In</string>
     <string name="signup_text">You do not have an account? Sign up</string>
-    <string name="radio_button_size_9">9x9</string>
-    <string name="radio_button_size_7">7x7</string>
-    <string name="radio_button_size_5">5x5</string>
+    <string name="radio_button_size_9">9</string>
+    <string name="radio_button_size_7">7</string>
+    <string name="radio_button_size_5">5</string>
     <string name="board_textview">Select the size of the board</string>
     <string name="dialog_title">Warning!</string>
     <string name="dialog_message">You must select an option!</string>
     <string name="dialog_button">Close</string>
+    <string name="match_found">Match found!</string>
+    <string name="btLogOut">Log out</string>
+    <string name="dialog_login_message">The session has expired, please log in again.</string>
+    <string name="dialog_login_cancel_bt">Not now</string>
+    <string name="dialog_ok_button">Log in</string>
 </resources>
