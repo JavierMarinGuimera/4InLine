@@ -18,7 +18,8 @@ public class JSONManager {
      * "column": 7,
      * "result": "winner",
      * "hasOponent": true,
-     * "position": 1
+     * "position": 1,
+     * "serverClosed": true
      * }
      */
 
@@ -27,10 +28,14 @@ public class JSONManager {
     public static final String RESULT = "result";
     public static final String OPONENT = "hasOponent";
     public static final String POSITION = "position";
+    public static final String SERVER_CLOSED = "server_closed";
 
     private JSONManager() {
     }
 
+    /**
+     * Management methods:
+     */
     public static String getStringFromMap(Map<String, Object> map) {
         return new JSONObject(map).toString();
     }
@@ -49,13 +54,27 @@ public class JSONManager {
     }
 
     /**
+     * -----------------------------------------------------------
+     */
+
+    /**
      * Mount custom json passing username and columns.
      * 
      * @param column
      * @return
      */
     public static String mountUsernameAndColumnJson(String username, Integer column) {
-        return mountFullJson(username, column, Messages.NOTHING, false, 0);
+        return mountFullJson(username, column, Messages.NOTHING, false, 0, false);
+    }
+
+    /**
+     * Mount custom json passing if oponent is found.
+     * 
+     * @param hasOponent
+     * @return
+     */
+    public static String mountHasOponentJson(Integer position) {
+        return mountFullJson("", 0, Messages.NOTHING, true, position, false);
     }
 
     /**
@@ -65,7 +84,7 @@ public class JSONManager {
      * @return
      */
     public static String mountColumnJson(Integer column) {
-        return mountFullJson("", column, Messages.NOTHING, false, 0);
+        return mountFullJson("", column, Messages.NOTHING, false, 0, false);
     }
 
     /**
@@ -76,37 +95,40 @@ public class JSONManager {
      * @return
      */
     public static String mountColumnAndResultJson(Integer column, Messages result) {
-        return mountFullJson("", column, result, false, 0);
+        return mountFullJson("", column, result, false, 0, false);
     }
 
     /**
-     * Mount custom json passing if oponent is found.
+     * Mount custom json passing serverClose.
      * 
-     * @param hasOponent
+     * @param serverClose
      * @return
      */
-    public static String mountHasOponentJson(Boolean hasOponent, Integer position) {
-        return mountFullJson("", 0, Messages.NOTHING, hasOponent, position);
+    public static String mountServerCloseJson() {
+        return mountFullJson("", 0, Messages.NOTHING, false, 0, true);
     }
 
     private static String mountFullJson(String username, Integer column, Messages result, Boolean hasOponent,
-            Integer position) {
+            Integer position, Boolean serverClose) {
         Map<String, Object> jsonMap = new HashMap<>();
 
         if (!username.equals(""))
             jsonMap.put(USERNAME, username);
 
-        if (column > 0)
+        if (column > -1)
             jsonMap.put(COLUMN, column);
 
         if (!result.equals(Messages.NOTHING))
-            jsonMap.put(RESULT, result);
+            jsonMap.put(RESULT, result.getMessage());
 
         if (hasOponent)
             jsonMap.put(OPONENT, true);
 
         if (position > 0)
             jsonMap.put(POSITION, position);
+
+        if (serverClose)
+            jsonMap.put(SERVER_CLOSED, true);
 
         return new JSONObject(jsonMap).toString();
     }

@@ -10,6 +10,7 @@ public class MessageManager {
         WAITING_USER_RESPONSE("Waiting user response..."),
         USER_FOUND("User found!"),
         MATCH_FOUND("Match found!"),
+        MATCH_ENDED("Match ended!"),
         WINNER("winner"),
         LOSER("loser"),
         NOTHING("");

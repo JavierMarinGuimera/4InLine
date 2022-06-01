@@ -9,13 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.tocados.marin.managers.ConsoleManager;
-import com.tocados.marin.managers.HTTPManager;
-import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager;
-import com.tocados.marin.managers.PropertiesManager;
-import com.tocados.marin.managers.HTTPManager.Paths;
 import com.tocados.marin.managers.MessageManager.Messages;
-import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 import com.tocados.marin.models.GameMatch;
 import com.tocados.marin.models.Player;
 
@@ -32,7 +27,6 @@ public class ServerApp {
             put(9, null);
         }
     };
-    private static List<Player> pendingPlayers = new ArrayList<>();
     private static List<GameMatch> currentGameMatches = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
@@ -55,13 +49,11 @@ public class ServerApp {
 
             // Wait the user connection with the server.
             try {
-                pendingPlayers.add(new Player(serverSocket.accept()));
+                checkListForMatches(new Player(serverSocket.accept()));
                 MessageManager.showXMessage(Messages.USER_FOUND);
             } catch (SocketTimeoutException e) {
                 continue;
             }
-
-            checkListForMatches();
         }
 
         if (serverSocket != null) {
@@ -75,23 +67,28 @@ public class ServerApp {
      * @return True if worked; false if not.
      */
     private static Boolean loginServer() {
-        Map<String, Object> jsonMap = JSONManager
-                .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap()));
+        /**
+         * TODO - Activar esto cuando finalice todo.
+         */
+        // Map<String, Object> jsonMap = JSONManager
+        // .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH,
+        // PropertiesManager.getLoginMap()));
 
-        if (jsonMap == null || !jsonMap.containsKey("token")) {
-            return false;
-        }
+        // if (jsonMap == null || !jsonMap.containsKey("token")) {
+        // return false;
+        // }
 
-        PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String) jsonMap.get("token"));
+        // PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String)
+        // jsonMap.get("token"));
 
         return true;
     }
 
-    public static void checkListForMatches() {
-        for (Player player : pendingPlayers) {
-            checkCurrentPlayers(player, 5);
-            checkCurrentPlayers(player, 7);
-            checkCurrentPlayers(player, 9);
+    public static void checkListForMatches(Player newPlayer) {
+        for (Map.Entry<Integer, Player> playerWaiting : playersWaiting.entrySet()) {
+            if (playerWaiting != null) {
+                checkCurrentPlayers(newPlayer, playerWaiting.getKey());
+            }
         }
     }
 
@@ -101,6 +98,8 @@ public class ServerApp {
 
             if (playersWaiting.get(columns) != null) {
                 startMatch(playersWaiting.get(columns), player, columns);
+
+                // Remove the player waiting on
                 playersWaiting.put(columns, null);
             } else {
                 playersWaiting.put(columns, player);
@@ -110,6 +109,7 @@ public class ServerApp {
 
     private static void startMatch(Player player1, Player player2, Integer columns) {
         MessageManager.showXMessage(Messages.MATCH_FOUND);
+        System.out.println();
         GameMatch gameMatch = new GameMatch(player1, player2, columns);
         gameMatch.start();
         currentGameMatches.add(gameMatch);
@@ -123,6 +123,10 @@ public class ServerApp {
         currentGameMatches.forEach((gameMatch) -> {
             System.out.println(gameMatch);
         });
+    }
+
+    public static void endMatch(GameMatch gameMatch) {
+        currentGameMatches.remove(gameMatch);
     }
 
     public static void showPlayersCount() {

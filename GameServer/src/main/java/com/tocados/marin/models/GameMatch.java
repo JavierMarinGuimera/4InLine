@@ -8,11 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import com.tocados.marin.apps.ServerApp;
 import com.tocados.marin.managers.JSONManager;
+import com.tocados.marin.managers.MessageManager;
 import com.tocados.marin.managers.MessageManager.Messages;
 
 public class GameMatch extends Thread {
     private static int TIMEOUT = 10000;
+    private static int MAX_ROWS = 6;
 
     private Player player1;
     private Player player2;
@@ -118,11 +121,13 @@ public class GameMatch extends Thread {
 
         // Player 2 streams;
         BufferedReader player2Reader = this.player2.getReader();
-        PrintStream player2Writer = this.player1.getWriter();
+        PrintStream player2Writer = this.player2.getWriter();
 
         // Send to the users that they have a match and what is their position.
-        player1Writer.println(JSONManager.mountHasOponentJson(true, 1));
-        player2Writer.println(JSONManager.mountHasOponentJson(true, 2));
+        player1.setPosition(1);
+        player2.setPosition(2);
+        player1Writer.println(JSONManager.mountHasOponentJson(1));
+        player2Writer.println(JSONManager.mountHasOponentJson(2));
 
         Integer column = null;
 
@@ -131,21 +136,37 @@ public class GameMatch extends Thread {
 
             // TODO - Rondas. Ahora mismo si pasas columna no devuelve bien.
             column = getUserColumn(player1Reader, column);
+
+            if (checkMatchStatus(column, this.player1, this.player2)) {
+                player1Writer.println(JSONManager.mountColumnAndResultJson(column,
+                        Messages.WINNER));
+                player2Writer.println(JSONManager.mountColumnAndResultJson(column,
+                        Messages.LOSER));
+            } else {
+                player2Writer.println(JSONManager.mountColumnJson(column));
+                column = null;
+            }
+
             if (this.matchEnded)
                 break;
-            checkMatchStatus(column, this.player1, this.player2);
-
-            column = null;
 
             column = getUserColumn(player2Reader, column);
-            if (this.matchEnded)
-                break;
-            checkMatchStatus(column, this.player2, this.player1);
+
+            // TODO - Enviar al contrincante el resultado.
+            if (checkMatchStatus(column, this.player2, this.player1)) {
+                player2Writer.println(JSONManager.mountColumnAndResultJson(column,
+                        Messages.WINNER));
+                player1Writer.println(JSONManager.mountColumnAndResultJson(column,
+                        Messages.LOSER));
+            } else {
+                player1Writer.println(JSONManager.mountColumnJson(column));
+                column = null;
+            }
+
+            System.out.println(this.board);
         }
 
-        if (this.player1.getIsWinner() != null) {
-            sendPlayerMessages(player1Writer, player2Writer);
-        } else {
+        if (this.player1.getIsWinner() == null) {
             closePlayers(player1Writer, player2Writer);
         }
 
@@ -158,9 +179,20 @@ public class GameMatch extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        MessageManager.showXMessage(Messages.MATCH_ENDED);
+        ServerApp.endMatch(this);
     }
 
+    /**
+     * Read the column of the current user playing.
+     * 
+     * @param playerReader
+     * @param column
+     * @return
+     */
     private Integer getUserColumn(BufferedReader playerReader, Integer column) {
+        System.out.println(column);
         while (column == null) {
             try {
                 if (this.player1.getIsWinner() == null && this.player2.getIsWinner() == null && !this.matchEnded) {
@@ -170,6 +202,7 @@ public class GameMatch extends Thread {
                     // User column
                     column = (Integer) JSONManager.getMapFromJsonString(playerRequest)
                             .get(JSONManager.COLUMN);
+                    return column;
                 } else {
                     return column;
                 }
@@ -180,42 +213,59 @@ public class GameMatch extends Thread {
         return column;
     }
 
-    private void checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {
-        playerPlaying.setScore(playerPlaying.getScore() + 5);
+    /**
+     * Check the match status with the new chip.
+     * 
+     * @param column         The new chip column.
+     * @param playerPlaying  The player that has entered the chip.
+     * @param playerToNotify The player that is waiting the response.
+     * @return true if the current player won the match; false if not won.
+     */
+    private Boolean checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {
+        if (this.board.get(column).size() < MAX_ROWS) {
+            // TODO - Meter ficha en stack.
+            this.board.get(column).add(playerPlaying.getPosition());
+            playerPlaying.setScore(playerPlaying.getScore() + 5);
 
-        List<Integer[]> chipsCoordenates = getArroundChipsMap(column);
-        Integer wins = 0;
+            List<Integer[]> chipsCoordenates = getArroundChipsMap(column, this.board.get(column).size() - 1);
+            Integer wins = 0;
 
-        if (chipsCoordenates != null) {
-            for (Integer[] map : chipsCoordenates) {
-                if (checkFor4InLine(map, column, this.board.get(column).size() - 1)) {
-                    playerPlaying.setIsWinner(true);
-                    playerToNotify.setIsWinner(false);
-                    this.matchEnded = true;
+            if (chipsCoordenates != null) {
+                for (Integer[] map : chipsCoordenates) {
+                    if (checkFor4InLine(map, column, Math.max(this.board.get(column).size() - 1, 0))) {
+                        playerPlaying.setIsWinner(true);
+                        playerToNotify.setIsWinner(false);
+                        wins++;
+                        this.matchEnded = true;
+                    }
                 }
             }
-        }
 
-        if (wins != 0) {
-            if (wins == 1) {
+            if (wins != 0) {
+                if (wins == 1) {
+                    playerPlaying.setScore(playerPlaying.getScore() + 20);
+                } else if (wins > 1) {
+                    playerPlaying.setScore(playerPlaying.getScore() + 50);
+                }
 
-            } else if (wins > 1) {
-
+                return true;
             }
         }
+
+        return false;
     }
 
     /**
      * Mounts a map with the chips arround the last one entered by the user
      */
-    private List<Integer[]> getArroundChipsMap(Integer column) {
+    private List<Integer[]> getArroundChipsMap(Integer column, Integer row) {
         List<Integer[]> chipsCoordenates = new ArrayList<>();
 
         // If the column is the first one, the start value will be 0.
         Integer x = Math.max(column - 1, 0);
 
         // If the row is the first one, the start value will be 0.
-        Integer y = Math.max(this.board.get(column).size() - 1, 0);
+        Integer y = Math.max(this.board.get(column).size() - 2, 0);
 
         for (int i = x; i < Math.min(x + 3, this.board.size()); i++) {
             /**
@@ -230,7 +280,7 @@ public class GameMatch extends Thread {
              * On the example, the first column will not be read, the second will only read
              * the bottom "o" and on the third will read only the "x".
              */
-            if (this.board.get(i).size() >= y) {
+            if (this.board.get(i).size() - 2 >= y) {
                 for (int j = y; j < Math.min(y + 3, this.board.get(i).size()); j++) {
                     /**
                      * If we are looking on the newest user's chip, we will be avoid it.
@@ -238,20 +288,32 @@ public class GameMatch extends Thread {
                      * Else if: Will check if the newest user's chip is the same chip that we are
                      * checking right now.
                      */
-                    if ((i == column && j == this.board.get(column).size())) {
+                    if ((i == column && j == this.board.get(column).size() - 1)) {
                         continue;
-                    } else if (this.board.get(column).get(y + 2) == this.board.get(i).get(j)) {
+                    } else if (this.board.get(column) != null
+                            && (this.board.get(column).get(row) == this.board.get(i).get(j))) {
                         chipsCoordenates.add(new Integer[] { i, j });
                     }
                 }
             }
         }
 
-        this.board.get(column).size();
+        System.out.println(chipsCoordenates.size());
 
         return chipsCoordenates;
     }
 
+    /**
+     * Check if we have a 4 in line.
+     * 
+     * @param map        Integer array with 2 values of one of the closest chips.
+     *                   First value = x, second value = y.
+     * @param chipColumn The last entered chip column to calculate the direction of
+     *                   the 4 in line.
+     * @param chipRow    The last entered chip row to calculate the direction of the
+     *                   4 in line.
+     * @return True if 4 in line is encountered, false if not.
+     */
     private Boolean checkFor4InLine(Integer[] map, Integer chipColumn, Integer chipRow) {
         Integer newestChip = this.board.get(chipColumn).get(chipRow), currentChip;
         Integer x = map[0], y = map[1];
@@ -259,29 +321,23 @@ public class GameMatch extends Thread {
         Integer xDirection = (Math.max(x, chipColumn) - Math.min(x, chipColumn)),
                 yDirection = (Math.max(y, chipRow) - Math.min(y, chipRow));
 
-        for (int i = 0; i < 4; i++) {
-            x -= xDirection;
-            y -= yDirection;
+        for (int i = 0; i < 3; i++) {
+            if (x < 0 || y < 0)
+                return false;
+
             currentChip = this.board.get(x).get(y);
             if (currentChip == null || currentChip != newestChip)
                 return false;
+
+            x -= xDirection;
+            y -= yDirection;
         }
 
         return true;
     }
 
-    private void sendPlayerMessages(PrintStream player1Writer, PrintStream player2Writer) {
-        if (this.player1.getIsWinner()) {
-            player1Writer.println(Messages.WINNER);
-            player2Writer.println(Messages.LOSER);
-        } else {
-            player1Writer.println(Messages.LOSER);
-            player2Writer.println(Messages.WINNER);
-        }
-    }
-
     private void closePlayers(PrintStream player1Writer, PrintStream player2Writer) {
-        // player1Writer.println(JSONManager.);
-        // player2Writer.println(x);
+        player1Writer.println(JSONManager.mountServerCloseJson());
+        player2Writer.println(JSONManager.mountServerCloseJson());
     }
 }

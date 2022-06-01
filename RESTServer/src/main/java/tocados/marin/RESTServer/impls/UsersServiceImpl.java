@@ -48,8 +48,10 @@ public class UsersServiceImpl implements UsersService {
      */
 
     @Override
-    public List<UserDTO> getUsers() {
-        return UserDTO.transformUserListToDTO((List<User>) usersRepository.findAll());
+    public Map<String, Object> getUsers() {
+        Map<String, Object> usersMap = new HashMap<>();
+        usersMap.put("users", UserDTO.transformUserListToDTO((List<User>) usersRepository.findAll()));
+        return usersMap;
     }
 
     @Override
@@ -63,19 +65,24 @@ public class UsersServiceImpl implements UsersService {
      */
 
     @Override
-    public Boolean insertUser(User user) {
+    public Map<String, Object> insertUser(User user) {
+        Map<String, Object> responseMap = new HashMap<>();
         if (getUserFromUsername(user.getUsername()) != null) {
-            return false;
+            responseMap.put("created", false);
+            responseMap.put("error", "user exists");
+        } else {
+            user.setPassword(user.getPassword());
+
+            User createdUser = usersRepository.save(user);
+
+            tokensRepository.save(
+                    new Token(createdUser, TokensManager.generateRandomToken(),
+                            new Timestamp(System.currentTimeMillis())));
+
+            responseMap.put("created", true);
         }
 
-        user.setPassword(user.getPassword());
-
-        User createdUser = usersRepository.save(user);
-
-        tokensRepository.save(
-                new Token(createdUser, TokensManager.generateRandomToken(), new Timestamp(System.currentTimeMillis())));
-
-        return true;
+        return responseMap;
     }
 
     @Override
@@ -90,40 +97,23 @@ public class UsersServiceImpl implements UsersService {
             return null;
         }
 
-        Map<String, Object> tokenMap = new HashMap<>();
+        Map<String, Object> responseMap = new HashMap<>();
         Token token = userFromDDBB.getToken();
 
         // Check if this user has token that is not expired.
         if (token != null && TokensManager.isValidToken(token)) {
             // Return the current token because is still valid.
-            tokenMap.put("token", token.getCurrent_token());
+            responseMap.put("token", token.getCurrent_token());
         } else {
             // Update the current user token and the creation date and returning it.
             token.setCurrent_token(TokensManager.generateRandomToken());
             token.setCreation_date(new Timestamp(System.currentTimeMillis()));
-            tokenMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
+            responseMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
         }
 
-        return tokenMap;
-    }
+        responseMap.put("expiration_time", token.getCreation_date().getTime());
 
-    @Override
-    public Boolean logOut(Map<String, String> json) {
-        String username = "";
-        String token = "";
-
-        try {
-            username = json.get("username");
-            token = json.get("token");
-        } catch (Exception e) {
-            return false;
-        }
-
-        // Search user from username on DDBB to know if exist.
-        User userFromDDBB = getUserFromUsername(username);
-
-        return userFromDDBB != null && userFromDDBB.getToken().getCurrent_token().equals(token)
-                && TokensManager.isValidToken(userFromDDBB.getToken());
+        return responseMap;
     }
 
     /**
@@ -133,11 +123,14 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Boolean updateUser(Map<String, Object> json) {
+    public Map<String, Object> updateUser(Map<String, Object> json) {
+        Map<String, Object> responseMap = new HashMap<>();
         if (!json.containsKey("user")
                 || !json.containsKey("userUpdated")
-                || !json.containsKey("token"))
-            return false;
+                || !json.containsKey("token")) {
+            responseMap.put("updated", false);
+            responseMap.put("error", "previus user structure incorrect");
+        }
 
         HashMap<String, String> user = (HashMap<String, String>) json.get("user");
         HashMap<String, String> userUpdated = (HashMap<String, String>) json.get("userUpdated");
@@ -146,9 +139,10 @@ public class UsersServiceImpl implements UsersService {
         if (!user.containsKey("username")
                 || !user.containsKey("password")
                 || !userUpdated.containsKey("username")
-                || !userUpdated.containsKey("password"))
-            return false;
-
+                || !userUpdated.containsKey("password")) {
+            responseMap.put("updated", false);
+            responseMap.put("error", "new user structure incorrect");
+        }
         // Search user from username on DDBB to know if exist.
         User userFromDDBB = getUserFromUsername(user.get("username"));
 
@@ -157,10 +151,15 @@ public class UsersServiceImpl implements UsersService {
             userFromDDBB.setPassword(userUpdated.get("password"));
             usersRepository.save(userFromDDBB);
 
-            return true;
+            responseMap.put("updated", true);
         }
 
-        return false;
+        if (!responseMap.containsKey("updated")) {
+            responseMap.put("updated", false);
+            responseMap.put("error", "structure incorrect");
+        }
+
+        return responseMap;
     }
 
     /**
@@ -169,13 +168,16 @@ public class UsersServiceImpl implements UsersService {
      */
 
     @Override
-    public Boolean deleteUserFromUsername(Map<String, String> json) {
+    public Map<String, Object> deleteUserFromUsername(Map<String, String> json) {
+        Map<String, Object> responseMap = new HashMap<>();
+
         String username = json.get("username");
         String password = json.get("password");
         String token = json.get("token");
 
         if (username == null || password == null || token == null) {
-            return false;
+            responseMap.put("deleted", false);
+            responseMap.put("error", "structure incorrect");
         }
 
         // Search user from username on DDBB to know if exist.
@@ -184,9 +186,14 @@ public class UsersServiceImpl implements UsersService {
         if (checkIfUserIsValid(userFromDDBB, password, token)) {
 
             usersRepository.delete(userFromDDBB);
-            return true;
+            responseMap.put("deleted", true);
         }
 
-        return false;
+        if (!responseMap.containsKey("deleted")) {
+            responseMap.put("deleted", false);
+            responseMap.put("error", "user invalid");
+        }
+
+        return responseMap;
     }
 }

@@ -1,6 +1,5 @@
 package tocados.marin.RESTServer.controllers;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tocados.marin.RESTServer.models.score.ScoreDTO;
 import tocados.marin.RESTServer.services.ScoresService;
 
 @RestController
@@ -21,7 +19,7 @@ public class ScoresController {
 
     @GetMapping
     @RequestMapping("/top")
-    public List<ScoreDTO> getTopScores() {
+    public Map<String, Object> getTopScores() {
         return scoresService.getTopScores();
     }
 
@@ -34,7 +32,7 @@ public class ScoresController {
      */
     @GetMapping
     @RequestMapping("/user_top")
-    public List<ScoreDTO> getUserTopScores(@RequestBody Map<String, Object> json) {
+    public Map<String, Object> getUserTopScores(@RequestBody Map<String, Object> json) {
         return scoresService.getUserTopScores(json);
     }
 
@@ -56,7 +54,7 @@ public class ScoresController {
      */
     @PostMapping
     @RequestMapping("/insert_score")
-    public Boolean insertScore(@RequestBody Map<String, Object> json) {
+    public Map<String, Object> insertScore(@RequestBody Map<String, Object> json) {
         return scoresService.insertScore(json);
     }
 }
