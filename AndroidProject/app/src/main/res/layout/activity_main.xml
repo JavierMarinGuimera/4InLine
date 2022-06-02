@@ -38,14 +38,6 @@
         app:layout_constraintStart_toStartOf="@+id/btPreferences"
         app:layout_constraintTop_toBottomOf="@+id/btPreferences" />
 
-    <LinearLayout
-        android:layout_width="118dp"
-        android:layout_height="335dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
-
     <Button
         android:id="@+id/btPreferences"
         android:layout_width="wrap_content"
@@ -60,10 +52,19 @@
         android:id="@+id/btLogOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/btLogOut"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvUser" />
+
+    <TextView
+        android:id="@+id/tvUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btLogOut"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

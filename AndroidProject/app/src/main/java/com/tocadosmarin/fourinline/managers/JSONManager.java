@@ -33,7 +33,6 @@ public class JSONManager {
         return new JSONObject(map).toString();
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, Object> getMapFromJsonString(String jsonString) {
         try {
             return (Map<String, Object>) new ObjectMapper().readValue(jsonString, Map.class);

@@ -55,4 +55,6 @@
     <string name="dialog_login_message">The session has expired, please log in again.</string>
     <string name="dialog_login_cancel_bt">Not now</string>
     <string name="dialog_ok_button">Log in</string>
+    <string name="dialog_logout_title">Are you sure you want to exit?</string>
+    <string name="bt_confirm">Yes</string>
 </resources>

@@ -2,6 +2,7 @@ package com.tocadosmarin.fourinline.managers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
@@ -15,7 +16,7 @@ import java.security.GeneralSecurityException;
 public class EncryptedSharedPreferencesManager extends AppCompatActivity {
     public static SharedPreferences encryptedPref;
 
-    private EncryptedSharedPreferencesManager(){
+    private EncryptedSharedPreferencesManager() {
     }
 
     public static void getEncryptedSharedPreferences(Context context) throws GeneralSecurityException, IOException {
@@ -29,5 +30,11 @@ public class EncryptedSharedPreferencesManager extends AppCompatActivity {
                 EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                 EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         );
+    }
+
+    public static void clearUserLoginPreferences() {
+        SharedPreferences.Editor editor = encryptedPref.edit();
+        editor.clear();
+        editor.commit();
     }
 }

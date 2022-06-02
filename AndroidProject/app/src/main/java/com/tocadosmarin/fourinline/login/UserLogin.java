@@ -7,7 +7,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,22 +20,23 @@ import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
 import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
-import com.tocadosmarin.fourinline.main.MainActivity;
 
 
 public class UserLogin extends AppCompatActivity {
-
     private LinearLayout logIn, signUp;
     private ScrollView scLogin;
     private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
     private TextView tvSignUp, tvLogIn;
     private Button btLogIn, btSignUp;
     private CheckBox cbSession;
+    private Activity father;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
+        this.father = this;
 
         etLoginUser = findViewById(R.id.etLoginUser);
         etLoginPwd = findViewById(R.id.etLoginPwd);
@@ -54,6 +55,7 @@ public class UserLogin extends AppCompatActivity {
         signUp = findViewById(R.id.signUp);
 
         setSignup(false);
+        VolleyRequestManager.init(getApplicationContext());
 
         btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,13 +70,7 @@ public class UserLogin extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    VolleyRequestManager.init(getApplicationContext());
-                    if(VolleyRequestManager.getUserFromDB(etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked())){
-                        Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(i);
-                    }else{
-                        Toast.makeText(getApplicationContext(), getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
-                    }
+                    VolleyRequestManager.getUserFromDB(father, getApplicationContext(), etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked());
                 }
             }
         });
