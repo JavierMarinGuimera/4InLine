@@ -154,7 +154,6 @@ public class GameMatch extends Thread {
             if ((column = getUserColumn(player2Reader, column)) == null)
                 break;
 
-            // TODO - Enviar al contrincante el resultado.
             if (checkMatchStatus(column, this.player2, this.player1)) {
                 player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
                         Messages.WINNER, this.player2.getScore()));
@@ -228,7 +227,6 @@ public class GameMatch extends Thread {
      */
     private Boolean checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {
         if (this.board.get(column).size() < MAX_ROWS) {
-            // TODO - Meter ficha en stack.
             this.board.get(column).add(playerPlaying.getPosition());
             playerPlaying.setScore(playerPlaying.getScore() + 5);
 
@@ -320,6 +318,8 @@ public class GameMatch extends Thread {
      * @return True if 4 in line is encountered, false if not.
      */
     private Boolean checkFor4InLine(Integer[] map, Integer chipColumn, Integer chipRow) {
+        // TODO - Comprobación 4 en raya diagonal.
+
         Integer newestChip = this.board.get(chipColumn).get(chipRow), currentChip;
         Integer x = map[0], y = map[1];
 

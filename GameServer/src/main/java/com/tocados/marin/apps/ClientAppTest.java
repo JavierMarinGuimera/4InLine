@@ -35,7 +35,15 @@ public class ClientAppTest {
 
             writer.println(JSONManager.mountUsernameAndColumnJson(sc.nextLine(), 5));
 
-            String serverResponseOnCreation = reader.readLine();
+            String serverResponseOnCreation = null;
+
+            while (serverResponseOnCreation == null) {
+                try {
+                    serverResponseOnCreation = reader.readLine();
+                } catch (Exception e) {
+                    continue;
+                }
+            }
 
             /**
              * Check if the server get the user correctly (will return "ERROR" if its not

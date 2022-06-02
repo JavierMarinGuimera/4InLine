@@ -40,8 +40,8 @@ public class HTTPManager {
     private static final Integer TIMEOUT = 5000;
 
     public static void main(String[] args) {
-        makeRequest(Paths.USERS_GET_ALL_PATH, null);
-        makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap());
+        System.out.println(makeRequest(Paths.USERS_GET_ALL_PATH, null));
+        System.out.println(makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap()));
         // makeRequest(Paths.USERS_REGISTER_PATH, new HashMap<>());
         // makeRequest(Paths.SCORES_INSERT_ONE, new HashMap<>());
     }
@@ -62,8 +62,10 @@ public class HTTPManager {
         try {
             HttpURLConnection connection = getMountedConnection(path.getPath(), path.getRequestMethod());
 
-            if (map != null)
+            if (map != null) {
+                System.out.println(map);
                 sendToServer(JSONManager.getStringFromMap(map), connection);
+            }
 
             return receiveFromTheServer(connection);
 
