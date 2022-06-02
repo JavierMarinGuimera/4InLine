@@ -1,5 +1,0 @@
-INDEX VERSION 1.131
-C:\Users\Javier\Desktop\DAM\Proyecto_final\4InLine\RESTService\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\2262378127.index
-\phonebook\src\main\java
-C:\Users\Javier\Desktop\DAM\Proyecto_final\4InLine\RESTService\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1772438459.index
-\phonebook\src\main\java

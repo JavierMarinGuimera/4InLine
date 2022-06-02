@@ -1,7 +1,0 @@
-INDEX VERSION 1.4+C:\Users\Javier\Desktop\DAM\Proyecto_final\4InLine\RESTService\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-3505891024.index
-816454723.index
-1572006967.index
-1723642987.index
-1662149474.index
-2544779811.index
