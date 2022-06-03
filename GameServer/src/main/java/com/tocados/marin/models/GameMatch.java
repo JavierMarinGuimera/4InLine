@@ -278,7 +278,7 @@ public class GameMatch extends Thread {
              * 1 2 3
              * _ X _
              * _ o x
-             * x o o
+             * x o o x
              * 
              * On the example, the first column will not be read, the second will only read
              * the bottom "o" and on the third will read only the "x".
@@ -323,19 +323,25 @@ public class GameMatch extends Thread {
         Integer newestChip = this.board.get(chipColumn).get(chipRow), currentChip;
         Integer x = map[0], y = map[1];
 
-        Integer xDirection = (Math.max(x, chipColumn) - Math.min(x, chipColumn)),
-                yDirection = (Math.max(y, chipRow) - Math.min(y, chipRow));
+        Integer xDirection = x - chipColumn,
+                yDirection = y - chipRow;
 
         for (int i = 0; i < 3; i++) {
             if (x < 0 || y < 0)
                 return false;
 
-            currentChip = this.board.get(x).get(y);
+            if (x > this.board.size() - 1 || this.board.get(x) == null
+                    || y > this.board.get(x).size() || this.board.get(x).get(y) == null) {
+                currentChip = null;
+            } else {
+                currentChip = this.board.get(x).get(y);
+            }
+
             if (currentChip == null || currentChip != newestChip)
                 return false;
 
-            x -= xDirection;
-            y -= yDirection;
+            x += xDirection;
+            y += yDirection;
         }
 
         return true;

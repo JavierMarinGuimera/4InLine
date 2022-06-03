@@ -29,7 +29,7 @@
             "type": "java",
             "name": "Launch ClientAppTest",
             "request": "launch",
-            "mainClass": "com.tocados.marin.apps.ClientAppTest",
+            "mainClass": "com.tocados.marin.apps.client.ClientAppTest",
             "projectName": "gameserver"
         }
     ]
