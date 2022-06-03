@@ -10,21 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 
 public class JSONManager {
-
-    /**
-     * JSON possible structure:
-     * <p>
-     * {
-     * "column": 7,
-     * "result": "winner",
-     * "hasOponent": true,
-     * "position": 1
-     * }
-     */
-
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String COLUMN = "column";
+    public static final String OPONENT = "hasOponent";
+    public static final String POSITION = "position";
 
     private JSONManager() {
     }

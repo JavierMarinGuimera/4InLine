@@ -21,12 +21,16 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Game extends AppCompatActivity {
     private static final int NUMBER_IMAGES = 6;
     private static final String SHARED_PREF_ICONS[] = {"icon_player_1", "icon_player_2"};
     private static final String SHARED_PREF_COLORS[] = {"color_player_1", "color_player_2"};
-    private static GameRunner gameRunner;
+
+    public static Integer playerPosition;
+    public static boolean canIWrite;
+
     private HashMap<Integer, LinearLayout> layouts = new HashMap<>();
     private List<String> colorsList;
     private LinearLayout mainLayout;
@@ -41,8 +45,6 @@ public class Game extends AppCompatActivity {
 
         mainLayout = findViewById(R.id.mainLayout);
 
-
-        //TODO buscar partida con otro jugador que haya seleccionado el mismo tamaño de tablero, una vez encontrada:
         getPlayerIcons();
         getPlayerColors();
         prepareBoard();
@@ -92,13 +94,18 @@ public class Game extends AppCompatActivity {
     }
 
     private void addLayoutListeners() {
-        for (LinearLayout layout : layouts.values()) {
-            layout.setOnClickListener(new View.OnClickListener() {
+        for (Map.Entry<Integer, LinearLayout> layout : layouts.entrySet()) {
+            layout.getValue().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO mandar datos al servidor
-                    if (layout.getChildCount() < NUMBER_IMAGES){
-                        printImage(layout);
+                    if (canIWrite) {
+                        synchronized (ClientRunner.class) {
+                            ClientRunner.column = layout.getKey();
+                            ClientRunner.class.notify();
+                        }
+                        if (layout.getValue().getChildCount() < NUMBER_IMAGES) {
+                            printImage(layout.getValue());
+                        }
                     }
                 }
             });
@@ -114,5 +121,10 @@ public class Game extends AppCompatActivity {
         layoutParams.gravity = Gravity.CENTER;
         iv.setLayoutParams(layoutParams);
         layout.addView(iv);
+    }
+
+    public static void setPlayerPosition(Integer position) {
+        playerPosition = position;
+        canIWrite = (position == 1 ? true : false);
     }
 }

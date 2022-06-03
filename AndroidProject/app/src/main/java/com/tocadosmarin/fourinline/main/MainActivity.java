@@ -20,7 +20,7 @@ import com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesManager;
 import com.tocadosmarin.fourinline.managers.LoginManager;
 import com.tocadosmarin.fourinline.managers.PreferencesActivity;
 import com.tocadosmarin.fourinline.R;
-import com.tocadosmarin.fourinline.login.UserLogin;
+import com.tocadosmarin.fourinline.loginRegister.UserLoginRegister;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         dialog.setPositiveButton(R.string.dialog_ok_button, new
                                 DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        Intent i = new Intent(getApplicationContext(), UserLogin.class);
+                                        Intent i = new Intent(getApplicationContext(), UserLoginRegister.class);
                                         startActivity(i);
                                     }
                                 });
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                         dialog.show();
                     }
                 } else {
-                    Intent i = new Intent(getApplicationContext(), UserLogin.class);
+                    Intent i = new Intent(getApplicationContext(), UserLoginRegister.class);
                     startActivity(i);
                 }
             }

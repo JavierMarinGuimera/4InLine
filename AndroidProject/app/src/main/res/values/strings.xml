@@ -57,4 +57,7 @@
     <string name="dialog_ok_button">Log in</string>
     <string name="dialog_logout_title">Are you sure you want to exit?</string>
     <string name="bt_confirm">Yes</string>
+    <string name="signup_succcess">Signup success</string>
+    <string name="signup_error">Error on sign up</string>
+    <string name="request_error">Error making the request</string>
 </resources>

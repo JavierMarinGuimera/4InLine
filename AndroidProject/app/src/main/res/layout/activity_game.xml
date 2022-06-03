@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context=".game.Game">
+    tools:context=".game.Game"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:id="@+id/mainLayout"

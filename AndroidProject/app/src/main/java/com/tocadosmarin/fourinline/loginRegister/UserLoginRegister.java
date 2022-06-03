@@ -1,4 +1,4 @@
-package com.tocadosmarin.fourinline.login;
+package com.tocadosmarin.fourinline.loginRegister;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,15 +16,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.managers.LoginManager;
 import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
 
 
-public class UserLogin extends AppCompatActivity {
-    private LinearLayout logIn, signUp;
-    private ScrollView scLogin;
+public class UserLoginRegister extends AppCompatActivity {
+    private static LinearLayout logIn;
+    private static LinearLayout signUp;
+    private static ScrollView scLogin;
     private EditText etLoginUser, etLoginPwd, etSignUpUser, etSignUpPwd, etConfirmPwd;
     private TextView tvSignUp, tvLogIn;
     private Button btLogIn, btSignUp;
@@ -70,7 +71,7 @@ public class UserLogin extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    VolleyRequestManager.getUserFromDB(father, getApplicationContext(), etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked());
+                    VolleyRequestManager.makeRequest(LoginManager.LOGIN_URL, father, getApplicationContext(), etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked());
                 }
             }
         });
@@ -99,13 +100,12 @@ public class UserLogin extends AppCompatActivity {
                     etConfirmPwd.setError(getText(R.string.password_null));
                     error = true;
                 }
-                if (!etConfirmPwd.getText().toString().equals(etSignUpPwd.getText().toString())) {
+                if (!etSignUpPwd.getText().toString().equals(etConfirmPwd.getText().toString())) {
                     etConfirmPwd.setError(getText(R.string.different_password_error));
                     error = true;
                 }
                 if (!error) {
-                    //TODO introducir datos usuario en el servidor
-                    Toast.makeText(getApplicationContext(), "todo correcto", Toast.LENGTH_SHORT).show();
+                    VolleyRequestManager.makeRequest(LoginManager.SIGNUP_URL, null, getApplicationContext(), etSignUpUser.getText().toString(), etSignUpPwd.getText().toString(), false);
                 }
 
             }
@@ -120,7 +120,7 @@ public class UserLogin extends AppCompatActivity {
         });
     }
 
-    private void setLogin(boolean state) {
+    public static void setLogin(boolean state) {
         if (state) {
             logIn.setClickable(true);
             fadeAnimation(logIn, 0f, 1f, View.VISIBLE);
@@ -130,7 +130,7 @@ public class UserLogin extends AppCompatActivity {
         }
     }
 
-    private void setSignup(boolean state) {
+    public static void setSignup(boolean state) {
         if (state) {
             signUp.setClickable(true);
             fadeAnimation(signUp, 0f, 1f, View.VISIBLE);
@@ -140,7 +140,7 @@ public class UserLogin extends AppCompatActivity {
         }
     }
 
-    private void fadeAnimation(LinearLayout layout, float v1, float v2, int visibility) {
+    private static void fadeAnimation(LinearLayout layout, float v1, float v2, int visibility) {
         ValueAnimator fadeAnim = ObjectAnimator.ofFloat(layout, "alpha", v1, v2);
         fadeAnim.setDuration(1000);
         fadeAnim.addListener(new AnimatorListenerAdapter() {

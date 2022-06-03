@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".login.UserLogin">
+    tools:context=".loginRegister.UserLoginRegister"
+    android:background="@drawable/background">
 
     <ScrollView
         android:id="@+id/scLogin"
@@ -35,25 +36,41 @@
                     android:id="@+id/etLoginUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
                     android:ems="8"
+                    android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_user"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
 
                 <EditText
                     android:id="@+id/etLoginPwd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
                     android:ems="8"
+                    android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
 
                 <CheckBox
                     android:id="@+id/cbSession"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="@string/cb_session" />
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
+                    android:fontFamily="sans-serif-black"
+                    android:text="@string/cb_session"
+                    android:textColor="#FFFFFF" />
 
                 <Button
                     android:id="@+id/btLogIn"
@@ -69,9 +86,12 @@
                     android:layout_marginTop="18dp"
                     android:background="@drawable/selector"
                     android:clickable="true"
+                    android:fontFamily="sans-serif-black"
                     android:gravity="center"
                     android:text="@string/signup_text"
-                    android:textColor="#0065D1" />
+                    android:textColor="#0065D1"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
             </LinearLayout>
 
             <LinearLayout
@@ -94,27 +114,45 @@
                     android:id="@+id/etSignUpUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
                     android:ems="8"
+                    android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_user"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
 
                 <EditText
                     android:id="@+id/etSignUpPwd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
                     android:ems="8"
+                    android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
 
                 <EditText
                     android:id="@+id/etConfirmPwd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:backgroundTintMode="add"
                     android:ems="8"
+                    android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_confirm_password"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
 
                 <Button
                     android:id="@+id/btSignUp"
@@ -130,9 +168,12 @@
                     android:layout_marginTop="18dp"
                     android:background="@drawable/selector"
                     android:clickable="true"
+                    android:fontFamily="sans-serif-black"
                     android:gravity="center"
                     android:text="@string/login_text"
-                    android:textColor="#0065D1" />
+                    android:textColor="#0065D1"
+                    android:textColorHighlight="#FFFFFF"
+                    android:textColorHint="#FFFFFF" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

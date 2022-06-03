@@ -16,7 +16,7 @@
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity
-            android:name=".login.UserLogin"
+            android:name=".loginRegister.UserLoginRegister"
             android:exported="false"
             android:screenOrientation="userLandscape" />
         <activity

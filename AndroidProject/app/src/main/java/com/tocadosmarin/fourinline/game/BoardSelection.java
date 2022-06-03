@@ -17,7 +17,8 @@ import com.tocadosmarin.fourinline.R;
 import com.tocadosmarin.fourinline.main.MainActivity;
 
 public class BoardSelection extends AppCompatActivity {
-    private static boolean hasOpponent = false;
+    public static boolean hasOpponent = false;
+    public static boolean isServerClosed = false;
     private Button btPlayGame;
     private RadioGroup rgBoardSize;
     private RadioButton radioButton;
@@ -29,6 +30,8 @@ public class BoardSelection extends AppCompatActivity {
 
         btPlayGame = findViewById(R.id.btPlayGame);
         rgBoardSize = findViewById(R.id.rgBoardSize);
+
+        startClientRunner();
 
         btPlayGame.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,22 +55,33 @@ public class BoardSelection extends AppCompatActivity {
                     editor.putInt("board_size", Integer.parseInt(radioButton.getText().toString()));
                     editor.commit();
 
-                    //GameRunner.
-                    //TODO crear animacion espera
-
-                    /*synchronized (BoardSelection.class) {
-                        while (!hasOpponent) {
+                    synchronized (ClientRunner.class) {
+                        ClientRunner.column = Integer.parseInt(radioButton.getText().toString());
+                        ClientRunner.class.notify();
+                    }
+                    synchronized (ClientRunner.class){
+                        while(!hasOpponent && !isServerClosed){
                             try {
-                                wait();
+                                ClientRunner.class.wait();
                             } catch (InterruptedException e) {
+                                continue;
                             }
                         }
-                    }*/
-                    Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(getApplicationContext(), Game.class);
-                    startActivity(i);
+                    }
+                    if(hasOpponent) {
+                        Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getApplicationContext(), Game.class);
+                        startActivity(i);
+                    }else{
+                        //TODO mostrar mensaje error y cerrar
+                        finish();
+                    }
                 }
             }
         });
+    }
+
+    private void startClientRunner() {
+        new ClientRunner().start();
     }
 }

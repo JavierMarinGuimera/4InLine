@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.loginRegister.UserLoginRegister;
 import com.tocadosmarin.fourinline.main.MainActivity;
 
 import org.json.JSONObject;
@@ -32,41 +33,38 @@ public class VolleyRequestManager {
         }
     }
 
-    public static void getUserFromDB(Activity loginActivity, Context context, String user, String pwd, boolean session) {
+    public static void makeRequest(String URL, Activity loginActivity, Context context, String user, String pwd, boolean session) {
         String loginData = JSONManager.mountUsernameAndPasswordJson(user, EncrypterManager.encryptUserPassword(pwd));
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, LoginManager.LOGIN_URL, JSONManager.getJSONFromString(loginData), new Response.Listener<JSONObject>() {
+                (Request.Method.POST, URL, JSONManager.getJSONFromString(loginData), new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (checkResponse(response.toString(), user, EncrypterManager.encryptUserPassword(pwd), session)) {
                             if (loginActivity != null) {
                                 MainActivity.setBtLogin(true);
                                 loginActivity.finish();
+                            } else {
+                                Toast.makeText(context.getApplicationContext(), context.getText(R.string.signup_succcess), Toast.LENGTH_SHORT).show();
+                                UserLoginRegister.setSignup(false);
+                                UserLoginRegister.setLogin(true);
                             }
                         } else {
-                            Toast.makeText(context.getApplicationContext(), context.getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
+                            if (loginActivity != null) {
+                                Toast.makeText(context.getApplicationContext(), context.getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Map<String, Object> responseMap = JSONManager.getMapFromJsonString(response.toString());
+                                if (responseMap.containsKey(LoginManager.ERROR)) {
+                                    Toast.makeText(context.getApplicationContext(), (String) responseMap.get(LoginManager.ERROR), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(context.getApplicationContext(), context.getText(R.string.signup_error), Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(context.getApplicationContext(), context.getText(R.string.user_password_error), Toast.LENGTH_SHORT).show();
-                    }
-                });
-        mRequestQueue.add(jsonObjectRequest);
-    }
-
-    public static void signUpNewUser(Context context, String user, String pwd) {
-        String signUpData = JSONManager.mountUsernameAndPasswordJson(user, EncrypterManager.encryptUserPassword(pwd));
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST, LoginManager.LOGIN_URL, JSONManager.getJSONFromString(signUpData), new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
                     }
                 });
         mRequestQueue.add(jsonObjectRequest);
@@ -83,6 +81,12 @@ public class VolleyRequestManager {
                 editor.putString(LoginManager.PASSWORD, encryptedPwd);
             }
             editor.commit();
+            return true;
+        }
+        if (responseMap.containsKey(LoginManager.CREATED)) {
+            if (responseMap.containsKey(LoginManager.ERROR)) {
+                return false;
+            }
             return true;
         }
         return false;

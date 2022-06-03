@@ -24,4 +24,8 @@ public class PreferencesActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.preferences);
         }
     }
+
+    public static void readPreferences() {
+
+    }
 }

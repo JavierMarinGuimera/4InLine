@@ -57,4 +57,7 @@
     <string name="dialog_ok_button">Iniciar sesión</string>
     <string name="dialog_logout_title">Seguro que desea salir?</string>
     <string name="bt_confirm">Si</string>
+    <string name="signup_succcess">Registro completado</string>
+    <string name="signup_error">Error al registrarse</string>
+    <string name="request_error">Error al hacer la petición</string>
 </resources>

@@ -8,15 +8,19 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".game.BoardSelection">
+    tools:context=".game.BoardSelection"
+    android:background="@drawable/background">
 
     <TextView
         android:id="@+id/tvBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:fontFamily="sans-serif-black"
         android:gravity="center"
-        android:text="@string/board_textview" />
+        android:text="@string/board_textview"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <RadioGroup
         android:id="@+id/rgBoardSize"
@@ -28,19 +32,28 @@
             android:id="@+id/rbSize9"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/radio_button_size_9" />
+            android:fontFamily="sans-serif-black"
+            android:text="@string/radio_button_size_9"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rbSize7"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/radio_button_size_7" />
+            android:fontFamily="sans-serif-black"
+            android:text="@string/radio_button_size_7"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/rbSize5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/radio_button_size_5" />
+            android:fontFamily="sans-serif-black"
+            android:text="@string/radio_button_size_5"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp" />
     </RadioGroup>
 
     <Button

@@ -7,10 +7,13 @@ import android.content.Context;
 public class LoginManager {
     public static final int TOKEN_EXPIRATION_TIME = 1 * 7 * 24 * 60 * 60 * 1000;
     public static final String LOGIN_URL = "http://10.0.2.2:8080/users/login";
+    public static final String SIGNUP_URL = "http://10.0.2.2:8080/users/register";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";
     public static final String EXPIRATION_TIME = "expiration_time";
+    public static final String CREATED = "created";
+    public static final String ERROR = "error";
 
     public static Boolean hasServerResponse = false;
 
@@ -40,7 +43,7 @@ public class LoginManager {
                 return false;
             } else {
                 String user = encryptedPref.getString(USERNAME, "");
-                VolleyRequestManager.getUserFromDB(null, context.getApplicationContext(), user, pwd, true);
+                VolleyRequestManager.makeRequest(LoginManager.LOGIN_URL, null, context.getApplicationContext(), user, pwd, true);
                 //System.out.println("Inicio sesión automático");
                 return true;
             }
