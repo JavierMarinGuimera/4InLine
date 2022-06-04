@@ -19,7 +19,6 @@ public class ClientWriter extends Thread {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         super.run();
     }
 
@@ -29,7 +28,7 @@ public class ClientWriter extends Thread {
                 return this.writer.readLine();
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            return "";
         }
 
         return "";

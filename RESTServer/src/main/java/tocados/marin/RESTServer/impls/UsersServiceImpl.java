@@ -90,28 +90,32 @@ public class UsersServiceImpl implements UsersService {
         // Search user from username on DDBB to know if exist.
         User userFromDDBB = getUserFromUsername(user.getUsername());
 
+        Map<String, Object> responseMap = new HashMap<>();
+
         // Check if the user exists and the user password is equals to the userFromDDBB
         // password.
-        if (userFromDDBB == null || !user.getPassword()
+        if (userFromDDBB == null) {
+            responseMap.put("error", "User not found.");
+        } else if (!user.getPassword()
                 .equals(userFromDDBB.getPassword())) {
-            return null;
-        }
+            responseMap.put("error", "Incorrect password.");
 
-        Map<String, Object> responseMap = new HashMap<>();
-        Token token = userFromDDBB.getToken();
-
-        // Check if this user has token that is not expired.
-        if (token != null && TokensManager.isValidToken(token)) {
-            // Return the current token because is still valid.
-            responseMap.put("token", token.getCurrent_token());
         } else {
-            // Update the current user token and the creation date and returning it.
-            token.setCurrent_token(TokensManager.generateRandomToken());
-            token.setCreation_date(new Timestamp(System.currentTimeMillis()));
-            responseMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
-        }
+            Token token = userFromDDBB.getToken();
 
-        responseMap.put("expiration_time", token.getCreation_date().getTime());
+            // Check if this user has token that is not expired.
+            if (token != null && TokensManager.isValidToken(token)) {
+                // Return the current token because is still valid.
+                responseMap.put("token", token.getCurrent_token());
+            } else {
+                // Update the current user token and the creation date and returning it.
+                token.setCurrent_token(TokensManager.generateRandomToken());
+                token.setCreation_date(new Timestamp(System.currentTimeMillis()));
+                responseMap.put("token", usersRepository.save(userFromDDBB).getToken().getCurrent_token());
+            }
+
+            responseMap.put("expiration_time", token.getCreation_date().getTime());
+        }
 
         return responseMap;
     }

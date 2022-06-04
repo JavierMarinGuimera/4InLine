@@ -5,13 +5,19 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import com.tocados.marin.apps.ServerApp;
+import com.tocados.marin.managers.HTTPManager;
 import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager;
+import com.tocados.marin.managers.PropertiesManager;
+import com.tocados.marin.managers.HTTPManager.Paths;
 import com.tocados.marin.managers.MessageManager.Messages;
+import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 
 public class GameMatch extends Thread {
     private static int TIMEOUT = 10000;
@@ -131,6 +137,9 @@ public class GameMatch extends Thread {
 
         Integer column = null;
 
+        // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
+        // mountCustomBoard();
+
         while (!this.matchEnded) {
             this.rounds++;
 
@@ -169,6 +178,8 @@ public class GameMatch extends Thread {
 
         if (this.player1.getIsWinner() == null) {
             closePlayers(player1Writer, player2Writer);
+        } else {
+            savePlayersResults(player1, player2);
         }
 
         try {
@@ -230,26 +241,32 @@ public class GameMatch extends Thread {
             this.board.get(column).add(playerPlaying.getPosition());
             playerPlaying.setScore(playerPlaying.getScore() + 5);
 
-            List<Integer[]> chipsCoordenates = getArroundChipsMap(column, this.board.get(column).size() - 1);
+            List<Integer[]> chipsCoordenates = getArroundChipsList(column, this.board.get(column).size() - 1);
             Integer wins = 0;
 
             if (chipsCoordenates != null) {
                 for (Integer[] map : chipsCoordenates) {
                     if (checkFor4InLine(map, column, Math.max(this.board.get(column).size() - 1, 0))) {
-                        playerPlaying.setIsWinner(true);
-                        playerToNotify.setIsWinner(false);
                         wins++;
-                        this.matchEnded = true;
                     }
                 }
             }
 
             if (wins != 0) {
                 if (wins == 1) {
+                    // Single victory adds 20 points to the player.
                     playerPlaying.setScore(playerPlaying.getScore() + 20);
                 } else if (wins > 1) {
-                    playerPlaying.setScore(playerPlaying.getScore() + 50);
+                    /**
+                     * Multiple victories add 20 points per win + other 10 points per win because is
+                     * more difficult to hit more that 1 win at the same time.
+                     */
+                    playerPlaying.setScore(playerPlaying.getScore() + 20 * wins + (10 * wins));
                 }
+
+                playerPlaying.setIsWinner(true);
+                playerToNotify.setIsWinner(false);
+                this.matchEnded = true;
 
                 return true;
             }
@@ -261,16 +278,19 @@ public class GameMatch extends Thread {
     /**
      * Mounts a map with the chips arround the last one entered by the user
      */
-    private List<Integer[]> getArroundChipsMap(Integer column, Integer row) {
+    private List<Integer[]> getArroundChipsList(Integer column, Integer row) {
         List<Integer[]> chipsCoordenates = new ArrayList<>();
 
-        // If the column is the first one, the start value will be 0.
-        Integer x = Math.max(column - 1, 0);
+        /**
+         * If the column is the first one, the start value will be 0 and we will need to
+         * check ONLY the next column if exist.
+         */
+        Integer x = Math.max(column - 1, 0), xMax = Math.min(x + (x == 0 ? 2 : 3), this.board.size());
 
         // If the row is the first one, the start value will be 0.
-        Integer y = Math.max(this.board.get(column).size() - 2, 0);
+        Integer y = Math.max(this.board.get(column).size() - 2, 0), yMax;
 
-        for (int i = x; i < Math.min(x + 3, this.board.size()); i++) {
+        for (int i = x; i < xMax; i++) {
             /**
              * For each column, we need to check if has at least one value to check.
              * Example (the X is the newest user chip):
@@ -283,8 +303,9 @@ public class GameMatch extends Thread {
              * On the example, the first column will not be read, the second will only read
              * the bottom "o" and on the third will read only the "x".
              */
-            if (this.board.get(i).size() - 2 >= y) {
-                for (int j = y; j < Math.min(y + 3, this.board.get(i).size()); j++) {
+            if (this.board.get(i).size() - 1 >= y) {
+                yMax = Math.min(y + (y == 0 ? 2 : 3), this.board.get(i).size());
+                for (int j = y; j < yMax; j++) {
                     /**
                      * If we are looking on the newest user's chip, we will be avoid it.
                      * 
@@ -293,8 +314,8 @@ public class GameMatch extends Thread {
                      */
                     if ((i == column && j == this.board.get(column).size() - 1)) {
                         continue;
-                    } else if (this.board.get(column) != null
-                            && (this.board.get(column).get(row) == this.board.get(i).get(j))) {
+                    } else if (this.board.get(column).get(row) == this.board.get(i).get(j)) {
+                        // QUITADO this.board.get(column) != null
                         chipsCoordenates.add(new Integer[] { i, j });
                     }
                 }
@@ -318,8 +339,6 @@ public class GameMatch extends Thread {
      * @return True if 4 in line is encountered, false if not.
      */
     private Boolean checkFor4InLine(Integer[] map, Integer chipColumn, Integer chipRow) {
-        // TODO - Comprobación 4 en raya diagonal.
-
         Integer newestChip = this.board.get(chipColumn).get(chipRow), currentChip;
         Integer x = map[0], y = map[1];
 
@@ -327,17 +346,12 @@ public class GameMatch extends Thread {
                 yDirection = y - chipRow;
 
         for (int i = 0; i < 3; i++) {
-            if (x < 0 || y < 0)
+            if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size())
                 return false;
 
-            if (x > this.board.size() - 1 || this.board.get(x) == null
-                    || y > this.board.get(x).size() || this.board.get(x).get(y) == null) {
-                currentChip = null;
-            } else {
-                currentChip = this.board.get(x).get(y);
-            }
+            currentChip = this.board.get(x).get(y);
 
-            if (currentChip == null || currentChip != newestChip)
+            if (currentChip != newestChip)
                 return false;
 
             x += xDirection;
@@ -350,5 +364,75 @@ public class GameMatch extends Thread {
     private void closePlayers(PrintStream player1Writer, PrintStream player2Writer) {
         player1Writer.println(JSONManager.mountServerCloseJson());
         player2Writer.println(JSONManager.mountServerCloseJson());
+    }
+
+    // private void mountCustomBoard() {
+    // /**
+    // * Caso más complejo: quíntuple 4 en raya.
+    // */
+    // // Columna 0:
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(2);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(2);
+
+    // // Columna 1:
+    // this.board.get(1).add(2);
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(2);
+    // this.board.get(1).add(1);
+
+    // // Columna 2:
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(2);
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(1);
+
+    // // Columna 3:
+    // this.board.get(3).add(1);
+    // this.board.get(3).add(1);
+    // this.board.get(3).add(1);
+    // // El 4 en raya quíntuple entra aquí
+
+    // // Columna 4:
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(2);
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(1);
+
+    // // Columna 5:
+    // this.board.get(5).add(2);
+    // this.board.get(5).add(1);
+    // this.board.get(5).add(2);
+    // this.board.get(5).add(1);
+
+    // // Columna 6:
+    // this.board.get(6).add(1);
+    // this.board.get(6).add(2);
+    // this.board.get(6).add(1);
+    // this.board.get(6).add(1);
+    // this.board.get(6).add(2);
+    // }
+
+    private void savePlayersResults(Player player1, Player player2) {
+        savePlayerInfo(player1);
+        savePlayerInfo(player2);
+    }
+
+    private void savePlayerInfo(Player player) {
+        Map<String, Object> serverInfo = new HashMap<>();
+        serverInfo.put("username", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_NAME));
+        serverInfo.put("token", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_TOKEN));
+
+        Map<String, Object> playerInfo = new HashMap<>();
+        playerInfo.put("username", player.getUsername());
+        playerInfo.put("score", player.getScore());
+
+        Map<String, Object> resultsMap = new HashMap<>();
+        resultsMap.put("server", serverInfo);
+        resultsMap.put("player", playerInfo);
+
+        System.out.println(HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
     }
 }

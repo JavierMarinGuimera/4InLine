@@ -13,10 +13,8 @@ import java.util.Map;
 public class HTTPManager {
 
     public enum Paths {
-        USERS_GET_ALL_PATH("/users", "GET"),
         USERS_REGISTER_PATH("/users/register", "POST"),
         USERS_LOGIN_PATH("/users/login", "POST"),
-        USERS_UPDATE_PATH("/users/update", "PUT"),
         SCORES_INSERT_ONE("/scores/insert_score", "POST");
 
         private String path;
@@ -39,13 +37,6 @@ public class HTTPManager {
     private static final String REST_URL = "http://localhost:8080";
     private static final Integer TIMEOUT = 5000;
 
-    public static void main(String[] args) {
-        System.out.println(makeRequest(Paths.USERS_GET_ALL_PATH, null));
-        System.out.println(makeRequest(Paths.USERS_LOGIN_PATH, PropertiesManager.getLoginMap()));
-        // makeRequest(Paths.USERS_REGISTER_PATH, new HashMap<>());
-        // makeRequest(Paths.SCORES_INSERT_ONE, new HashMap<>());
-    }
-
     private HTTPManager() {
     }
 
@@ -63,7 +54,6 @@ public class HTTPManager {
             HttpURLConnection connection = getMountedConnection(path.getPath(), path.getRequestMethod());
 
             if (map != null) {
-                System.out.println(map);
                 sendToServer(JSONManager.getStringFromMap(map), connection);
             }
 

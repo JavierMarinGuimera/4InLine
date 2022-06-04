@@ -9,8 +9,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.tocados.marin.managers.ConsoleManager;
+import com.tocados.marin.managers.HTTPManager;
+import com.tocados.marin.managers.JSONManager;
 import com.tocados.marin.managers.MessageManager;
+import com.tocados.marin.managers.PropertiesManager;
+import com.tocados.marin.managers.HTTPManager.Paths;
 import com.tocados.marin.managers.MessageManager.Messages;
+import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 import com.tocados.marin.models.GameMatch;
 import com.tocados.marin.models.Player;
 
@@ -30,9 +35,6 @@ public class ServerApp {
     private static List<GameMatch> currentGameMatches = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-        ConsoleManager consoleManager = new ConsoleManager();
-        consoleManager.start();
-
         if (!loginServer()) {
             MessageManager.showXMessage(Messages.LOGIN_FAILED);
             return;
@@ -41,6 +43,10 @@ public class ServerApp {
         /**
          * Here starts the game server:
          */
+
+        ConsoleManager consoleManager = new ConsoleManager();
+        consoleManager.start();
+
         ServerSocket serverSocket = new ServerSocket(PORT);
         serverSocket.setSoTimeout(TIMEOUT);
 
@@ -67,19 +73,17 @@ public class ServerApp {
      * @return True if worked; false if not.
      */
     private static Boolean loginServer() {
-        /**
-         * TODO - Activar esto cuando finalice todo.
-         */
-        // Map<String, Object> jsonMap = JSONManager
-        // .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH,
-        // PropertiesManager.getLoginMap()));
+        Map<String, Object> jsonMap = JSONManager
+                .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH,
+                        PropertiesManager.getLoginMap()));
 
-        // if (jsonMap == null || !jsonMap.containsKey("token")) {
-        // return false;
-        // }
+        System.out.println(jsonMap);
 
-        // PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String)
-        // jsonMap.get("token"));
+        if (jsonMap == null || !jsonMap.containsKey("token")) {
+            return false;
+        }
+
+        PropertiesManager.setPropertyByName(PropertiesStrings.SERVER_TOKEN, (String) jsonMap.get("token"));
 
         return true;
     }

@@ -31,6 +31,9 @@ public class Score implements Comparable<Score> {
     @Column(nullable = false)
     private Integer score;
 
+    @Column(nullable = true)
+    private Boolean is_winner;
+
     /**
      * Getters and Setters:
      */
@@ -75,6 +78,20 @@ public class Score implements Comparable<Score> {
      */
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    /**
+     * @return the isWinner
+     */
+    public Boolean getIsWinner() {
+        return is_winner;
+    }
+
+    /**
+     * @param isWinner the isWinner to set
+     */
+    public void setIsWinner(Boolean isWinner) {
+        this.is_winner = isWinner;
     }
 
     public static List<Score> orderScoreList(List<Score> scores) {
