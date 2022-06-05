@@ -467,23 +467,23 @@ public class GameMatch extends Thread {
     /**
      * Caso momentaneos:
      */
-    private void mountCustomBoardTest() {
-        // Columna 0:
-        this.board.get(0).add(2);
-        this.board.get(0).add(1);
-        // Columna 1:
-        this.board.get(1).add(1);
-        this.board.get(1).add(2);
-        // Columna 2:
-        this.board.get(2).add(1);
-        this.board.get(2).add(2);
-        // Columna 3:
-        this.board.get(3).add(2);
-        // Columna 4:
-        this.board.get(4).add(1);
-        // Columna 5:
-        this.board.get(5).add(1);
-    }
+    // private void mountCustomBoardTest() {
+    // // Columna 0:
+    // this.board.get(0).add(2);
+    // this.board.get(0).add(1);
+    // // Columna 1:
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(2);
+    // // Columna 2:
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(2);
+    // // Columna 3:
+    // this.board.get(3).add(2);
+    // // Columna 4:
+    // this.board.get(4).add(1);
+    // // Columna 5:
+    // this.board.get(5).add(1);
+    // }
 
     /**
      * Caso complejo: quíntuple 4 en raya.

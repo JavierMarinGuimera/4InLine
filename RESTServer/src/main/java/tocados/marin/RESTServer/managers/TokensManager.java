@@ -10,7 +10,8 @@ public class TokensManager {
      * Calc of 1 week to miliseconds:
      * 1 week * 7 days * 24 hours * 60 minuts * 60 seconds * 1000 miliseconds
      */
-    public static final int TOKEN_EXPIRATION_TIME = 1 * 7 * 24 * 60 * 60 * 1000;
+    // public static final int TOKEN_EXPIRATION_TIME = 1 * 7 * 24 * 60 * 60 * 1000;
+    public static final int TOKEN_EXPIRATION_TIME = 5 * 1000;
 
     // Tiempo para pruebas
     // public static final int TOKEN_EXPIRATION_TIME = 3 * 60 * 1000;
