@@ -138,7 +138,8 @@ public class GameMatch extends Thread {
         Integer column = null;
 
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
-        // mountCustomBoard();
+        // mountCustomBoard1();
+        mountCustomBoard2();
 
         while (!this.matchEnded) {
             this.rounds++;
@@ -147,7 +148,7 @@ public class GameMatch extends Thread {
             if ((column = getUserColumn(player1Reader, column)) == null)
                 break;
 
-            if (checkMatchStatus(column, this.player1, this.player2)) {
+            if (checkMatchStatus(column, this.board.get(column).size(), this.player1, this.player2)) {
                 player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
                         Messages.WINNER, this.player1.getScore()));
                 player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
@@ -163,7 +164,7 @@ public class GameMatch extends Thread {
             if ((column = getUserColumn(player2Reader, column)) == null)
                 break;
 
-            if (checkMatchStatus(column, this.player2, this.player1)) {
+            if (checkMatchStatus(column, this.board.get(column).size(), this.player2, this.player1)) {
                 player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
                         Messages.WINNER, this.player2.getScore()));
                 player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
@@ -235,17 +236,19 @@ public class GameMatch extends Thread {
      * @param playerToNotify The player that is waiting the response.
      * @return true if the current player won the match; false if not won.
      */
-    private Boolean checkMatchStatus(Integer column, Player playerPlaying, Player playerToNotify) {
+    private Boolean checkMatchStatus(Integer column, Integer row, Player playerPlaying, Player playerToNotify) {
         if (this.board.get(column).size() < MAX_ROWS) {
+            // Here we add the new chip to the GameMatch board
             this.board.get(column).add(playerPlaying.getPosition());
             playerPlaying.setScore(playerPlaying.getScore() + 5);
 
-            List<Integer[]> chipsCoordenates = getArroundChipsList(column, this.board.get(column).size() - 1);
+            Chip newestChip = new Chip(column, row, this.board.get(column).get(row));
+            List<Chip> arroundChips = getArroundChipsList(column, this.board.get(column).size() - 1);
             Integer wins = 0;
 
-            if (chipsCoordenates != null) {
-                for (Integer[] map : chipsCoordenates) {
-                    if (checkFor4InLine(map, column, Math.max(this.board.get(column).size() - 1, 0))) {
+            if (arroundChips != null) {
+                for (Chip arroundChip : arroundChips) {
+                    if (checkFor4InLine(arroundChips, arroundChip, newestChip)) {
                         wins++;
                     }
                 }
@@ -277,14 +280,14 @@ public class GameMatch extends Thread {
     /**
      * Mounts a map with the chips arround the last one entered by the user
      */
-    private List<Integer[]> getArroundChipsList(Integer column, Integer row) {
-        List<Integer[]> chipsCoordenates = new ArrayList<>();
+    private List<Chip> getArroundChipsList(Integer column, Integer row) {
+        List<Chip> arroundChips = new ArrayList<>();
 
         /**
          * If the column is the first one, the start value will be 0 and we will need to
          * check ONLY the next column if exist.
          */
-        Integer x = Math.max(column - 1, 0), xMax = Math.min(x + (x == 0 ? 2 : 3), this.board.size());
+        Integer x = Math.max(column - 1, 0), xMax = Math.min(x + (x == 0 && column == 0 ? 2 : 3), this.board.size());
 
         // If the row is the first one, the start value will be 0.
         Integer y = Math.max(this.board.get(column).size() - 2, 0), yMax;
@@ -303,7 +306,7 @@ public class GameMatch extends Thread {
              * the bottom "o" and on the third will read only the "x".
              */
             if (this.board.get(i).size() - 1 >= y) {
-                yMax = Math.min(y + (y == 0 ? 2 : 3), this.board.get(i).size());
+                yMax = Math.min(y + (y == 0 && row == 0 ? 2 : 3), this.board.get(i).size());
                 for (int j = y; j < yMax; j++) {
                     /**
                      * If we are looking on the newest user's chip, we will be avoid it.
@@ -314,47 +317,82 @@ public class GameMatch extends Thread {
                     if ((i == column && j == this.board.get(column).size() - 1)) {
                         continue;
                     } else if (this.board.get(column).get(row) == this.board.get(i).get(j)) {
-                        // QUITADO this.board.get(column) != null
-                        chipsCoordenates.add(new Integer[] { i, j });
+                        arroundChips.add(new Chip(i, j, this.board.get(i).get(j)));
                     }
                 }
             }
         }
 
-        System.out.println("Chips Coordenates " + chipsCoordenates.size());
+        System.out.println("Chips Coordenates " + arroundChips.size());
 
-        return chipsCoordenates;
+        return arroundChips;
     }
 
     /**
      * Check if we have a 4 in line.
      * 
-     * @param map        Integer array with 2 values of one of the closest chips.
-     *                   First value = x, second value = y.
-     * @param chipColumn The last entered chip column to calculate the direction of
-     *                   the 4 in line.
-     * @param chipRow    The last entered chip row to calculate the direction of the
-     *                   4 in line.
+     * @param arroundChips
+     * 
+     * @param map          Integer array with 2 values of one of the closest
+     *                     chips.
+     *                     First value = x, second value = y.
+     * @param chipColumn   The last entered chip column to calculate the
+     *                     direction of
+     *                     the 4 in line.
+     * @param chipRow      The last entered chip row to calculate the direction
+     *                     of the
+     *                     4 in line.
      * @return True if 4 in line is encountered, false if not.
      */
-    private Boolean checkFor4InLine(Integer[] map, Integer chipColumn, Integer chipRow) {
-        Integer newestChip = this.board.get(chipColumn).get(chipRow), currentChip;
-        Integer x = map[0], y = map[1];
+    private Boolean checkFor4InLine(List<Chip> arroundChips, Chip arroundChip,
+            Chip newestChip) {
 
-        Integer xDirection = x - chipColumn,
-                yDirection = y - chipRow;
+        Chip currentChip;
+        // Get the coords of the arrounded chip.
+        Integer x = arroundChip.getX(), y = arroundChip.getY();
 
+        // Get the direction of the possible 4 in line.
+        Integer xDirection = x - newestChip.getX(),
+                yDirection = y - newestChip.getY();
+
+        /**
+         * This checks if the next chip is equals the newest chip.
+         * If we find a different chip, the while will end because we have reached the
+         * edge of the possible 4 in line.
+         */
+        while (!hasFound4inLineEdge(x + xDirection, y + yDirection, arroundChip.getValue())) {
+            x += xDirection;
+            y += yDirection;
+        }
+
+        /**
+         * Because we have reached the edge of the possible 4 in line, we need to read
+         * on the opposite way.
+         */
         xDirection = -xDirection;
         yDirection = -yDirection;
-        
+
         for (int i = 0; i < 3; i++) {
+            // Check if we are out of the board.
             if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size())
                 return false;
 
-            currentChip = this.board.get(x).get(y);
+            currentChip = new Chip(x, y, this.board.get(x).get(y));
 
-            if (currentChip != newestChip)
+            /**
+             * If we are playing as the player 1, if we find a "2" on the board means that
+             * we didnt make a 4 in line on this direction.
+             */
+            if (currentChip.getValue() != arroundChip.getValue())
                 return false;
+
+            /**
+             * Remove the current chip of the arroundChips if is not the first that we
+             * started from.
+             */
+            if (!arroundChip.equals(currentChip) && arroundChips.contains(currentChip)) {
+                arroundChips.remove(currentChip);
+            }
 
             x += xDirection;
             y += yDirection;
@@ -363,15 +401,60 @@ public class GameMatch extends Thread {
         return true;
     }
 
+    private boolean hasFound4inLineEdge(Integer x, Integer y, Integer newestChip) {
+        // This will check if we are out of the board.
+        if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size()) {
+            return true;
+        }
+
+        // This will check if we are on a null object.
+        if (this.board.get(x).get(y) == null) {
+            return true;
+        }
+
+        // This will check if we are on a different chip than the newest chip.
+        if (this.board.get(x).get(y) != newestChip) {
+            return true;
+        }
+
+        /**
+         * If none of the conditionales got true, that means that we have reached
+         * another equal chip.
+         */
+        return false;
+    }
+
+    private void savePlayersResults(Player player1, Player player2) {
+        savePlayerInfo(player1);
+        savePlayerInfo(player2);
+    }
+
+    private void savePlayerInfo(Player player) {
+        Map<String, Object> serverInfo = new HashMap<>();
+        serverInfo.put("username", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_NAME));
+        serverInfo.put("token", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_TOKEN));
+
+        Map<String, Object> playerInfo = new HashMap<>();
+        playerInfo.put("username", player.getUsername());
+        playerInfo.put("score", player.getScore());
+        playerInfo.put("isWinner", player.getIsWinner());
+
+        Map<String, Object> resultsMap = new HashMap<>();
+        resultsMap.put("server", serverInfo);
+        resultsMap.put("player", playerInfo);
+
+        System.out.println("HTTP Manager " + HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
+    }
+
     private void closePlayers(PrintStream player1Writer, PrintStream player2Writer) {
         player1Writer.println(JSONManager.mountServerCloseJson());
         player2Writer.println(JSONManager.mountServerCloseJson());
     }
 
-    // private void mountCustomBoard() {
-    // /**
-    // * Caso más complejo: quíntuple 4 en raya.
-    // */
+    /**
+     * Caso complejo: quíntuple 4 en raya.
+     */
+    // private void mountCustomBoard1() {
     // // Columna 0:
     // this.board.get(0).add(1);
     // this.board.get(0).add(2);
@@ -417,24 +500,17 @@ public class GameMatch extends Thread {
     // this.board.get(6).add(2);
     // }
 
-    private void savePlayersResults(Player player1, Player player2) {
-        savePlayerInfo(player1);
-        savePlayerInfo(player2);
-    }
+    /**
+     * Caso especial: 4 en raya, pero última ficha en medio de 3.
+     */
+    private void mountCustomBoard2() {
+        // Columna 0:
+        this.board.get(0).add(1);
+        // Columna 1:
 
-    private void savePlayerInfo(Player player) {
-        Map<String, Object> serverInfo = new HashMap<>();
-        serverInfo.put("username", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_NAME));
-        serverInfo.put("token", PropertiesManager.getPropertyByName(PropertiesStrings.SERVER_TOKEN));
-
-        Map<String, Object> playerInfo = new HashMap<>();
-        playerInfo.put("username", player.getUsername());
-        playerInfo.put("score", player.getScore());
-
-        Map<String, Object> resultsMap = new HashMap<>();
-        resultsMap.put("server", serverInfo);
-        resultsMap.put("player", playerInfo);
-
-        System.out.println("HTTP Manager " + HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
+        // Columna 2:
+        this.board.get(2).add(1);
+        // Columna 3:
+        this.board.get(3).add(1);
     }
 }

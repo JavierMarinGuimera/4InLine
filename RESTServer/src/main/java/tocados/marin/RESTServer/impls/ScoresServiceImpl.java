@@ -84,10 +84,13 @@ public class ScoresServiceImpl implements ScoresService {
         if (!server.containsKey("username") || !server.containsKey("token")) {
             responseMap.put("created", false);
             responseMap.put("error", "server structure incorrect");
+            return responseMap;
         }
+
         if (!player.containsKey("username") || !player.containsKey("score") || !player.containsKey("isWinner")) {
             responseMap.put("created", false);
             responseMap.put("error", "user structure incorrect");
+            return responseMap;
         }
 
         User serverUser = usersRepository.findByUsername((String) server.get("username"));
@@ -110,6 +113,7 @@ public class ScoresServiceImpl implements ScoresService {
             } else if (orderedScores.size() == Score.MAX_SIZE) {
                 responseMap.put("created", false);
                 responseMap.put("error", "next score less than last 3");
+                return responseMap;
             }
 
             Score score = new Score();
