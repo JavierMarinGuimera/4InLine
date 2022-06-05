@@ -96,7 +96,7 @@ public class Game extends AppCompatActivity {
 
             View v = new View(this);
             v.setLayoutParams(new ViewGroup.LayoutParams(7, ViewGroup.LayoutParams.WRAP_CONTENT));
-            v.setBackgroundColor(R.color.black);
+            v.setBackgroundColor(R.color.white);
 
             if (i != board_size - 1) {
                 mainLayout.addView(v);

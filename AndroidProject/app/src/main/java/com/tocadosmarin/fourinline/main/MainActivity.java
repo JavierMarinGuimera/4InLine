@@ -21,6 +21,7 @@ import com.tocadosmarin.fourinline.managers.LoginManager;
 import com.tocadosmarin.fourinline.managers.PreferencesActivity;
 import com.tocadosmarin.fourinline.R;
 import com.tocadosmarin.fourinline.loginRegister.UserLoginRegister;
+import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        VolleyRequestManager.init(getApplicationContext());
         setBtLogin(LoginManager.checkToken(this));
 
         btFindGame.setOnClickListener(new View.OnClickListener() {

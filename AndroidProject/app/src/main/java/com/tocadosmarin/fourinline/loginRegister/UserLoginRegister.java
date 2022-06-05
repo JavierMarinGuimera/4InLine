@@ -16,8 +16,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
+import com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesManager;
+import com.tocadosmarin.fourinline.managers.EncrypterManager;
 import com.tocadosmarin.fourinline.managers.LoginManager;
 import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
 
@@ -56,7 +59,6 @@ public class UserLoginRegister extends AppCompatActivity {
         signUp = findViewById(R.id.signUp);
 
         setSignup(false);
-        VolleyRequestManager.init(getApplicationContext());
 
         btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +73,8 @@ public class UserLoginRegister extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    VolleyRequestManager.makeRequest(LoginManager.LOGIN_URL, father, getApplicationContext(), etLoginUser.getText().toString(), etLoginPwd.getText().toString(), cbSession.isChecked());
+                    VolleyRequestManager.makeRequest(LoginManager.LOGIN_URL, father, getApplicationContext(), etLoginUser.getText().toString(),
+                            EncrypterManager.encryptUserPassword(etLoginPwd.getText().toString()), cbSession.isChecked());
                 }
             }
         });
@@ -105,7 +108,8 @@ public class UserLoginRegister extends AppCompatActivity {
                     error = true;
                 }
                 if (!error) {
-                    VolleyRequestManager.makeRequest(LoginManager.SIGNUP_URL, null, getApplicationContext(), etSignUpUser.getText().toString(), etSignUpPwd.getText().toString(), false);
+                    VolleyRequestManager.makeRequest(LoginManager.SIGNUP_URL, null, getApplicationContext(), etSignUpUser.getText().toString(),
+                            EncrypterManager.encryptUserPassword(etSignUpPwd.getText().toString()), false);
                 }
 
             }

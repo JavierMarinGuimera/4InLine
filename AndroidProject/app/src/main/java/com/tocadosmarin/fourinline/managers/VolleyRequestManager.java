@@ -33,13 +33,13 @@ public class VolleyRequestManager {
         }
     }
 
-    public static void makeRequest(String URL, Activity loginActivity, Context context, String user, String pwd, boolean session) {
-        String loginData = JSONManager.mountUsernameAndPasswordJson(user, EncrypterManager.encryptUserPassword(pwd));
+    public static void makeRequest(String URL, Activity loginActivity, Context context, String user, String encryptedPwd, boolean session) {
+        String loginData = JSONManager.mountUsernameAndPasswordJson(user, encryptedPwd);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, URL, JSONManager.getJSONFromString(loginData), new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        if (checkResponse(response.toString(), user, EncrypterManager.encryptUserPassword(pwd), session)) {
+                        if (checkResponse(response.toString(), user, encryptedPwd, session)) {
                             if (loginActivity != null) {
                                 MainActivity.setBtLogin(true);
                                 loginActivity.finish();
