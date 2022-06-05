@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -145,6 +146,9 @@ public class Game extends AppCompatActivity {
                     dialog.setPositiveButton(R.string.dialog_button, new
                             DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(intent);
                                     finish();
                                 }
                             });
@@ -172,5 +176,13 @@ public class Game extends AppCompatActivity {
         playerPosition = position - 1;
         opponentPosition = (playerPosition == 0 ? 1 : 0);
         canIWrite = playerPosition < opponentPosition;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!ClientRunner.run) {
+            Toast.makeText(this, "Aquí enviaríamos al server que un jugador a salido.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

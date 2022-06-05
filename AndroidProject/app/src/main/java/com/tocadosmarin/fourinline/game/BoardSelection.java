@@ -20,6 +20,7 @@ public class BoardSelection extends AppCompatActivity {
     public static boolean hasOpponent = false;
     public static boolean isServerClosed = false;
     private Button btPlayGame;
+
     private RadioGroup rgBoardSize;
     private RadioButton radioButton;
     public static ClientRunner clientRunner;
@@ -60,6 +61,7 @@ public class BoardSelection extends AppCompatActivity {
                         ClientRunner.column = Integer.parseInt(radioButton.getText().toString());
                         ClientRunner.class.notify();
                     }
+
                     synchronized (ClientRunner.class){
                         while(!hasOpponent && !isServerClosed){
                             try {
@@ -69,10 +71,12 @@ public class BoardSelection extends AppCompatActivity {
                             }
                         }
                     }
+
                     if(hasOpponent) {
                         Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), Game.class);
                         startActivity(i);
+                        finish();
                     }else{
                         Toast.makeText(getApplicationContext(), getText(R.string.error_match_ended), Toast.LENGTH_SHORT).show();
                         finish();
@@ -82,7 +86,17 @@ public class BoardSelection extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        synchronized (ClientRunner.class) {
+            ClientRunner.run = false;
+            ClientRunner.class.notify();
+        }
+    }
+
     private void startClientRunner() {
+        Toast.makeText(this, "ClientRunner started", Toast.LENGTH_SHORT).show();
         clientRunner = new ClientRunner();
         clientRunner.start();
     }

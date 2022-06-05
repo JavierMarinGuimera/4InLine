@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 if (login) {
                     if (LoginManager.checkToken(getApplicationContext())) {
                         Intent i = new Intent(getApplicationContext(), BoardSelection.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         startActivity(i);
                     } else {
                         EncryptedSharedPreferencesManager.clearUserLoginPreferences();

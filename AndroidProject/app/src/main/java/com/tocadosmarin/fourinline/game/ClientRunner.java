@@ -18,8 +18,9 @@ import java.util.Map;
 public class ClientRunner extends Thread {
     private static final Integer TIMEOUT = 500;
     public static Integer column = null;
+    public static Boolean run = true;
 
-    private static String serverHost = "10.0.2.2";
+    private static String serverHost = "192.168.1.41";
     private static Integer port = 7777;
 
     private Game game;
@@ -47,7 +48,13 @@ public class ClientRunner extends Thread {
             socket.setSoTimeout(TIMEOUT);
 
             waitLayoutResponse();
-            writer.println(JSONManager.mountUsernameAndColumnJson(EncryptedSharedPreferencesManager.encryptedPref.getString(LoginManager.USERNAME, ""), column));
+
+            if (!run) {
+                return;
+            }
+            String json = JSONManager.mountUsernameAndColumnJson(EncryptedSharedPreferencesManager.encryptedPref.getString(LoginManager.USERNAME, ""), column);
+            System.out.println(json);
+            writer.println(json);
             column = null;
 
             String serverResponseOnCreation = null;
@@ -166,13 +173,11 @@ public class ClientRunner extends Thread {
             System.out.print("Escribe: ");
             waitLayoutResponse();
             writer.println(JSONManager.mountColumnJson(column));
-            column = null;
+//            column = null;
         }
     }
 
     private Map<String, Object> readOponentColumnChoice(Map<String, Object> jsonMap, BufferedReader reader) {
-        if (jsonMap != null && (jsonMap.containsKey("result") || jsonMap.containsKey("server_closed")))
-            return jsonMap;
         jsonMap = null;
         /**
          * User reads:
