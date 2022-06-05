@@ -138,6 +138,7 @@ public class GameMatch extends Thread {
         Integer column = null;
 
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
+        mountCustomBoardTest();
         // mountCustomBoard1();
         // mountCustomBoard2();
 
@@ -360,7 +361,7 @@ public class GameMatch extends Thread {
          * If we find a different chip, the while will end because we have reached the
          * edge of the possible 4 in line.
          */
-        while (!hasFound4inLineEdge(x + xDirection, y + yDirection, arroundChip.getValue())) {
+        while (!hasFound4inLineEdge(x + xDirection, y + yDirection, arroundChip)) {
             x += xDirection;
             y += yDirection;
         }
@@ -404,19 +405,28 @@ public class GameMatch extends Thread {
         return true;
     }
 
-    private boolean hasFound4inLineEdge(Integer x, Integer y, Integer newestChip) {
+    /**
+     * This will find the edge of the 4 in line.
+     * 
+     * @param x           The next coord x.
+     * @param y           The next coord y.
+     * @param arroundChip The chip that we started from.
+     * @return True if we found board border, null object or a 2 in case we are the
+     *         player 1.
+     */
+    private boolean hasFound4inLineEdge(Integer x, Integer y, Chip arroundChip) {
         // This will check if we are out of the board.
         if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size()) {
             return true;
         }
 
         // This will check if we are on a null object.
-        if (this.board.get(x).get(y) == null) {
+        if (this.board.get(x).size() <= y) {
             return true;
         }
 
         // This will check if we are on a different chip than the newest chip.
-        if (this.board.get(x).get(y) != newestChip) {
+        if (this.board.get(x).get(y) != arroundChip.getValue()) {
             return true;
         }
 
@@ -452,6 +462,17 @@ public class GameMatch extends Thread {
     private void closePlayers(PrintStream player1Writer, PrintStream player2Writer) {
         player1Writer.println(JSONManager.mountServerCloseJson());
         player2Writer.println(JSONManager.mountServerCloseJson());
+    }
+
+    /**
+     * Caso momentaneos:
+     */
+    private void mountCustomBoardTest() {
+        // Columna 1:
+        this.board.get(1).add(1);
+        this.board.get(1).add(2);
+        // Columna 2:
+        this.board.get(2).add(1);
     }
 
     /**
