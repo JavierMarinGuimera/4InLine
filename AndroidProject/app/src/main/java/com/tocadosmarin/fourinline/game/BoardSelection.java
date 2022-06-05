@@ -72,10 +72,8 @@ public class BoardSelection extends AppCompatActivity {
                     if(hasOpponent) {
                         Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), Game.class);
-                        //i.putExtra("clientRunner", clientRunner);
                         startActivity(i);
                     }else{
-                        //TODO mostrar mensaje error y cerrar
                         finish();
                     }
                 }

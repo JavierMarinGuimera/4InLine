@@ -15,36 +15,19 @@ public class LoginManager {
     public static final String CREATED = "created";
     public static final String ERROR = "error";
 
-    public static Boolean hasServerResponse = false;
-
-    private static LoginManager loginManager;
-
-    private LoginManager() {
-    }
-
-    public static LoginManager getInstance() {
-        if (loginManager == null) {
-            loginManager = new LoginManager();
-        }
-        return loginManager;
-    }
-
     public static boolean checkToken(Context context) {
         //Read user and token, if the token has expired it renews it in the case that the user checked the "Stay Login" option
         //otherwhise, asks to log in
         long expiration_time = encryptedPref.getLong(EXPIRATION_TIME, 0);
         if (isValidToken(expiration_time)) {
-            //System.out.println("Token valido");
             return true;
         } else {
             String pwd = encryptedPref.getString(PASSWORD, "");
             if (pwd.equals("")) {
-                //System.out.println("Contraseña " + pwd);
                 return false;
             } else {
                 String user = encryptedPref.getString(USERNAME, "");
                 VolleyRequestManager.makeRequest(LoginManager.LOGIN_URL, null, context.getApplicationContext(), user, pwd, true);
-                //System.out.println("Inicio sesión automático");
                 return true;
             }
         }

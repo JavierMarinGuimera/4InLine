@@ -20,11 +20,14 @@
         app:layout_constraintVertical_bias="0.39" />
 
     <TextView
-        android:id="@+id/tv3"
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        android:text="TextView"
+        android:fontFamily="sans-serif-black"
+        android:text="@string/app_name"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/btFindGame"
         app:layout_constraintEnd_toEndOf="@+id/btFindGame"
         app:layout_constraintStart_toStartOf="@+id/btFindGame" />

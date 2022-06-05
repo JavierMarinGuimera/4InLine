@@ -60,4 +60,6 @@
     <string name="signup_succcess">Registro completado</string>
     <string name="signup_error">Error al registrarse</string>
     <string name="request_error">Error al hacer la petición</string>
+    <string name="tv_your_turn">Tu turno</string>
+    <string name="tv_opponent_turn">Turno del contrincante</string>
 </resources>

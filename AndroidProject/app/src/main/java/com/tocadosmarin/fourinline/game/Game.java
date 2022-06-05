@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
@@ -24,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
 
 public class Game extends AppCompatActivity {
     private static final int NUMBER_IMAGES = 6;
@@ -39,6 +39,7 @@ public class Game extends AppCompatActivity {
     private static LinearLayout mainLayout;
     private static List<String> colorsList;
     private static boolean canIWrite;
+    private TextView tvTurn;
     private int id_player_icon;
 
 
@@ -48,6 +49,7 @@ public class Game extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         mainLayout = findViewById(R.id.mainLayout);
+        tvTurn = findViewById(R.id.tvTurn);
 
         BoardSelection.clientRunner.setGame(this);
 
@@ -76,6 +78,11 @@ public class Game extends AppCompatActivity {
 
     @SuppressLint("ResourceAsColor")
     private void prepareBoard() {
+        if(playerPosition == 0){
+            tvTurn.setText(R.string.tv_your_turn);
+        }else{
+            tvTurn.setText(R.string.tv_opponent_turn);
+        }
         int board_size = MainActivity.pref.getInt("board_size", 0);
         for (int i = 0; i < board_size; i++) {
             LinearLayout linearLayout = new LinearLayout(this);
@@ -112,6 +119,7 @@ public class Game extends AppCompatActivity {
                         printImage(layout.getValue(), drawableList.get(playerPosition), playerPosition);
 
                         canIWrite = false;
+                        tvTurn.setText(R.string.tv_opponent_turn);
                     }
                 }
             });
@@ -143,6 +151,7 @@ public class Game extends AppCompatActivity {
                     dialog.show();
                 } else {
                     canIWrite = true;
+                    tvTurn.setText(R.string.tv_your_turn);
                 }
             }
         });

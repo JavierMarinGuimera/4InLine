@@ -138,7 +138,7 @@ public class GameMatch extends Thread {
         Integer column = null;
 
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
-        mountCustomBoardTest();
+        //mountCustomBoardTest();
         // mountCustomBoard1();
         // mountCustomBoard2();
 

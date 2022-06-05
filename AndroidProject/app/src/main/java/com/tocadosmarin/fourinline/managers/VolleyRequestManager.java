@@ -44,9 +44,12 @@ public class VolleyRequestManager {
                                 MainActivity.setBtLogin(true);
                                 loginActivity.finish();
                             } else {
-                                Toast.makeText(context.getApplicationContext(), context.getText(R.string.signup_succcess), Toast.LENGTH_SHORT).show();
-                                UserLoginRegister.setSignup(false);
-                                UserLoginRegister.setLogin(true);
+                                Map<String, Object> responseMap = JSONManager.getMapFromJsonString(response.toString());
+                                if (responseMap.containsKey(LoginManager.CREATED)) {
+                                    Toast.makeText(context.getApplicationContext(), context.getText(R.string.signup_succcess), Toast.LENGTH_SHORT).show();
+                                    UserLoginRegister.setSignup(false);
+                                    UserLoginRegister.setLogin(true);
+                                }
                             }
                         } else {
                             if (loginActivity != null) {

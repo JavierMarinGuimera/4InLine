@@ -60,4 +60,6 @@
     <string name="signup_succcess">Signup success</string>
     <string name="signup_error">Error on sign up</string>
     <string name="request_error">Error making the request</string>
+    <string name="tv_your_turn">Your turn</string>
+    <string name="tv_opponent_turn">Opponent\'s turn</string>
 </resources>
