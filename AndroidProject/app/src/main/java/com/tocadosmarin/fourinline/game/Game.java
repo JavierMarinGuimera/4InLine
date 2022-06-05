@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.icu.text.SymbolTable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;

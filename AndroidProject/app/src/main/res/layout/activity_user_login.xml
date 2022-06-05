@@ -21,7 +21,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -42,9 +45,11 @@
                     android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_user"
                     android:inputType="textPersonName"
+                    android:minHeight="48dp"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
-                    android:textColorHint="#FFFFFF" />
+                    android:textColorHint="#FFFFFF"
+                    tools:ignore="DuplicateClickableBoundsCheck" />
 
                 <EditText
                     android:id="@+id/etLoginPwd"
@@ -57,9 +62,11 @@
                     android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword"
+                    android:minHeight="48dp"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
-                    android:textColorHint="#FFFFFF" />
+                    android:textColorHint="#FFFFFF"
+                    tools:ignore="DuplicateClickableBoundsCheck" />
 
                 <CheckBox
                     android:id="@+id/cbSession"
@@ -99,7 +106,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/imageView2"
@@ -120,6 +131,7 @@
                     android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_user"
                     android:inputType="textPersonName"
+                    android:minHeight="48dp"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
                     android:textColorHint="#FFFFFF" />
@@ -135,6 +147,7 @@
                     android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword"
+                    android:minHeight="48dp"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
                     android:textColorHint="#FFFFFF" />
@@ -150,6 +163,7 @@
                     android:fontFamily="sans-serif-black"
                     android:hint="@string/hint_confirm_password"
                     android:inputType="textPassword"
+                    android:minHeight="48dp"
                     android:textColor="#FFFFFF"
                     android:textColorHighlight="#FFFFFF"
                     android:textColorHint="#FFFFFF" />
