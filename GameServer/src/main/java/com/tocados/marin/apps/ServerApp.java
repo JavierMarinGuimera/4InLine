@@ -55,8 +55,13 @@ public class ServerApp {
 
             // Wait the user connection with the server.
             try {
-                checkListForMatches(new Player(serverSocket.accept()));
-                MessageManager.showXMessage(Messages.USER_FOUND);
+                Player player = new Player(serverSocket.accept());
+
+                if (player.getCreated()) {
+                    checkListForMatches(player);
+                    MessageManager.showXMessage(Messages.USER_FOUND);
+                }
+
             } catch (SocketTimeoutException e) {
                 continue;
             }

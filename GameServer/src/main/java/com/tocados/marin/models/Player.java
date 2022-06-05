@@ -11,6 +11,7 @@ import com.tocados.marin.managers.JSONManager;
 
 public class Player {
     private Socket playerSocket;
+    private Boolean created;
     private Integer columns;
     private Boolean isWinner;
     private Integer score = 0;
@@ -42,6 +43,10 @@ public class Player {
             try {
                 String jsonString = this.reader.readLine();
 
+                if (jsonString == null) {
+                    throw new Exception("Socket connection lost.");
+                }
+
                 // Parsing jsonString to jsonObject.
                 Map<String, Object> jsonMap = JSONManager.getMapFromJsonString(jsonString);
 
@@ -53,11 +58,12 @@ public class Player {
                     this.writer.println("ERROR");
                 }
 
+                this.created = true;
+
                 break;
             } catch (Exception e) {
-                e.printStackTrace();
-                this.writer.println("SOMETHING WENT WRONG");
-                continue;
+                this.created = false;
+                break;
             }
         }
     }
@@ -74,6 +80,20 @@ public class Player {
      */
     public void setPlayerSocket(Socket playerSocket) {
         this.playerSocket = playerSocket;
+    }
+
+    /**
+     * @return the created
+     */
+    public Boolean getCreated() {
+        return created;
+    }
+
+    /**
+     * @param created the created to set
+     */
+    public void setCreated(Boolean created) {
+        this.created = created;
     }
 
     /**
