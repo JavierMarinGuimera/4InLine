@@ -138,7 +138,7 @@ public class GameMatch extends Thread {
         Integer column = null;
 
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
-        mountCustomBoardTest();
+        // mountCustomBoardTest();
         // mountCustomBoard1();
         // mountCustomBoard2();
 
@@ -373,7 +373,7 @@ public class GameMatch extends Thread {
         xDirection = -xDirection;
         yDirection = -yDirection;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             // Check if we are out of the board or looking on empty tile.
             if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size()
                     || y > this.board.get(x).size()) {
@@ -468,11 +468,21 @@ public class GameMatch extends Thread {
      * Caso momentaneos:
      */
     private void mountCustomBoardTest() {
+        // Columna 0:
+        this.board.get(0).add(2);
+        this.board.get(0).add(1);
         // Columna 1:
         this.board.get(1).add(1);
         this.board.get(1).add(2);
         // Columna 2:
         this.board.get(2).add(1);
+        this.board.get(2).add(2);
+        // Columna 3:
+        this.board.get(3).add(2);
+        // Columna 4:
+        this.board.get(4).add(1);
+        // Columna 5:
+        this.board.get(5).add(1);
     }
 
     /**
