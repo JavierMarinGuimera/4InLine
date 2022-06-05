@@ -139,7 +139,7 @@ public class GameMatch extends Thread {
 
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
         // mountCustomBoard1();
-        mountCustomBoard2();
+        // mountCustomBoard2();
 
         while (!this.matchEnded) {
             this.rounds++;
@@ -373,9 +373,11 @@ public class GameMatch extends Thread {
         yDirection = -yDirection;
 
         for (int i = 0; i < 3; i++) {
-            // Check if we are out of the board.
-            if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size())
+            // Check if we are out of the board or looking on empty tile.
+            if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size()
+                    || y > this.board.get(x).size()) {
                 return false;
+            }
 
             currentChip = new Chip(x, y, this.board.get(x).get(y));
 
@@ -383,8 +385,9 @@ public class GameMatch extends Thread {
              * If we are playing as the player 1, if we find a "2" on the board means that
              * we didnt make a 4 in line on this direction.
              */
-            if (currentChip.getValue() != arroundChip.getValue())
+            if (currentChip.getValue() != arroundChip.getValue()) {
                 return false;
+            }
 
             /**
              * Remove the current chip of the arroundChips if is not the first that we
@@ -503,14 +506,14 @@ public class GameMatch extends Thread {
     /**
      * Caso especial: 4 en raya, pero última ficha en medio de 3.
      */
-    private void mountCustomBoard2() {
-        // Columna 0:
-        this.board.get(0).add(1);
-        // Columna 1:
+    // private void mountCustomBoard2() {
+    // // Columna 0:
+    // this.board.get(0).add(1);
+    // // Columna 1:
 
-        // Columna 2:
-        this.board.get(2).add(1);
-        // Columna 3:
-        this.board.get(3).add(1);
-    }
+    // // Columna 2:
+    // this.board.get(2).add(1);
+    // // Columna 3:
+    // this.board.get(3).add(1);
+    // }
 }
