@@ -204,12 +204,11 @@ public class GameMatch extends Thread {
      * @return
      */
     private Integer getUserColumn(BufferedReader playerReader, Integer column) {
-        System.out.println(column);
         while (column == null) {
             try {
                 if (this.player1.getIsWinner() == null && this.player2.getIsWinner() == null && !this.matchEnded) {
                     String playerRequest = playerReader.readLine();
-                    System.out.println(playerRequest);
+                    System.out.println("Player Request " + playerRequest);
 
                     // User column
                     column = (Integer) JSONManager.getMapFromJsonString(playerRequest)
@@ -322,7 +321,7 @@ public class GameMatch extends Thread {
             }
         }
 
-        System.out.println(chipsCoordenates.size());
+        System.out.println("Chips Coordenates " + chipsCoordenates.size());
 
         return chipsCoordenates;
     }
@@ -345,6 +344,9 @@ public class GameMatch extends Thread {
         Integer xDirection = x - chipColumn,
                 yDirection = y - chipRow;
 
+        xDirection = -xDirection;
+        yDirection = -yDirection;
+        
         for (int i = 0; i < 3; i++) {
             if (x < 0 || x == this.board.size() || y < 0 || y == this.board.get(x).size())
                 return false;
@@ -433,6 +435,6 @@ public class GameMatch extends Thread {
         resultsMap.put("server", serverInfo);
         resultsMap.put("player", playerInfo);
 
-        System.out.println(HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
+        System.out.println("HTTP Manager " + HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
     }
 }

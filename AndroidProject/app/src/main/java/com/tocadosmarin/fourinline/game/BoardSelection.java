@@ -22,6 +22,7 @@ public class BoardSelection extends AppCompatActivity {
     private Button btPlayGame;
     private RadioGroup rgBoardSize;
     private RadioButton radioButton;
+    public static ClientRunner clientRunner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +72,7 @@ public class BoardSelection extends AppCompatActivity {
                     if(hasOpponent) {
                         Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), Game.class);
+                        //i.putExtra("clientRunner", clientRunner);
                         startActivity(i);
                     }else{
                         //TODO mostrar mensaje error y cerrar
@@ -82,6 +84,7 @@ public class BoardSelection extends AppCompatActivity {
     }
 
     private void startClientRunner() {
-        new ClientRunner().start();
+        clientRunner = new ClientRunner();
+        clientRunner.start();
     }
 }

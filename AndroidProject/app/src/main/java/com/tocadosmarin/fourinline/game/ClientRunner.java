@@ -1,5 +1,7 @@
 package com.tocadosmarin.fourinline.game;
 
+import android.widget.Toast;
+
 import com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesManager;
 import com.tocadosmarin.fourinline.managers.JSONManager;
 import com.tocadosmarin.fourinline.managers.LoginManager;
@@ -12,7 +14,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Map;
-import java.util.Scanner;
 
 public class ClientRunner extends Thread {
     private static final Integer TIMEOUT = 500;
@@ -21,6 +22,15 @@ public class ClientRunner extends Thread {
     private static String serverHost = "10.0.2.2";
     private static Integer port = 7777;
 
+    private Game game;
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 
     @Override
     public void run() {
@@ -152,15 +162,15 @@ public class ClientRunner extends Thread {
          */
         if (!jsonMap.containsKey("result")
                 && !jsonMap.containsKey("server_closed")) {
-
+            column = null;
             System.out.print("Escribe: ");
             waitLayoutResponse();
             writer.println(JSONManager.mountColumnJson(column));
+            column = null;
         }
     }
 
-    private Map<String, Object> readOponentColumnChoice
-            (Map<String, Object> jsonMap, BufferedReader reader) {
+    private Map<String, Object> readOponentColumnChoice(Map<String, Object> jsonMap, BufferedReader reader) {
         if (jsonMap != null && (jsonMap.containsKey("result") || jsonMap.containsKey("server_closed")))
             return jsonMap;
         jsonMap = null;
@@ -176,16 +186,9 @@ public class ClientRunner extends Thread {
             }
 
         }
+        System.out.println("column" + jsonMap);
 
-        System.out.println(jsonMap);
-
-        if (jsonMap.containsKey("result") || jsonMap.containsKey("server_closed")) {
-            if (jsonMap.containsKey("result")) {
-                System.out.println("MOSTRAR AL CLIENTE EL 4 EN RAYA Y FINALIZAR LA PARTIDA.");
-            } else {
-                System.out.println("MOSTRAR AL CLIENTE QUE EL SERVER SE HA CERRADO INESPERADAMENTE.");
-            }
-        }
+        game.setServerResponse(jsonMap);
 
         return jsonMap;
     }

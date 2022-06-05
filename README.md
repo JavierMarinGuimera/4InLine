@@ -27,3 +27,4 @@ Proyecto final.
 -   [Importar dependencias Android app](https://www.tutorialspoint.com/how-do-add-dependency-in-android-studio)
 -   [Generar usuario y contraseña aleatorios para el server](https://www.random.org/strings/?num=1&len=10&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new)
 -   [Crear archivo .properties, leerlo y manejarlo](https://www.javatpoint.com/properties-class-in-java)
+-   [Actualizar Layout desde otra clase](https://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi)

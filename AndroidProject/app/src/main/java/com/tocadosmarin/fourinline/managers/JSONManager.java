@@ -82,7 +82,7 @@ public class JSONManager {
         if (!password.equals(""))
             jsonMap.put(PASSWORD, password);
 
-        if (column > 0)
+        if (column > -1)
             jsonMap.put(COLUMN, column);
 
         return new JSONObject(jsonMap).toString();
