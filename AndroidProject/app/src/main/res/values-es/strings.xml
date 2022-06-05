@@ -62,4 +62,5 @@
     <string name="request_error">Error al hacer la petición</string>
     <string name="tv_your_turn">Tu turno</string>
     <string name="tv_opponent_turn">Turno del contrincante</string>
+    <string name="error_match_ended">Error! Match ended</string>
 </resources>

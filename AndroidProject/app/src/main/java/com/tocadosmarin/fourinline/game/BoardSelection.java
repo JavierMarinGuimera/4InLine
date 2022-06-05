@@ -74,6 +74,7 @@ public class BoardSelection extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), Game.class);
                         startActivity(i);
                     }else{
+                        Toast.makeText(getApplicationContext(), getText(R.string.error_match_ended), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }

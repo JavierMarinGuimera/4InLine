@@ -7,8 +7,9 @@ import android.content.Context;
 public class LoginManager {
     //public static final int TOKEN_EXPIRATION_TIME = 1 * 7 * 24 * 60 * 60 * 1000;
     public static final int TOKEN_EXPIRATION_TIME = 5 * 1000;
-    public static final String LOGIN_URL = "http://10.0.2.2:8080/users/login";
-    public static final String SIGNUP_URL = "http://10.0.2.2:8080/users/register";
+    private static final String SERVER_URL = "http://10.0.2.2:8080";
+    public static final String LOGIN_URL = SERVER_URL + "/users/login";
+    public static final String SIGNUP_URL = SERVER_URL + "/users/register";
     public static final String USERNAME = "username";
     public static final String PASSWORD = "password";
     public static final String TOKEN = "token";

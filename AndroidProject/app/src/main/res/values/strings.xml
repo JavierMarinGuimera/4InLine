@@ -62,4 +62,5 @@
     <string name="request_error">Error making the request</string>
     <string name="tv_your_turn">Your turn</string>
     <string name="tv_opponent_turn">Opponent\'s turn</string>
+    <string name="error_match_ended">Error! Partida finalizada</string>
 </resources>
