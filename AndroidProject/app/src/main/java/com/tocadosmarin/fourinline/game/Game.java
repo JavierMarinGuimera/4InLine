@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
 import com.tocadosmarin.fourinline.main.MainActivity;
@@ -30,7 +29,9 @@ import java.util.Map;
 public class Game extends AppCompatActivity {
     private static final int NUMBER_IMAGES = 6;
     private static final String SHARED_PREF_ICONS[] = {"icon_player_1", "icon_player_2"};
+    private static final String DEFAULT_ICONS[] = {"ic_hippo_solid", "ic_dragon_solid"};
     private static final String SHARED_PREF_COLORS[] = {"color_player_1", "color_player_2"};
+    private static final String DEFAULT_COLORS[] = {"#ec4899","#22c55e"};
 
     public static Integer playerPosition;
     public static Integer opponentPosition;
@@ -61,8 +62,8 @@ public class Game extends AppCompatActivity {
     }
 
     private void getPlayerIcons() {
-        for (String icon : SHARED_PREF_ICONS) {
-            String player_icon = MainActivity.pref.getString(icon, "?");
+        for (int i = 0; i < SHARED_PREF_ICONS.length; i++) {
+            String player_icon = MainActivity.pref.getString(SHARED_PREF_ICONS[i], DEFAULT_ICONS[i]);
             id_player_icon = this.getResources().getIdentifier(player_icon, "drawable", this.getPackageName());
             Drawable drawable_player = this.getDrawable(id_player_icon);
             drawableList.add(drawable_player);
@@ -71,17 +72,17 @@ public class Game extends AppCompatActivity {
 
     private void getPlayerColors() {
         colorsList = new ArrayList<>();
-        for (String color : SHARED_PREF_COLORS) {
-            String player_color = MainActivity.pref.getString(color, "?");
+        for (int i = 0; i < SHARED_PREF_COLORS.length; i++) {
+            String player_color = MainActivity.pref.getString(SHARED_PREF_COLORS[i], DEFAULT_COLORS[i]);
             colorsList.add(player_color);
         }
     }
 
     @SuppressLint("ResourceAsColor")
     private void prepareBoard() {
-        if(playerPosition == 0){
+        if (playerPosition == 0) {
             tvTurn.setText(R.string.tv_your_turn);
-        }else{
+        } else {
             tvTurn.setText(R.string.tv_opponent_turn);
         }
         int board_size = MainActivity.pref.getInt("board_size", 0);
@@ -110,7 +111,6 @@ public class Game extends AppCompatActivity {
             layout.getValue().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(getApplicationContext(), canIWrite + "", Toast.LENGTH_SHORT).show();
                     if (canIWrite && layout.getValue().getChildCount() < NUMBER_IMAGES) {
                         synchronized (ClientRunner.class) {
                             ClientRunner.column = layout.getKey();
@@ -182,7 +182,22 @@ public class Game extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         if (!ClientRunner.run) {
-            Toast.makeText(this, "Aquí enviaríamos al server que un jugador a salido.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.pause();
         }
     }
 }

@@ -16,10 +16,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tocadosmarin.fourinline.R;
-import com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesManager;
+import com.tocadosmarin.fourinline.main.MainActivity;
 import com.tocadosmarin.fourinline.managers.EncrypterManager;
 import com.tocadosmarin.fourinline.managers.LoginManager;
 import com.tocadosmarin.fourinline.managers.VolleyRequestManager;
@@ -156,5 +155,21 @@ public class UserLoginRegister extends AppCompatActivity {
             }
         });
         fadeAnim.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.pause();
+        }
     }
 }

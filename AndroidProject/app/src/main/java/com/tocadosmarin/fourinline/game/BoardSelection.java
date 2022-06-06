@@ -62,8 +62,8 @@ public class BoardSelection extends AppCompatActivity {
                         ClientRunner.class.notify();
                     }
 
-                    synchronized (ClientRunner.class){
-                        while(!hasOpponent && !isServerClosed){
+                    synchronized (ClientRunner.class) {
+                        while (!hasOpponent && !isServerClosed) {
                             try {
                                 ClientRunner.class.wait();
                             } catch (InterruptedException e) {
@@ -72,18 +72,24 @@ public class BoardSelection extends AppCompatActivity {
                         }
                     }
 
-                    if(hasOpponent) {
+                    if (hasOpponent) {
                         Toast.makeText(getApplicationContext(), getString(R.string.match_found), Toast.LENGTH_SHORT).show();
                         Intent i = new Intent(getApplicationContext(), Game.class);
                         startActivity(i);
                         finish();
-                    }else{
+                    } else {
                         Toast.makeText(getApplicationContext(), getText(R.string.error_match_ended), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }
             }
         });
+    }
+
+
+    private void startClientRunner() {
+        clientRunner = new ClientRunner();
+        clientRunner.start();
     }
 
     @Override
@@ -95,9 +101,19 @@ public class BoardSelection extends AppCompatActivity {
         }
     }
 
-    private void startClientRunner() {
-        Toast.makeText(this, "ClientRunner started", Toast.LENGTH_SHORT).show();
-        clientRunner = new ClientRunner();
-        clientRunner.start();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (MainActivity.isPlaying && MainActivity.mp != null) {
+            MainActivity.mp.pause();
+        }
     }
 }

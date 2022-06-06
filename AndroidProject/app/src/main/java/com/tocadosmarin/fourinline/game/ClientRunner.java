@@ -1,7 +1,5 @@
 package com.tocadosmarin.fourinline.game;
 
-import android.widget.Toast;
-
 import com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesManager;
 import com.tocadosmarin.fourinline.managers.JSONManager;
 import com.tocadosmarin.fourinline.managers.LoginManager;
@@ -20,7 +18,7 @@ public class ClientRunner extends Thread {
     public static Integer column = null;
     public static Boolean run = true;
 
-    private static String serverHost = "192.168.1.41";
+    private static String serverHost = "10.0.2.2";
     private static Integer port = 7777;
 
     private Game game;

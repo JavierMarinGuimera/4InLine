@@ -6,9 +6,11 @@ import static com.tocadosmarin.fourinline.managers.EncryptedSharedPreferencesMan
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -29,6 +31,8 @@ import java.security.GeneralSecurityException;
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences pref;
     public static boolean login;
+    public static boolean isPlaying;
+    public static MediaPlayer mp;
     private static Button btLogOut;
     private static TextView tvUser;
     private Button btFindGame;
@@ -41,13 +45,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
-
         btFindGame = findViewById(R.id.btFindGame);
         btExit = findViewById(R.id.btExit);
         btPreferences = findViewById(R.id.btPreferences);
         btLogOut = findViewById(R.id.btLogOut);
         tvUser = findViewById(R.id.tvUser);
+
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
+        PreferencesActivity.readPreferences();
+        setMusic(isPlaying, this);
 
         try {
             EncryptedSharedPreferencesManager.getEncryptedSharedPreferences(this);
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static void setBtLogin(boolean state) {
         if (state) {
-            tvUser.setText(encryptedPref.getString(LoginManager.USERNAME,""));
+            tvUser.setText(encryptedPref.getString(LoginManager.USERNAME, ""));
             tvUser.setVisibility(View.VISIBLE);
             btLogOut.setClickable(true);
             btLogOut.setVisibility(View.VISIBLE);
@@ -147,6 +153,35 @@ public class MainActivity extends AppCompatActivity {
             btLogOut.setClickable(false);
             btLogOut.setVisibility(View.INVISIBLE);
             login = false;
+        }
+    }
+
+    public static void setMusic(boolean isPlaying, Context context) {
+        if (isPlaying) {
+            int resID = context.getResources().getIdentifier("menu_song", "raw", context.getPackageName());
+            mp = MediaPlayer.create(context, resID);
+            mp.start();
+            mp.setLooping(true);
+        } else {
+            if (mp != null) {
+                mp.stop();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isPlaying && mp != null) {
+            mp.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (isPlaying && mp != null) {
+            mp.pause();
         }
     }
 }
