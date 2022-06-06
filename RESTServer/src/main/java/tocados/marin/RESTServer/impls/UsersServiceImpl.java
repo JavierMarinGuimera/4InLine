@@ -136,8 +136,8 @@ public class UsersServiceImpl implements UsersService {
             responseMap.put("error", "previus user structure incorrect");
         }
 
-        HashMap<String, String> user = (HashMap<String, String>) json.get("user");
-        HashMap<String, String> userUpdated = (HashMap<String, String>) json.get("userUpdated");
+        HashMap<String, Object> user = (HashMap<String, Object>) json.get("user");
+        HashMap<String, Object> userUpdated = (HashMap<String, Object>) json.get("userUpdated");
         String token = (String) json.get("token");
 
         if (!user.containsKey("username")
@@ -148,11 +148,11 @@ public class UsersServiceImpl implements UsersService {
             responseMap.put("error", "new user structure incorrect");
         }
         // Search user from username on DDBB to know if exist.
-        User userFromDDBB = getUserFromUsername(user.get("username"));
+        User userFromDDBB = getUserFromUsername((String) user.get("username"));
 
-        if (checkIfUserIsValid(userFromDDBB, user.get("password"), token)) {
-            userFromDDBB.setUsername(userUpdated.get("username"));
-            userFromDDBB.setPassword(userUpdated.get("password"));
+        if (checkIfUserIsValid(userFromDDBB, (String) user.get("password"), token)) {
+            userFromDDBB.setUsername((String) userUpdated.get("username"));
+            userFromDDBB.setPassword(((String) userUpdated.get("password")));
             usersRepository.save(userFromDDBB);
 
             responseMap.put("updated", true);
@@ -160,7 +160,7 @@ public class UsersServiceImpl implements UsersService {
 
         if (!responseMap.containsKey("updated")) {
             responseMap.put("updated", false);
-            responseMap.put("error", "structure incorrect");
+            responseMap.put("error", "user not updated");
         }
 
         return responseMap;
