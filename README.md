@@ -1,24 +1,29 @@
-# 4InLine
+# Proyecto final: 4InLine (Connect 4)
 
-Proyecto final.
+## **Este proyecto contiene:**
 
-## TODO
+1. Aplicación Android para el display del juego.
+2. Servidor de juego encargado de la lógica del mismo (cálculos, envio de mensajes al jugador que toque, etc.)
+3. Servidor REST encargado de recibir las peticiones HTTP para guardar información en base de datos.
 
-    - Base de datos.
-    - Funcionamiento REST.
-    - Interfaz Android.
-    - Funcionamiento login.
-    - Funcionamiento token.
-    - Funcionamiento 1v1.
-    - Multithreading varias partidas.
-    - Posible añadido: chat.
+## **TODO**
 
-## Webgrafía
+-   [x] Base de datos
+-   [x] Funcionamiento REST.
+-   [x] Interfaz Android.
+-   [x] Funcionamiento login.
+-   [x] Funcionamiento token.
+-   [x] Funcionamiento 1v1.
+-   [x] Multithreading varias partidas.
+-   [ ] Posible añadido: chat.
+
+## **Webgrafía**
 
 -   [Creación API REST](https://www.youtube.com/watch?v=vTu2HQrXtyw)
 -   [Encriptar contraseñas](https://www.javatpoint.com/how-to-encrypt-password-in-java)
 -   [Generar token](https://stackoverflow.com/questions/13992972/how-to-create-a-authentication-token-using-java)
 -   [Solucionar error json infinito al hacer un "getAllUsers"](https://stackoverflow.com/questions/47693110/could-not-write-json-infinite-recursion-stackoverflowerror-nested-exception)
+-   [Información sobre los DTO](https://www.javatpoint.com/dto-java)
 -   [Java map a JSON](https://devqa.io/how-to-convert-java-map-to-json/)
 -   [Encrypted Shared Preferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences)
 -   [Android Master Key](https://developer.android.com/reference/androidx/security/crypto/MasterKey)

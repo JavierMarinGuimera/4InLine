@@ -20,18 +20,23 @@ import com.tocados.marin.managers.MessageManager.Messages;
 import com.tocados.marin.managers.PropertiesManager.PropertiesStrings;
 
 public class GameMatch extends Thread {
-    private static int TIMEOUT = 10000;
-    private static int MAX_ROWS = 6;
+    private static Integer TIMEOUT = 10000;
+    private static Integer MAX_ROWS = 6;
 
     private Player player1;
     private Player player2;
     private Stack<Stack<Integer>> board;
+    private Integer maxChips;
+    private Integer currentChipsCount = 0;
     private Integer rounds = 0;
     private Boolean matchEnded = false;
 
     /**
-     * @param player1
-     * @param player2
+     * Contructor of the class.
+     * 
+     * @param player1 Player 1 playing.
+     * @param player2 Player 2 playing.
+     * @param columns Columns of the board.
      */
     public GameMatch(Player player1, Player player2, Integer columns) {
         this.player1 = player1;
@@ -41,6 +46,8 @@ public class GameMatch extends Thread {
         for (int i = 0; i < columns; i++) {
             this.board.add(new Stack<Integer>());
         }
+
+        this.maxChips = columns * MAX_ROWS;
     }
 
     /**
@@ -135,50 +142,49 @@ public class GameMatch extends Thread {
         player1Writer.println(JSONManager.mountHasOponentJson(1));
         player2Writer.println(JSONManager.mountHasOponentJson(2));
 
-        Integer column = null;
-
         // TODO - COMENTAR ESTO PARA QUE EL JUEGO FUNCIONE CORRETAMENTE:
         // mountCustomBoardTest();
         // mountCustomBoard1();
         // mountCustomBoard2();
+        // mountCustomBoard3();
+
+        Integer column = null;
 
         while (!this.matchEnded) {
             this.rounds++;
 
-            // Returns null if the server is closed.
-            if ((column = getUserColumn(player1Reader, column)) == null)
-                break;
+            /**
+             * Part 1: Player 1 sends, player 2 gets.
+             */
 
-            if (checkMatchStatus(column, this.board.get(column).size(), this.player1, this.player2)) {
-                player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
-                        Messages.WINNER, this.player1.getScore()));
-                player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
-                        Messages.LOSER, this.player2.getScore()));
-            } else {
-                player2Writer.println(JSONManager.mountColumnJson(column));
-                column = null;
+            /**
+             * This method checks everything on the current loop and returns something
+             * diferent than null if the server is closed unexpectly.
+             */
+            if ((column = doALoopAndCheckEverything(column, this.player1, player1Reader, player1Writer, this.player2,
+                    player2Writer)) != null) {
+                break;
             }
 
-            if (this.matchEnded)
+            if (this.matchEnded) {
                 break;
-
-            if ((column = getUserColumn(player2Reader, column)) == null)
-                break;
-
-            if (checkMatchStatus(column, this.board.get(column).size(), this.player2, this.player1)) {
-                player2Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
-                        Messages.WINNER, this.player2.getScore()));
-                player1Writer.println(JSONManager.mountColumnAndResultAndScoreJson(column,
-                        Messages.LOSER, this.player1.getScore()));
-            } else {
-                player1Writer.println(JSONManager.mountColumnJson(column));
-                column = null;
             }
 
-            System.out.println(this.board);
+            /**
+             * Part 2: Player 2 sends, player 1 gets.
+             */
+
+            /**
+             * This method checks everything on the current loop and returns something
+             * diferent than null if the server is closed unexpectly.
+             */
+            if ((column = doALoopAndCheckEverything(column, this.player2, player2Reader, player2Writer, this.player1,
+                    player1Writer)) != null) {
+                break;
+            }
         }
 
-        if (this.player1.getIsWinner() == null) {
+        if (!ServerApp.run) {
             closePlayers(player1Writer, player2Writer);
         } else {
             savePlayersResults(player1, player2);
@@ -199,6 +205,47 @@ public class GameMatch extends Thread {
     }
 
     /**
+     * This method checks everything from the player that is sending until the
+     * player that is getting the info gets the info.
+     * 
+     * @param column              Column in null because we need to check if we
+     *                            receive anything from the current player playing.
+     * @param playerPlaying       Player playing.
+     * @param playerPlayingReader Player playing reader.
+     * @param playerPlayingWriter Player playing writer for the opponent response.
+     * @param playerWaiting       Player waiting.
+     * @param playerWaitingWriter Player waiting writer to send the response
+     *                            whatever it is.
+     * 
+     * @return -1 if the server is closed.
+     */
+    private Integer doALoopAndCheckEverything(Integer column, Player playerPlaying, BufferedReader playerPlayingReader,
+            PrintStream playerPlayingWriter, Player playerWaiting, PrintStream playerWaitingWriter) {
+        if ((column = getUserColumn(playerPlayingReader, column)) == null) {
+            return -1;
+        }
+
+        if (checkMatchStatus(column, this.board.get(column).size(), playerPlaying, playerWaiting)) {
+            if (this.player1.getIsWinner() != null && this.player2.getIsWinner() != null) {
+                playerPlayingWriter.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.WIN, playerPlaying.getScore()));
+                playerWaitingWriter.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.LOSE, playerWaiting.getScore()));
+            } else {
+                playerPlayingWriter.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.DRAW, playerPlaying.getScore()));
+                playerWaitingWriter.println(JSONManager.mountColumnAndResultAndScoreJson(column,
+                        Messages.DRAW, playerWaiting.getScore()));
+            }
+        } else {
+            playerWaitingWriter.println(JSONManager.mountColumnJson(column));
+            column = null;
+        }
+
+        return column;
+    }
+
+    /**
      * Read the column of the current user playing.
      * 
      * @param playerReader
@@ -210,7 +257,6 @@ public class GameMatch extends Thread {
             try {
                 if (this.player1.getIsWinner() == null && this.player2.getIsWinner() == null && !this.matchEnded) {
                     String playerRequest = playerReader.readLine();
-                    System.out.println("Player Request " + playerRequest);
 
                     // User column
                     column = (Integer) JSONManager.getMapFromJsonString(playerRequest)
@@ -241,6 +287,7 @@ public class GameMatch extends Thread {
         if (this.board.get(column).size() < MAX_ROWS) {
             // Here we add the new chip to the GameMatch board
             this.board.get(column).add(playerPlaying.getPosition());
+            this.currentChipsCount++;
             playerPlaying.setScore(playerPlaying.getScore() + 5);
 
             Chip newestChip = new Chip(column, row, this.board.get(column).get(row));
@@ -273,9 +320,18 @@ public class GameMatch extends Thread {
 
                 return true;
             }
+
+            if (isBoardFull()) {
+                this.matchEnded = true;
+                return true;
+            }
         }
 
         return false;
+    }
+
+    private boolean isBoardFull() {
+        return this.maxChips == currentChipsCount;
     }
 
     /**
@@ -323,8 +379,6 @@ public class GameMatch extends Thread {
                 }
             }
         }
-
-        System.out.println("Chips Coordenates " + arroundChips.size());
 
         return arroundChips;
     }
@@ -456,7 +510,8 @@ public class GameMatch extends Thread {
         resultsMap.put("server", serverInfo);
         resultsMap.put("player", playerInfo);
 
-        System.out.println("HTTP Manager " + HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
+        MessageManager.showXMessage(Messages.REST_SERVER_RESPONSE);
+        System.out.println(HTTPManager.makeRequest(Paths.SCORES_INSERT_ONE, resultsMap));
     }
 
     private void closePlayers(PrintStream player1Writer, PrintStream player2Writer) {
@@ -468,21 +523,9 @@ public class GameMatch extends Thread {
      * Caso momentaneos:
      */
     // private void mountCustomBoardTest() {
-    // // Columna 0:
-    // this.board.get(0).add(2);
     // this.board.get(0).add(1);
-    // // Columna 1:
     // this.board.get(1).add(1);
-    // this.board.get(1).add(2);
-    // // Columna 2:
     // this.board.get(2).add(1);
-    // this.board.get(2).add(2);
-    // // Columna 3:
-    // this.board.get(3).add(2);
-    // // Columna 4:
-    // this.board.get(4).add(1);
-    // // Columna 5:
-    // this.board.get(5).add(1);
     // }
 
     /**
@@ -546,5 +589,45 @@ public class GameMatch extends Thread {
     // this.board.get(2).add(1);
     // // Columna 3:
     // this.board.get(3).add(1);
+    // }
+
+    /**
+     * Caso especial: Tablero lleno y 4 en raya última ficha.
+     */
+    // private void mountCustomBoard3() {
+    // // Columna 0:
+    // this.board.get(0).add(2);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(1);
+    // this.board.get(0).add(1);
+    // // Columna 1:
+    // this.board.get(1).add(2);
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(1);
+    // this.board.get(1).add(1);
+    // // Columna 2:
+    // this.board.get(2).add(2);
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(1);
+    // this.board.get(2).add(1);
+    // // Columna 3:
+    // this.board.get(3).add(2);
+    // this.board.get(3).add(1);
+    // this.board.get(3).add(1);
+    // this.board.get(3).add(1);
+    // this.board.get(3).add(2);
+    // this.board.get(3).add(1);
+    // // Columna 4:
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(1);
+    // this.board.get(4).add(2);
     // }
 }

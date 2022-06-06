@@ -34,7 +34,7 @@ public class HTTPManager {
         }
     }
 
-    private static final String REST_URL = "http://localhost:8080";
+    private static final String REST_URL = "http://localhost:8081";
     private static final Integer TIMEOUT = 5000;
 
     private HTTPManager() {

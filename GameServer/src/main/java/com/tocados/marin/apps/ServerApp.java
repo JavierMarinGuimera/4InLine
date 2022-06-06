@@ -1,6 +1,8 @@
 package com.tocados.marin.apps;
 
+import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,9 +46,16 @@ public class ServerApp {
          * Here starts the game server:
          */
 
+        startConsoleThread();
+        startGameServerListener();
+    }
+
+    private static void startConsoleThread() {
         ConsoleManager consoleManager = new ConsoleManager();
         consoleManager.start();
+    }
 
+    private static void startGameServerListener() throws IOException, SocketException {
         ServerSocket serverSocket = new ServerSocket(PORT);
         serverSocket.setSoTimeout(TIMEOUT);
 
@@ -61,7 +70,6 @@ public class ServerApp {
                     checkListForMatches(player);
                     MessageManager.showXMessage(Messages.USER_FOUND);
                 }
-
             } catch (SocketTimeoutException e) {
                 continue;
             }
@@ -82,8 +90,6 @@ public class ServerApp {
                 .getMapFromJsonString(HTTPManager.makeRequest(Paths.USERS_LOGIN_PATH,
                         PropertiesManager.getLoginMap()));
 
-        System.out.println(jsonMap);
-
         if (jsonMap == null || !jsonMap.containsKey("token")) {
             return false;
         }
@@ -103,8 +109,6 @@ public class ServerApp {
 
     private static void checkCurrentPlayers(Player player, Integer columns) {
         if (player.getColumns() == columns) {
-            System.out.println(playersWaiting);
-
             if (playersWaiting.get(columns) != null) {
                 startMatch(playersWaiting.get(columns), player, columns);
 
@@ -118,7 +122,6 @@ public class ServerApp {
 
     private static void startMatch(Player player1, Player player2, Integer columns) {
         MessageManager.showXMessage(Messages.MATCH_FOUND);
-        System.out.println();
         GameMatch gameMatch = new GameMatch(player1, player2, columns);
         gameMatch.start();
         currentGameMatches.add(gameMatch);
@@ -131,8 +134,6 @@ public class ServerApp {
     public static void showMatches() {
         currentGameMatches.forEach((gameMatch) -> {
             System.out.println(gameMatch);
-            System.out.println(gameMatch.getPlayer1().getPlayerSocket().isBound() + ", "
-                    + gameMatch.getPlayer2().getPlayerSocket().isBound());
         });
     }
 
@@ -147,6 +148,7 @@ public class ServerApp {
             if (player.getValue() != null)
                 count++;
         }
+
         System.out.println("Current players waiting: " + count);
     }
 

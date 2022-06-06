@@ -1,4 +1,4 @@
-package tocados.marin.RESTServer.impls;
+package tocados.marin.RESTServer.services.impls;
 
 import java.util.HashMap;
 import java.util.List;
@@ -103,7 +103,6 @@ public class ScoresServiceImpl implements ScoresService {
 
             // If the user has the max saved scores and the last score is less than the new
             // score, we remove the last item.
-            System.out.println(userFromDDBB.getScores());
             List<Score> orderedScores = Score.orderScoreList(userFromDDBB.getScores());
             if (orderedScores.size() == Score.MAX_SIZE
                     && orderedScores.get(orderedScores.size() - 1).getScore() < scoreInteger) {

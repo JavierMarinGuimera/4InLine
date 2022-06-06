@@ -11,8 +11,13 @@ public class MessageManager {
         USER_FOUND("User found!"),
         MATCH_FOUND("Match found!"),
         MATCH_ENDED("Match ended!"),
-        WINNER("winner"),
-        LOSER("loser"),
+        SERVER_CLOSED("Server has been closed unexpectly."),
+        WIN("win"),
+        LOSE("lose"),
+        DRAW("draw"),
+        OPPONENT_GOT_4_IN_LINE("Opponent has made a 4 in line."),
+        DRAW_RESULT("Both got draw."),
+        REST_SERVER_RESPONSE("REST Server response: "),
         NOTHING("");
 
         private String msg;

@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.tocados.marin.managers.JSONManager;
+import com.tocados.marin.managers.MessageManager;
+import com.tocados.marin.managers.MessageManager.Messages;
 
 public class ClientAppTest extends Thread {
     private static final Integer TIMEOUT = 500;
@@ -33,7 +35,13 @@ public class ClientAppTest extends Thread {
 
             socket.setSoTimeout(TIMEOUT);
 
-            writer.println(JSONManager.mountUsernameAndColumnJson(sc.nextLine(), 7));
+            System.out.print("Nombre de usuario: ");
+            String username = sc.nextLine();
+
+            System.out.print("Tamaño tablero");
+            Integer columns = sc.nextInt();
+
+            writer.println(JSONManager.mountUsernameAndColumnJson(username, columns));
 
             String serverResponseOnCreation = null;
 
@@ -58,8 +66,6 @@ public class ClientAppTest extends Thread {
                         continue;
                     }
                 }
-
-                System.out.println(jsonMap);
 
                 // Enviar y recibir según si eres jugador 1 o 2:
                 if ((Integer) jsonMap.get("position") == 1) {
@@ -149,16 +155,19 @@ public class ClientAppTest extends Thread {
             } catch (Exception e) {
                 continue;
             }
-
         }
 
         System.out.println(jsonMap);
 
         if (jsonMap.containsKey("result") || jsonMap.containsKey("server_closed")) {
             if (jsonMap.containsKey("result")) {
-                System.out.println("MOSTRAR AL CLIENTE EL 4 EN RAYA Y FINALIZAR LA PARTIDA.");
+                if (((String) jsonMap.get("result")).equals("draw")) {
+                    MessageManager.showXMessage(Messages.DRAW_RESULT);
+                } else {
+                    MessageManager.showXMessage(Messages.OPPONENT_GOT_4_IN_LINE);
+                }
             } else {
-                System.out.println("MOSTRAR AL CLIENTE QUE EL SERVER SE HA CERRADO INESPERADAMENTE.");
+                MessageManager.showXMessage(Messages.SERVER_CLOSED);
             }
         }
 
