@@ -18,7 +18,7 @@ public class ClientRunner extends Thread {
     public static Integer column = null;
     public static Boolean run = true;
 
-    private static String serverHost = "10.0.2.2";
+    private static String serverHost = "192.168.110.67";
     private static Integer port = 7777;
 
     private Game game;
